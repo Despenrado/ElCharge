@@ -1,7 +1,0 @@
-
-bind_addr = ":8080"
-db_name = "passwordWallet"
-db_url = "mongodb://127.0.0.1:27017"
-db_userLogin_collection = "UserLogin"
-db_userWallet_collection = "UserWallet"
-log_level = "debug"

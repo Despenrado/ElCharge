@@ -1,8 +1,8 @@
 package teststorage
 
 import (
-	"github.com/Despenrado/ElCharge/models"
-	"github.com/Despenrado/ElCharge/storage"
+	"github.com/Despenrado/ElCharge/RestAPI/models"
+	"github.com/Despenrado/ElCharge/RestAPI/utils"
 )
 
 // UserRepository ...
@@ -29,7 +29,7 @@ func (r *UserRepository) Create(u *models.User) error {
 }
 
 // Find ...
-func (r *UserRepository) Find(id int) (*models.User, error) {
+func (r *UserRepository) Find(id string) (*models.User, error) {
 	// u, ok := r.users[id]
 	// if !ok {
 	// 	return nil, store.ErrRecordNotFound
@@ -47,5 +47,5 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 	// 	}
 	// }
 
-	return nil, storage.ErrRecordNotFound
+	return nil, utils.ErrRecordNotFound
 }

@@ -7,5 +7,5 @@ type UserRepository interface {
 	Create(*models.User) error
 	Find(string) (*models.User, error)
 	FindByEmail(string) (*models.User, error)
-	Delete(string) error
+	//Delete(string) error
 }

@@ -1,0 +1,4 @@
+bind_addr: :8081
+database_url: mongodb://127.0.0.1:27017
+db_name: elCharge
+db_user_collection: user

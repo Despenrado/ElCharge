@@ -2,14 +2,20 @@ package mongostorage
 
 import (
 	"github.com/Despenrado/ElCharge/RestAPI/models"
-	"github.com/Despenrado/ElCharge/RestAPI/storage"
+	"github.com/Despenrado/ElCharge/RestAPI/utils"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
 // UserRepository ...
 type UserRepository struct {
 	storage *Storage
-	col     mongo.Collection
+	col     *mongo.Collection
+}
+
+func NewUserRepository(col *mongo.Collection) *UserRepository {
+	return &UserRepository{
+		col: col,
+	}
 }
 
 // Create ...
@@ -27,5 +33,5 @@ func (r *UserRepository) Find(id string) (*models.User, error) {
 // FindByEmail ...
 func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 
-	return nil, storage.ErrRecordNotFound
+	return nil, utils.ErrRecordNotFound
 }
