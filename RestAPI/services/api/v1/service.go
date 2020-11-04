@@ -2,10 +2,12 @@ package v1
 
 import "github.com/Despenrado/ElCharge/RestAPI/services/api"
 
+// Service service struct
 type Service struct {
 	userService *UserService
 }
 
+// NewService constructor
 func NewService(us *UserService) *Service {
 	s := &Service{
 		userService: us,
@@ -14,7 +16,7 @@ func NewService(us *UserService) *Service {
 	return s
 }
 
-// User ...
+// User return UserService
 func (s *Service) User() api.UserService {
 	if s.userService != nil {
 		return s.userService

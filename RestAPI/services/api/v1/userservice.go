@@ -6,17 +6,20 @@ import (
 	"github.com/Despenrado/ElCharge/RestAPI/utils"
 )
 
+// UserService struct
 type UserService struct {
 	service *Service
 	storage storage.Storage
 }
 
+// NewUserService connstructor
 func NewUserService(storage storage.Storage) *UserService {
 	return &UserService{
 		storage: storage,
 	}
 }
 
+// CreateUser save user to storage
 func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
 	if err := u.Validate(); err != nil {
 		return u, err
@@ -43,21 +46,23 @@ func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
 	return u, nil
 }
 
+// Login find user that have email and password like 'u'
 func (s *UserService) Login(u *models.User) (*models.User, error) {
 	if err := u.Validate(); err != nil {
-		return u, err
+		return nil, err
 	}
 	u2, err := s.storage.User().FindByEmail(u.Email)
 	if err != nil {
-		return u, err
+		return nil, err
 	}
 	if !u2.VerifyPassword(u.Password) {
-		return u, utils.ErrIncorrectEmailOrPassword
+		return nil, utils.ErrIncorrectEmailOrPassword
 	}
 	u2.Sanitize()
 	return u2, nil
 }
 
+// FindByID search user in storage
 func (s *UserService) FindByID(id string) (*models.User, error) {
 	u, err := s.storage.User().FindByID(id)
 	if err != nil {
@@ -67,6 +72,7 @@ func (s *UserService) FindByID(id string) (*models.User, error) {
 	return u, nil
 }
 
+// UpdateByID update user
 func (s *UserService) UpdateByID(id string, u *models.User) (*models.User, error) {
 	u, err := s.storage.User().UpdateByID(id, u)
 	if err != nil {

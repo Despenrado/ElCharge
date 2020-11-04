@@ -230,6 +230,7 @@ func (c *AuthController) CheckToken(next http.Handler) http.Handler {
 // 	return nil
 // }
 
+// RenewToken ...
 func (c *AuthController) RenewToken(claims *Claims) (string, error) {
 	expirationTime := time.Now().Add(5 * time.Minute)
 	claims.ExpiresAt = expirationTime.Unix()

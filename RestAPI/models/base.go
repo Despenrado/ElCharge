@@ -4,6 +4,7 @@ import (
 	"time"
 
 	validation "github.com/go-ozzo/ozzo-validation"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // Model base model of common table structure
@@ -20,4 +21,13 @@ func isRequired(b bool) validation.RuleFunc {
 		}
 		return nil
 	}
+}
+
+// EncryptString ...
+func EncryptString(str string) (string, error) {
+	b, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.MinCost)
+	if err != nil {
+		return "", err
+	}
+	return string(b), nil
 }

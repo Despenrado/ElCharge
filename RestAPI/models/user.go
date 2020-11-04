@@ -27,6 +27,7 @@ func (u *User) Validate() error {
 	)
 }
 
+// BeforeCreate some manipulation whith item before seve to db
 func (u *User) BeforeCreate() error {
 	if len(u.Password) <= 0 {
 		return nil
@@ -42,19 +43,13 @@ func (u *User) BeforeCreate() error {
 	return nil
 }
 
+// VerifyPassword is pasword equels to db password
 func (u *User) VerifyPassword(p string) bool {
 	return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(p)) == nil
 }
 
+// Sanitize delete some fields (make dto)
 func (u *User) Sanitize() {
 	u.Password = ""
 	u.CreateAt = time.Time{}
-}
-
-func EncryptString(str string) (string, error) {
-	b, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.MinCost)
-	if err != nil {
-		return "", err
-	}
-	return string(b), nil
 }

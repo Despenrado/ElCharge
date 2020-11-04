@@ -13,6 +13,7 @@ require (
 	github.com/onsi/ginkgo v1.14.2 // indirect
 	github.com/onsi/gomega v1.10.3 // indirect
 	github.com/sirupsen/logrus v1.7.0
+	github.com/stretchr/testify v1.6.1
 	go.mongodb.org/mongo-driver v1.4.2
 	golang.org/x/crypto v0.0.0-20200622213623-75b288015ac9
 	gopkg.in/gorilla/mux.v1 v1.6.2
