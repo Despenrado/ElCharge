@@ -13,15 +13,17 @@ type Server struct {
 	router         *mux.Router
 	logger         *utils.Logger
 	userController *controllersV1.UserController
+	authController *controllersV1.AuthController
 	testController *controllersV1.TestController
 }
 
-func NewServer(config *utils.Config, ro *mux.Router, lo *utils.Logger, uc *controllersV1.UserController, tc *controllersV1.TestController) *Server {
+func NewServer(config *utils.Config, ro *mux.Router, lo *utils.Logger, uc *controllersV1.UserController, ac *controllersV1.AuthController, tc *controllersV1.TestController) *Server {
 	return &Server{
 		config:         config,
 		router:         ro,
 		logger:         lo,
 		userController: uc,
+		authController: ac,
 		testController: tc,
 	}
 }
@@ -38,11 +40,17 @@ func (s *Server) Start() error {
 func (s *Server) SetupRouters() *mux.Router {
 	v1 := "/api/v1"
 	s.router.Schemes("http")
-	s.router.Use(s.logger.SetRequestID)
-	s.router.Use(s.logger.LogRequest)
+	s.router.Use(s.logger.SetRequestID) // middleware
+	s.router.Use(s.logger.LogRequest)   // middleware
 	s.router.HandleFunc(v1, s.testController.TestAPIV1()).Methods("GET")
+	s.router.HandleFunc(v1+"/users", s.authController.CreateUser()).Methods("POST")
+	s.router.HandleFunc(v1+"/login", s.authController.Login()).Methods("GET")
+	s.router.HandleFunc(v1+"/logout/{id}", s.authController.Logout()).Methods("GET")
 
-	user := s.router.PathPrefix(v1 + "/user").Subrouter()
-	user.HandleFunc("", s.userController.CreateUser()).Methods("POST")
+	user := s.router.PathPrefix(v1 + "/users").Subrouter()
+	user.Use(s.authController.CheckToken)
+	user.HandleFunc("/{id}", s.userController.FindByID()).Methods("GET")
+	user.HandleFunc("/{id}", s.userController.DeleteByID()).Methods("DELETE")
+	user.HandleFunc("/{id}", s.userController.UpdateByID()).Methods("PUT")
 	return s.router
 }

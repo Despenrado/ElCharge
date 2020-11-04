@@ -10,17 +10,18 @@ import (
 
 // User structure
 type User struct {
-	Model
+	ID       string `bson:"_id,omitempty" json:"_id,omitempty"`
 	UserName string `bson:"user_name,omitempty" json:"user_name,omitempty"`
 	Email    string `bson:"email,omitempty" json:"email,omitempty"`
 	Password string `bson:"password,omitempty" json:"password,omitempty"`
+	Model
 }
 
 // Validate ...
 func (u *User) Validate() error {
 	return validation.ValidateStruct(
 		u,
-		validation.Field(&u.UserName, validation.Required, validation.Length(2, 100)),
+		validation.Field(&u.UserName, validation.By(isRequired(u.UserName != "")), validation.Length(2, 100)),
 		validation.Field(&u.Email, validation.Required, is.Email),
 		validation.Field(&u.Password, validation.By(isRequired(u.Password == "")), validation.Length(8, 50)),
 	)
@@ -30,7 +31,7 @@ func (u *User) BeforeCreate() error {
 	if len(u.Password) <= 0 {
 		return nil
 	}
-	enc, err := encryptString(u.Password)
+	enc, err := EncryptString(u.Password)
 	if err != nil {
 		return err
 	}
@@ -50,7 +51,7 @@ func (u *User) Sanitize() {
 	u.CreateAt = time.Time{}
 }
 
-func encryptString(str string) (string, error) {
+func EncryptString(str string) (string, error) {
 	b, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.MinCost)
 	if err != nil {
 		return "", err

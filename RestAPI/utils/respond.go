@@ -18,11 +18,13 @@ func Respond(w http.ResponseWriter, r *http.Request, code int, data interface{})
 	}
 }
 
+// WriteHeader add statuscode to response
 func (w *responseWriter) WriteHeader(statusCode int) {
 	w.code = statusCode
 	w.ResponseWriter.WriteHeader(statusCode)
 }
 
+// Error response error
 func Error(w http.ResponseWriter, r *http.Request, code int, err error) {
 	Respond(w, r, code, map[string]string{"error": err.Error()})
 }

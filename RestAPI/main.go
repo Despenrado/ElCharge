@@ -9,6 +9,7 @@ import (
 	servicesV1 "github.com/Despenrado/ElCharge/RestAPI/services/api/v1"
 	mongostorage "github.com/Despenrado/ElCharge/RestAPI/storage/mongostore"
 	"github.com/Despenrado/ElCharge/RestAPI/utils"
+	"github.com/go-redis/redis"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/gorilla/mux.v1"
 )
@@ -16,11 +17,11 @@ import (
 // TODO: Finish up the **base structure** o project
 // - [ ] main
 // - [X] models
-// - [X] controllers
+// - [ ] controllers
 // - [X] storage
 // - [ ] services
 // - [X] routers
-// - [ ] configs
+// - [X] configs
 // - [X] dockerfile
 
 var (
@@ -37,15 +38,28 @@ func createServerDependencies(path string) *routers.Server {
 	if err != nil {
 		log.Fatal(err)
 	}
-	ur := mongostorage.NewUserRepository(nil)
+	db, err := mongostorage.ConnectToDB(config.DatabaseURL, config.DbName)
+	if err != nil {
+		log.Fatal(err)
+	}
+	ur := mongostorage.NewUserRepository(mongostorage.ConfigureRepository(db, config.DbUserCollection))
 	st := mongostorage.NewStorage(ur)
 	us := servicesV1.NewUserService(st)
 	se := servicesV1.NewService(us)
 	uc := controllersV1.NewUserController(se)
+	rcli := redis.NewClient(&redis.Options{
+		Addr: config.RedisDB,
+	})
+	_, err = rcli.Ping().Result()
+	if err != nil {
+		log.Fatal(err)
+	}
+	ac := controllersV1.NewAuthController(se, rcli)
+	ac.SetJWTKey(config.JWTKey)
 	tc := controllersV1.NewTestController(se)
 	ro := mux.NewRouter()
 	lo := &utils.Logger{*logrus.New()}
-	s := routers.NewServer(config, ro, lo, uc, tc)
+	s := routers.NewServer(config, ro, lo, uc, ac, tc)
 	return s
 }
 
