@@ -30,7 +30,7 @@ var (
 
 // Config ...
 func init() {
-	flag.StringVar(&configPath, "config-path", "configs/apiserver.yaml", "path to config file")
+	flag.StringVar(&configPath, "config", "configs/apiserver.yaml", "path to config file")
 }
 
 func createServerDependencies(path string) *routers.Server {
