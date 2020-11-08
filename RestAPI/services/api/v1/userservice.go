@@ -74,7 +74,7 @@ func (s *UserService) FindByID(id string) (*models.User, error) {
 
 // UpdateByID update user
 func (s *UserService) UpdateByID(id string, u *models.User) (*models.User, error) {
-	u, err := s.storage.User().UpdateByID(id, u)
+	err := s.storage.User().UpdateByID(id, u)
 	if err != nil {
 		return nil, err
 	}
@@ -85,6 +85,15 @@ func (s *UserService) UpdateByID(id string, u *models.User) (*models.User, error
 	return u, nil
 }
 
+// DeleteByID delete user
 func (s *UserService) DeleteByID(id string) error {
 	return s.storage.User().DeleteByID(id)
+}
+
+func (s *UserService) Read(skip int, limit int) ([]models.User, error) {
+	us, err := s.storage.User().Read(skip, limit)
+	if err != nil {
+		return nil, err
+	}
+	return us, nil
 }

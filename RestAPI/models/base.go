@@ -31,3 +31,11 @@ func EncryptString(str string) (string, error) {
 	}
 	return string(b), nil
 }
+
+// BeforeCreate some manipulation whith item before seve to db
+func (m *Model) BeforeCreate() error {
+	t := time.Now()
+	m.CreateAt = t
+	m.UpdateAt = t
+	return nil
+}

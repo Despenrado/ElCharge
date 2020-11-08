@@ -4,13 +4,17 @@ import "github.com/Despenrado/ElCharge/RestAPI/services/api"
 
 // Service service struct
 type Service struct {
-	userService *UserService
+	userService    *UserService
+	stationService *StationService
+	commentService *CommentService
 }
 
 // NewService constructor
-func NewService(us *UserService) *Service {
+func NewService(us *UserService, ss *StationService, cs *CommentService) *Service {
 	s := &Service{
-		userService: us,
+		userService:    us,
+		stationService: ss,
+		commentService: cs,
 	}
 	s.userService.service = s
 	return s
@@ -24,6 +28,27 @@ func (s *Service) User() api.UserService {
 	s.userService = &UserService{
 		service: s,
 	}
-
 	return s.userService
+}
+
+// Station return UserService
+func (s *Service) Station() api.StationService {
+	if s.stationService != nil {
+		return s.stationService
+	}
+	s.stationService = &StationService{
+		service: s,
+	}
+	return s.stationService
+}
+
+// Comment return UserService
+func (s *Service) Comment() api.CommentService {
+	if s.commentService != nil {
+		return s.commentService
+	}
+	s.commentService = &CommentService{
+		service: s,
+	}
+	return s.commentService
 }

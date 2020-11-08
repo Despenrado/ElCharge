@@ -49,13 +49,13 @@ func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
 }
 
 // UpdateByID update item in db (map in RAM)
-func (r *UserRepository) UpdateByID(id string, u *models.User) (*models.User, error) {
-	u, ok := r.db[id]
+func (r *UserRepository) UpdateByID(id string, u *models.User) error {
+	_, ok := r.db[id]
 	if !ok {
-		return nil, utils.ErrRecordNotFound
+		return utils.ErrRecordNotFound
 	}
 	if u.UpdateAt != r.db[id].UpdateAt {
-		return nil, errors.New("Uptime not equal")
+		return errors.New("Uptime not equal")
 	}
 	r.db[id].UpdateAt = time.Now()
 	if u.Email != "" {
@@ -68,14 +68,29 @@ func (r *UserRepository) UpdateByID(id string, u *models.User) (*models.User, er
 		var err error
 		r.db[id].Password, err = models.EncryptString(u.Password)
 		if err != nil {
-			return nil, err
+			return err
 		}
 	}
-	return r.db[id], nil
+	return nil
 }
 
 // DeleteByID delete item by if from db (map in RAM)
 func (r *UserRepository) DeleteByID(id string) error {
 	delete(r.db, id)
 	return nil
+}
+
+func (r *UserRepository) Read(skip int, limit int) ([]models.User, error) {
+	users := make([]models.User, 0)
+	i2 := 0
+	for _, v := range r.db {
+		i2++
+		if i2 >= skip {
+			users = append(users, *v)
+			if i2 < skip+limit {
+				break
+			}
+		}
+	}
+	return users, nil
 }

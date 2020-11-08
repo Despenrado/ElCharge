@@ -9,16 +9,24 @@ import (
 
 func TestNewService(t *testing.T) {
 	ur := teststorage.NewUserRepository()
-	st := teststorage.NewStorage(ur)
+	sr := teststorage.NewStationRepository()
+	cr := teststorage.NewCommentRepository(sr)
+	st := teststorage.NewStorage(ur, sr, cr)
 	us := NewUserService(st)
-	s := NewService(us)
+	ss := NewStationService(st)
+	cs := NewCommentService(st)
+	s := NewService(us, ss, cs)
 	assert.NotNil(t, s)
 }
 
 func TestUser(t *testing.T) {
 	ur := teststorage.NewUserRepository()
-	st := teststorage.NewStorage(ur)
+	sr := teststorage.NewStationRepository()
+	cr := teststorage.NewCommentRepository(sr)
+	st := teststorage.NewStorage(ur, sr, cr)
 	us := NewUserService(st)
-	s := NewService(us)
+	ss := NewStationService(st)
+	cs := NewCommentService(st)
+	s := NewService(us, ss, cs)
 	assert.NotNil(t, s.User())
 }

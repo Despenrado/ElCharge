@@ -9,8 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testHelper() *UserRepository {
-	db, err := ConnectToDB("mongodb://127.0.0.1:27017", "user")
+func testHelperUser() *UserRepository {
+	db, err := ConnectToDB("mongodb://127.0.0.1:27017", "elCharge")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -19,7 +19,7 @@ func testHelper() *UserRepository {
 }
 
 func TestCreate(t *testing.T) {
-	ur := testHelper()
+	ur := testHelperUser()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -32,10 +32,11 @@ func TestCreate(t *testing.T) {
 	id, err := ur.Create(user)
 	assert.Nil(t, err)
 	assert.NotEqual(t, id, "")
+	ur.DeleteByID(id)
 }
 
 func TestFindByID(t *testing.T) {
-	ur := testHelper()
+	ur := testHelperUser()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -50,10 +51,11 @@ func TestFindByID(t *testing.T) {
 	assert.Nil(t, err)
 	u, err := ur.FindByID(id)
 	assert.NotNil(t, u)
+	ur.DeleteByID(id)
 }
 
 func TestFindByEmail(t *testing.T) {
-	ur := testHelper()
+	ur := testHelperUser()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -64,14 +66,15 @@ func TestFindByEmail(t *testing.T) {
 			DeleteAt: time.Now(),
 		},
 	}
-	_, err := ur.Create(user)
+	id, err := ur.Create(user)
 	assert.Nil(t, err)
 	u, err := ur.FindByEmail("1@email.com")
 	assert.NotNil(t, u)
+	ur.DeleteByID(id)
 }
 
 func TestUpdateByID(t *testing.T) {
-	ur := testHelper()
+	ur := testHelperUser()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -85,13 +88,16 @@ func TestUpdateByID(t *testing.T) {
 	id, err := ur.Create(user)
 	assert.Nil(t, err)
 	user.Email = "2@email.com"
-	u, err := ur.UpdateByID(id, user)
+	err = ur.UpdateByID(id, user)
 	assert.Nil(t, err)
+	u, err := ur.FindByID(id)
+	assert.NotNil(t, u)
 	assert.Equal(t, u.Email, user.Email)
+	ur.DeleteByID(id)
 }
 
 func TestDeleteByID(t *testing.T) {
-	ur := testHelper()
+	ur := testHelperUser()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -108,4 +114,11 @@ func TestDeleteByID(t *testing.T) {
 	assert.Nil(t, err)
 	u, err := ur.FindByID(id)
 	assert.Nil(t, u)
+}
+
+func TestUserRead(t *testing.T) {
+	ur := testHelperUser()
+	users, err := ur.Read(0, 10)
+	assert.Nil(t, err)
+	assert.NotNil(t, users)
 }

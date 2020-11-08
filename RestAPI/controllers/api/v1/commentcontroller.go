@@ -11,35 +11,41 @@ import (
 	"gopkg.in/gorilla/mux.v1"
 )
 
-type UserController struct {
+type CommentController struct {
 	service api.Service
 }
 
-// NewUserController constructor
-func NewUserController(s api.Service) *UserController {
-	return &UserController{
+// NewStationController constructor
+func NewCommentControllerr(s api.Service) *CommentController {
+	return &CommentController{
 		service: s,
 	}
 }
 
-func (c *UserController) CreateUser() http.HandlerFunc {
+func (c *CommentController) CreateComment() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		u := &models.User{}
-		err := json.NewDecoder(r.Body).Decode(u)
+		params := mux.Vars(r)
+		sid, ok := params["sid"]
+		if !ok {
+			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+			return
+		}
+		comm := &models.Comment{}
+		err := json.NewDecoder(r.Body).Decode(comm)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		u, err = c.service.User().CreateUser(u)
+		comm, err = c.service.Comment().CreateComment(sid, comm)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusCreated, u)
+		utils.Respond(w, r, http.StatusCreated, comm)
 	})
 }
 
-func (c *UserController) FindByID() http.HandlerFunc {
+func (c *CommentController) FindByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id, ok := params["id"]
@@ -47,16 +53,21 @@ func (c *UserController) FindByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		u, err := c.service.User().FindByID(id)
+		sid, ok := params["sid"]
+		if !ok {
+			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+			return
+		}
+		s, err := c.service.Comment().FindByID(sid, id)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusFound, u)
+		utils.Respond(w, r, http.StatusFound, s)
 	})
 }
 
-func (c *UserController) UpdateByID() http.HandlerFunc {
+func (c *CommentController) UpdateByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id, ok := params["id"]
@@ -64,22 +75,27 @@ func (c *UserController) UpdateByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNoContent, utils.ErrWrongRequest)
 			return
 		}
-		u := &models.User{}
-		err := json.NewDecoder(r.Body).Decode(u)
+		sid, ok := params["sid"]
+		if !ok {
+			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+			return
+		}
+		comm := &models.Comment{}
+		err := json.NewDecoder(r.Body).Decode(comm)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		u, err = c.service.User().UpdateByID(id, u)
+		comm, err = c.service.Comment().UpdateByID(sid, id, comm)
 		if err != nil {
 			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusOK, u)
+		utils.Respond(w, r, http.StatusOK, comm)
 	})
 }
 
-func (c *UserController) DeleteByID() http.HandlerFunc {
+func (c *CommentController) DeleteByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id, ok := params["id"]
@@ -87,7 +103,12 @@ func (c *UserController) DeleteByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		err := c.service.User().DeleteByID(id)
+		sid, ok := params["sid"]
+		if !ok {
+			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+			return
+		}
+		err := c.service.Comment().DeleteByID(sid, id)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
@@ -96,24 +117,30 @@ func (c *UserController) DeleteByID() http.HandlerFunc {
 	})
 }
 
-func (c *UserController) Read() http.HandlerFunc {
+func (c *CommentController) Read() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		vars := mux.Vars(r)
+		sid, ok := vars["sid"]
+		if !ok {
+			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+			return
+		}
 		params := r.URL.Query()
 		skipINT, err := strconv.Atoi(params.Get("skip"))
-		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
-			return
-		}
-		limitINT, err := strconv.Atoi(params.Get("limit"))
-		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
-			return
-		}
-		users, err := c.service.User().Read(skipINT, limitINT)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusOK, users)
+		limitINT, err := strconv.Atoi(params.Get("limit"))
+		if err != nil {
+			utils.Error(w, r, http.StatusNoContent, err)
+			return
+		}
+		stations, err := c.service.Comment().Read(sid, skipINT, limitINT)
+		if err != nil {
+			utils.Error(w, r, http.StatusNoContent, err)
+			return
+		}
+		utils.Respond(w, r, http.StatusOK, stations)
 	})
 }

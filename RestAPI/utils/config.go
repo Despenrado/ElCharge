@@ -8,12 +8,13 @@ import (
 
 // Config struct stored api parameters
 type Config struct {
-	BindAddr         string `yaml:"bind_addr"`
-	DatabaseURL      string `yaml:"database_url"`
-	DbName           string `yaml:"db_name"`
-	DbUserCollection string `yaml:"db_user_collection"`
-	RedisDB          string `yaml:"db_redis"`
-	JWTKey           string `yaml:"jwtKey"`
+	BindAddr            string `yaml:"bind_addr"`
+	DatabaseURL         string `yaml:"database_url"`
+	DbName              string `yaml:"db_name"`
+	DbUserCollection    string `yaml:"db_user_collection"`
+	DbStationCollection string `yaml:"db_station_collection"`
+	RedisDB             string `yaml:"db_redis"`
+	JWTKey              string `yaml:"jwtKey"`
 }
 
 // NewConfig Constructor

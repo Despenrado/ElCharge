@@ -12,14 +12,18 @@ import (
 
 func TestNewUserService(t *testing.T) {
 	ur := teststorage.NewUserRepository()
-	st := teststorage.NewStorage(ur)
+	sr := teststorage.NewStationRepository()
+	cr := teststorage.NewCommentRepository(sr)
+	st := teststorage.NewStorage(ur, sr, cr)
 	us := NewUserService(st)
 	assert.NotNil(t, us)
 }
 
 func testHelper() (*UserService, string) {
 	ur := teststorage.NewUserRepository()
-	st := teststorage.NewStorage(ur)
+	sr := teststorage.NewStationRepository()
+	cr := teststorage.NewCommentRepository(sr)
+	st := teststorage.NewStorage(ur, sr, cr)
 	us := NewUserService(st)
 	user := &models.User{
 		UserName: "username_1",
@@ -106,4 +110,34 @@ func TestDeleteByID(t *testing.T) {
 	user, err = us.FindByID(id)
 	assert.NotNil(t, err)
 	assert.Nil(t, user)
+}
+func TestUserRead(t *testing.T) {
+	ur, _ := testHelper()
+	user := &models.User{
+		UserName: "username_2",
+		Email:    "2@email.com",
+		Password: "passwoed_1",
+		Model: models.Model{
+			UpdateAt: time.Now(),
+			CreateAt: time.Now(),
+			DeleteAt: time.Now(),
+		},
+	}
+	_, err := ur.CreateUser(user)
+	assert.Nil(t, err)
+	user = &models.User{
+		UserName: "username_3",
+		Email:    "3@email.com",
+		Password: "passwoed_1",
+		Model: models.Model{
+			UpdateAt: time.Now(),
+			CreateAt: time.Now(),
+			DeleteAt: time.Now(),
+		},
+	}
+	_, err = ur.CreateUser(user)
+	assert.Nil(t, err)
+	users, err := ur.Read(0, 10)
+	assert.Nil(t, err)
+	assert.NotNil(t, users)
 }

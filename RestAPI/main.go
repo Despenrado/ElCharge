@@ -43,10 +43,16 @@ func createServerDependencies(path string) *routers.Server {
 		log.Fatal(err)
 	}
 	ur := mongostorage.NewUserRepository(mongostorage.ConfigureRepository(db, config.DbUserCollection))
-	st := mongostorage.NewStorage(ur)
+	sr := mongostorage.NewStationRepository(mongostorage.ConfigureRepository(db, config.DbStationCollection))
+	cr := mongostorage.NewCommentRepository(sr)
+	st := mongostorage.NewStorage(ur, sr, cr)
 	us := servicesV1.NewUserService(st)
-	se := servicesV1.NewService(us)
+	ss := servicesV1.NewStationService(st)
+	cs := servicesV1.NewCommentService(st)
+	se := servicesV1.NewService(us, ss, cs)
 	uc := controllersV1.NewUserController(se)
+	sc := controllersV1.NewStationController(se)
+	cc := controllersV1.NewCommentControllerr(se)
 	rcli := redis.NewClient(&redis.Options{
 		Addr: config.RedisDB,
 	})
@@ -59,7 +65,7 @@ func createServerDependencies(path string) *routers.Server {
 	tc := controllersV1.NewTestController(se)
 	ro := mux.NewRouter()
 	lo := &utils.Logger{*logrus.New()}
-	s := routers.NewServer(config, ro, lo, uc, ac, tc)
+	s := routers.NewServer(config, ro, lo, uc, ac, tc, sc, cc)
 	return s
 }
 

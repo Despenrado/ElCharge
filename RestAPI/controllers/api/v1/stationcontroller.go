@@ -11,35 +11,35 @@ import (
 	"gopkg.in/gorilla/mux.v1"
 )
 
-type UserController struct {
+type StationController struct {
 	service api.Service
 }
 
-// NewUserController constructor
-func NewUserController(s api.Service) *UserController {
-	return &UserController{
+// NewStationController constructor
+func NewStationController(s api.Service) *StationController {
+	return &StationController{
 		service: s,
 	}
 }
 
-func (c *UserController) CreateUser() http.HandlerFunc {
+func (c *StationController) CreateStation() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		u := &models.User{}
-		err := json.NewDecoder(r.Body).Decode(u)
+		s := &models.Station{}
+		err := json.NewDecoder(r.Body).Decode(s)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		u, err = c.service.User().CreateUser(u)
+		s, err = c.service.Station().CreateStation(s)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusCreated, u)
+		utils.Respond(w, r, http.StatusCreated, s)
 	})
 }
 
-func (c *UserController) FindByID() http.HandlerFunc {
+func (c *StationController) FindByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id, ok := params["id"]
@@ -47,16 +47,16 @@ func (c *UserController) FindByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		u, err := c.service.User().FindByID(id)
+		s, err := c.service.Station().FindByID(id)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusFound, u)
+		utils.Respond(w, r, http.StatusFound, s)
 	})
 }
 
-func (c *UserController) UpdateByID() http.HandlerFunc {
+func (c *StationController) UpdateByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id, ok := params["id"]
@@ -64,22 +64,22 @@ func (c *UserController) UpdateByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNoContent, utils.ErrWrongRequest)
 			return
 		}
-		u := &models.User{}
-		err := json.NewDecoder(r.Body).Decode(u)
+		s := &models.Station{}
+		err := json.NewDecoder(r.Body).Decode(s)
 		if err != nil {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
-		u, err = c.service.User().UpdateByID(id, u)
+		s, err = c.service.Station().UpdateByID(id, s)
 		if err != nil {
 			utils.Error(w, r, http.StatusNotFound, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusOK, u)
+		utils.Respond(w, r, http.StatusOK, s)
 	})
 }
 
-func (c *UserController) DeleteByID() http.HandlerFunc {
+func (c *StationController) DeleteByID() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := mux.Vars(r)
 		id, ok := params["id"]
@@ -87,7 +87,7 @@ func (c *UserController) DeleteByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		err := c.service.User().DeleteByID(id)
+		err := c.service.Station().DeleteByID(id)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
@@ -96,24 +96,24 @@ func (c *UserController) DeleteByID() http.HandlerFunc {
 	})
 }
 
-func (c *UserController) Read() http.HandlerFunc {
+func (c *StationController) Read() http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		params := r.URL.Query()
 		skipINT, err := strconv.Atoi(params.Get("skip"))
 		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
+			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
 		limitINT, err := strconv.Atoi(params.Get("limit"))
 		if err != nil {
-			utils.Error(w, r, http.StatusBadRequest, err)
+			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		users, err := c.service.User().Read(skipINT, limitINT)
+		stations, err := c.service.Station().Read(skipINT, limitINT)
 		if err != nil {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusOK, users)
+		utils.Respond(w, r, http.StatusOK, stations)
 	})
 }

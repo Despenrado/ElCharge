@@ -37,9 +37,7 @@ func (u *User) BeforeCreate() error {
 		return err
 	}
 	u.Password = enc
-	t := time.Now()
-	u.CreateAt = t
-	u.UpdateAt = t
+	u.Model.BeforeCreate()
 	return nil
 }
 

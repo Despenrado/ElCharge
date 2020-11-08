@@ -1,7 +1,6 @@
 package teststorage
 
 import (
-	"strconv"
 	"testing"
 	"time"
 
@@ -9,24 +8,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func testHelper() *UserRepository {
-	ur := NewUserRepository()
-	for i := 0; i < 5; i++ {
-		ur.db[strconv.Itoa(i)] = &models.User{
-			UserName: strconv.Itoa(i),
-			Email:    strconv.Itoa(i),
-			Password: strconv.Itoa(i),
-			Model: models.Model{
-				UpdateAt: time.Date(2009, 11, 17, 20, 34, 58, 651387237, time.UTC),
-				CreateAt: time.Now(),
-			},
-		}
-	}
-	return ur
-}
-
 func TestCreate(t *testing.T) {
-	ur := testHelper()
+	ur := NewUserRepository()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -44,7 +27,7 @@ func TestCreate(t *testing.T) {
 }
 
 func TestFindByID(t *testing.T) {
-	ur := testHelper()
+	ur := NewUserRepository()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -62,7 +45,7 @@ func TestFindByID(t *testing.T) {
 }
 
 func TestFindByEmail(t *testing.T) {
-	ur := testHelper()
+	ur := NewUserRepository()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -80,7 +63,7 @@ func TestFindByEmail(t *testing.T) {
 }
 
 func TestUpdateByID(t *testing.T) {
-	ur := testHelper()
+	ur := NewUserRepository()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -94,13 +77,16 @@ func TestUpdateByID(t *testing.T) {
 	id, err := ur.Create(user)
 	assert.Nil(t, err)
 	user.Email = "2@email.com"
-	u, err := ur.UpdateByID(id, user)
+	err = ur.UpdateByID(id, user)
 	assert.Nil(t, err)
+	u, err := ur.FindByID(id)
+	assert.Nil(t, err)
+	assert.Equal(t, u, user)
 	assert.EqualValues(t, u.Email, "2@email.com")
 }
 
 func TestDeleteByID(t *testing.T) {
-	ur := testHelper()
+	ur := NewUserRepository()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
@@ -117,4 +103,35 @@ func TestDeleteByID(t *testing.T) {
 	assert.Nil(t, err)
 	u, err := ur.FindByID(id)
 	assert.Nil(t, u)
+}
+
+func TestUserRead(t *testing.T) {
+	ur := NewUserRepository()
+	user := &models.User{
+		UserName: "username_1",
+		Email:    "1@email.com",
+		Password: "passwoed_1",
+		Model: models.Model{
+			UpdateAt: time.Now(),
+			CreateAt: time.Now(),
+			DeleteAt: time.Now(),
+		},
+	}
+	_, err := ur.Create(user)
+	assert.Nil(t, err)
+	user = &models.User{
+		UserName: "username_1",
+		Email:    "1@email.com",
+		Password: "passwoed_1",
+		Model: models.Model{
+			UpdateAt: time.Now(),
+			CreateAt: time.Now(),
+			DeleteAt: time.Now(),
+		},
+	}
+	_, err = ur.Create(user)
+	assert.Nil(t, err)
+	users, err := ur.Read(0, 10)
+	assert.Nil(t, err)
+	assert.NotNil(t, users)
 }
