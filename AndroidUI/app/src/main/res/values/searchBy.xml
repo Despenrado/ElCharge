@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="search_by">
+        <item>Coordinates</item>
+        <item>Address</item>
+        <item>You location</item>
+        <item>select on map</item>
+        <item>station name</item>
+        <item>key word in description</item>
+    </string-array>
+</resources>
