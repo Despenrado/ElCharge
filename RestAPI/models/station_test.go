@@ -17,7 +17,9 @@ func TestValidateStation(t *testing.T) {
 			station: &Station{
 				Description: "testText",
 				StationName: "station name",
-				Location:    "156.12 1235.2",
+				OwnerID:     "1234567890123456789012345",
+				Latitude:    1.12,
+				Longitude:   12.2,
 			},
 			isValid: true,
 		},
@@ -26,7 +28,9 @@ func TestValidateStation(t *testing.T) {
 			station: &Station{
 				Description: "",
 				StationName: "station name",
-				Location:    "156.12 1235.2",
+				OwnerID:     "1234567890123456789012345",
+				Latitude:    15.12,
+				Longitude:   12.2,
 			},
 			isValid: false,
 		},
@@ -35,16 +39,53 @@ func TestValidateStation(t *testing.T) {
 			station: &Station{
 				Description: "asdasdasdasdas",
 				StationName: "s",
-				Location:    "156.12 1235.2",
+				OwnerID:     "1234567890123456789012345",
+				Latitude:    15.12,
+				Longitude:   12.2,
 			},
 			isValid: false,
 		},
 		{
-			name: "invalid location",
+			name: "invalid ownerID",
 			station: &Station{
 				Description: "asdasdasdasdas",
 				StationName: "station name",
-				Location:    "15",
+				OwnerID:     "1234567890",
+				Latitude:    -15.12,
+				Longitude:   15.2,
+			},
+			isValid: false,
+		},
+		{
+			name: "OK",
+			station: &Station{
+				Description: "asdasdasdasdas",
+				StationName: "station name",
+				OwnerID:     "1234567890123456789012345",
+				Latitude:    -15.12,
+				Longitude:   -15.2,
+			},
+			isValid: true,
+		},
+		{
+			name: "invalid Latitude",
+			station: &Station{
+				Description: "asdasdasdasdas",
+				StationName: "station name",
+				OwnerID:     "1234567890123456789012345",
+				Latitude:    -105.12,
+				Longitude:   -15.2,
+			},
+			isValid: false,
+		},
+		{
+			name: "invalid Longitude",
+			station: &Station{
+				Description: "asdasdasdasdas",
+				StationName: "station name",
+				OwnerID:     "1234567890123456789012345",
+				Latitude:    -10.12,
+				Longitude:   -1500.2,
 			},
 			isValid: false,
 		},
@@ -64,7 +105,8 @@ func TestBeforeCreateStation(t *testing.T) {
 	station := &Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	assert.NoError(t, station.BeforeCreate())
 	assert.NotNil(t, station.UpdateAt)

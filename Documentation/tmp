@@ -688,10 +688,10 @@ SPECJALNOŚĆ: & \@specjalnosc\\
 \chapterstyle{default}
 \include{rozdzial01}
 \include{rozdzial02}
-\include{rozdzial03}
-\include{rozdzial04}
-\include{rozdzial05}
-\include{rozdzial06}
+% \include{rozdzial03}
+% \include{rozdzial04}
+% \include{rozdzial05}
+% \include{rozdzial06}
 
 %\bibliographystyle{plalpha}
 \bibliographystyle{plabbrv}

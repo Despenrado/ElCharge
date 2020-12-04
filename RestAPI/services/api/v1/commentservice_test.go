@@ -3,7 +3,6 @@ package v1
 import (
 	"log"
 	"testing"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	teststorage "github.com/Despenrado/ElCharge/RestAPI/storage/teststore"
@@ -26,13 +25,16 @@ func testHelperComment() (*CommentService, string, string) {
 	cr := teststorage.NewCommentRepository(sr)
 	s := teststorage.NewStorage(ur, sr, cr)
 	c := NewCommentService(s)
+	ti := models.GetTimeNow()
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		OwnerID:     "1234567890123456789012345",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	if err := station.BeforeCreate(); err != nil {
@@ -42,14 +44,15 @@ func testHelperComment() (*CommentService, string, string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	ti = models.GetTimeNow()
 	comment := &models.Comment{
 		UserID:   "507f1f77bcf86cd799439011",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	comment.BeforeCreate()
@@ -65,12 +68,14 @@ func TestCommentCreate(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.3",
+		OwnerID:     "1234567890123456789012345",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := cs.storage.Station().Create(station)
 	comment := &models.Comment{
 		UserID:   "507f1f77bcf86cd799439011",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 	}
@@ -78,11 +83,10 @@ func TestCommentCreate(t *testing.T) {
 	assert.Nil(t, err)
 	assert.NotNil(t, comm)
 	comment.ID = primitive.NewObjectID().Hex()
-	comment.Raiting = 5
+	comment.Rating = 5
 	comm, err = cs.CreateComment(sid, comment)
 	assert.Nil(t, err)
 	assert.NotNil(t, comm)
-	cs.storage.Station().DeleteByID(sid)
 }
 
 func TestCommentFindByID(t *testing.T) {
@@ -93,7 +97,6 @@ func TestCommentFindByID(t *testing.T) {
 	s, err = cs.FindByID(sid, "wrongID")
 	assert.NotNil(t, err)
 	assert.Nil(t, s)
-	cs.storage.Station().DeleteByID(sid)
 }
 
 func TestCommentUserName(t *testing.T) {
@@ -104,20 +107,18 @@ func TestCommentUserName(t *testing.T) {
 	s, err = cs.FindByUserName(sid, "wrongID")
 	assert.NotNil(t, err)
 	assert.Nil(t, s)
-	cs.storage.Station().DeleteByID(sid)
 }
 
 func TestCommentUpdateByID(t *testing.T) {
 	cs, sid, id := testHelperComment()
 	comm, err := cs.FindByID(sid, id)
-	comm.Raiting = 5
+	comm.Rating = 5
 	c, err := cs.UpdateByID(sid, id, comm)
 	assert.Nil(t, err)
-	assert.EqualValues(t, c.Raiting, 5)
+	assert.EqualValues(t, c.Rating, 5)
 	assert.EqualValues(t, c.Text, "some text")
-	assert.NotEqualValues(t, c.Raiting, 3)
+	assert.NotEqualValues(t, c.Rating, 3)
 	assert.NotEqualValues(t, c.Text, "2@email.com")
-	cs.storage.Station().DeleteByID(sid)
 }
 
 func TestSCommentDeleteByID(t *testing.T) {
@@ -130,7 +131,6 @@ func TestSCommentDeleteByID(t *testing.T) {
 	comm, err = cs.FindByID(sid, id)
 	assert.NotNil(t, err)
 	assert.Nil(t, comm)
-	cs.storage.Station().DeleteByID(sid)
 }
 
 func TestCommentRead(t *testing.T) {

@@ -14,9 +14,12 @@ type UserService interface {
 type StationService interface {
 	CreateStation(*models.Station) (*models.Station, error)
 	FindByID(string) (*models.Station, error)
-	FindByLocation(string) (*models.Station, error)
-	UpdateByID(string, *models.Station) (*models.Station, error)
-	DeleteByID(string) error
+	FindByLocation(float64, float64) (*models.Station, error)
+	FindByDescription(string) ([]models.Station, error)
+	FindByName(string) ([]models.Station, error)
+	FindInRadius(float64, float64, int, int, int) ([]models.Station, error)
+	UpdateByID(string, *models.Station, string) (*models.Station, error)
+	DeleteByID(string, string) error
 	Read(int, int) ([]models.Station, error)
 }
 

@@ -16,10 +16,14 @@ type UserRepository interface {
 type StationRepository interface {
 	Create(*models.Station) (string, error)
 	FindByID(string) (*models.Station, error)
-	FindByLocation(string) (*models.Station, error)
-	UpdateByID(string, *models.Station) error
-	DeleteByID(string) error
+	FindByLocation(float64, float64) (*models.Station, error)
+	FindByName(string) ([]models.Station, error)
+	FindByDescription(string) ([]models.Station, error)
+	FindInRadius(float64, float64, float64, int, int) ([]models.Station, error)
+	UpdateByID(string, *models.Station, string) error
+	DeleteByID(string, string) error
 	Read(int, int) ([]models.Station, error)
+	UpdateRaitingByID(string) error
 }
 
 // CommentRepository ...

@@ -53,6 +53,12 @@ func (c *AuthController) CreateUser() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, err)
 			return
 		}
+		token, err := c.createTokenString(u.ID)
+		if err != nil {
+			utils.Error(w, r, http.StatusInternalServerError, err)
+			return
+		}
+		w.Header().Set("Authorization", "Bearer "+token)
 		utils.Respond(w, r, http.StatusCreated, u)
 	})
 }
@@ -120,13 +126,13 @@ func (c *AuthController) Logout() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		c.rClient.Set(tokenString[37:], tokenString, 5*time.Minute)
+		c.rClient.Set(tokenString[37:], tokenString, 168*time.Hour)
 		utils.Respond(w, r, http.StatusOK, nil)
 	})
 }
 
 func (c *AuthController) createTokenString(uid string) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(168 * time.Hour)
 	claims := &Claims{
 		UID: uid,
 		StandardClaims: jwt.StandardClaims{
@@ -178,6 +184,18 @@ func (c *AuthController) CheckToken(next http.Handler) http.Handler {
 		}
 		next.ServeHTTP(w, r)
 	})
+}
+
+func GetClaims(token string, jwtKey string) (*jwt.Token, *Claims, error) {
+	if len(token) == 0 {
+		return nil, nil, errors.New("Missing Authorization Header")
+	}
+	token = strings.Replace(token, "Bearer ", "", 1)
+	claims := &Claims{}
+	tkn, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		return []byte(jwtKey), nil
+	})
+	return tkn, claims, err
 }
 
 // func (c *AuthController) checkToken(w http.ResponseWriter, r *http.Request) error {
@@ -232,7 +250,7 @@ func (c *AuthController) CheckToken(next http.Handler) http.Handler {
 
 // RenewToken ...
 func (c *AuthController) RenewToken(claims *Claims) (string, error) {
-	expirationTime := time.Now().Add(5 * time.Minute)
+	expirationTime := time.Now().Add(168 * time.Hour)
 	claims.ExpiresAt = expirationTime.Unix()
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	tokenString, err := token.SignedString([]byte(c.jwtKey))

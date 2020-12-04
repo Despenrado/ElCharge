@@ -2,7 +2,6 @@ package mongostorage
 
 import (
 	"context"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/Despenrado/ElCharge/RestAPI/utils"
@@ -38,7 +37,7 @@ func (r *CommentRepository) Create(sid string, c *models.Comment) (string, error
 			"$each":     bson.A{c},
 			"$position": 0,
 		}}
-	update2 := bson.M{"model.update_at": time.Now()}
+	update2 := bson.M{"model.update_at": models.GetTimeNow()}
 	_, err = r.stationRepository.col.UpdateOne(
 		context.TODO(),
 		filter,
@@ -148,12 +147,12 @@ func (r *CommentRepository) UpdateByID(sid string, id string, c *models.Comment)
 				"_id":             id,
 				"model.update_at": c.UpdateAt,
 			}}}
-	update := bson.M{"comments.$.update_at": time.Now()}
+	update := bson.M{"comments.$.update_at": models.GetTimeNow()}
 	if c.Text != "" {
 		update["comments.$.text"] = c.Text
 	}
-	if c.Raiting != 0 {
-		update["comments.$.raiting"] = c.Raiting
+	if c.Rating != 0 {
+		update["comments.$.rating"] = c.Rating
 	}
 	_, err = r.stationRepository.col.UpdateOne(
 		context.TODO(),

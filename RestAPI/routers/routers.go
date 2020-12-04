@@ -48,7 +48,7 @@ func (s *Server) SetupRouters() *mux.Router {
 	s.router.Use(s.logger.LogRequest)   // middleware
 	s.router.HandleFunc(v1, s.testController.TestAPIV1()).Methods("GET")
 	s.router.HandleFunc(v1+"/users", s.authController.CreateUser()).Methods("POST")
-	s.router.HandleFunc(v1+"/login", s.authController.Login()).Methods("GET")
+	s.router.HandleFunc(v1+"/login", s.authController.Login()).Methods("POST")
 	s.router.HandleFunc(v1+"/logout/{id}", s.authController.Logout()).Methods("GET")
 
 	user := s.router.PathPrefix(v1 + "/users").Subrouter()

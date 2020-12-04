@@ -2,7 +2,6 @@ package teststorage
 
 import (
 	"errors"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/Despenrado/ElCharge/RestAPI/utils"
@@ -55,13 +54,13 @@ func (r *CommentRepository) UpdateByID(sid string, id string, c *models.Comment)
 			if r.stationRepository.db[sid].Comments[i].UpdateAt != c.UpdateAt {
 				return errors.New("Uptime not equal")
 			}
-			r.stationRepository.db[sid].Comments[i].UpdateAt = time.Now()
+			r.stationRepository.db[sid].Comments[i].UpdateAt = models.GetTimeNow()
 			if c.Text != "" {
 				r.stationRepository.db[sid].Comments[i].Text = c.Text
 			}
-			if c.Raiting != 0 {
-				r.stationRepository.db[sid].Comments[i].Raiting = c.Raiting
-				r.stationRepository.db[sid].Comments[i].Raiting = c.Raiting
+			if c.Rating != 0 {
+				r.stationRepository.db[sid].Comments[i].Rating = c.Rating
+				r.stationRepository.db[sid].Comments[i].Rating = c.Rating
 			}
 			return nil
 		}

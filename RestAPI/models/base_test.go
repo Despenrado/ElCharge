@@ -1,6 +1,8 @@
 package models
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestEncryptString(t *testing.T) {
 	str := "test"

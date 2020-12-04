@@ -2,7 +2,6 @@ package teststorage
 
 import (
 	"errors"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/Despenrado/ElCharge/RestAPI/utils"
@@ -57,7 +56,7 @@ func (r *UserRepository) UpdateByID(id string, u *models.User) error {
 	if u.UpdateAt != r.db[id].UpdateAt {
 		return errors.New("Uptime not equal")
 	}
-	r.db[id].UpdateAt = time.Now()
+	r.db[id].UpdateAt = models.GetTimeNow()
 	if u.Email != "" {
 		r.db[id].Email = u.Email
 	}

@@ -3,7 +3,6 @@ package mongostorage
 import (
 	"log"
 	"testing"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/stretchr/testify/assert"
@@ -24,16 +23,18 @@ func TestCommentCreate(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := cr.stationRepository.Create(station)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	comment.BeforeCreate()
@@ -47,16 +48,18 @@ func TestCommentFindByID(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := cr.stationRepository.Create(station)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	comment.BeforeCreate()
@@ -72,16 +75,18 @@ func TestCommentFindByUserName(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := cr.stationRepository.Create(station)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	comment.BeforeCreate()
@@ -97,27 +102,30 @@ func TestCommentUpdateByID(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := cr.stationRepository.Create(station)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	comment.BeforeCreate()
 	id, err := cr.Create(sid, comment)
 	assert.Nil(t, err)
-	comment.Raiting = 4
+	comment.Rating = 4
 	err = cr.UpdateByID(sid, id, comment)
 	assert.Nil(t, err)
 	c, err := cr.FindByID(sid, id)
+	assert.Nil(t, err)
 	assert.NotNil(t, c)
-	assert.Equal(t, c.Raiting, comment.Raiting)
+	assert.Equal(t, c.Rating, comment.Rating)
 }
 
 func TestCommentDeleteByID(t *testing.T) {
@@ -125,16 +133,18 @@ func TestCommentDeleteByID(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := cr.stationRepository.Create(station)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	comment.BeforeCreate()

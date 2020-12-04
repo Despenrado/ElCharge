@@ -34,8 +34,13 @@ func EncryptString(str string) (string, error) {
 
 // BeforeCreate some manipulation whith item before seve to db
 func (m *Model) BeforeCreate() error {
-	t := time.Now()
+	t := GetTimeNow()
 	m.CreateAt = t
 	m.UpdateAt = t
 	return nil
+}
+
+func GetTimeNow() time.Time {
+	t := time.Now()
+	return time.Date(t.Year(), t.Month(), t.Day(), t.Hour(), t.Minute(), t.Second(), 0, t.Location())
 }

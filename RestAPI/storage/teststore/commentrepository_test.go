@@ -2,7 +2,6 @@ package teststorage
 
 import (
 	"testing"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/stretchr/testify/assert"
@@ -13,18 +12,20 @@ func TestCommentCreate(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := ur.Create(station)
 	cr := NewCommentRepository(ur)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
 		UserID:   "test user id",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	id, err := cr.Create(sid, comment)
@@ -39,18 +40,20 @@ func TestCommentFindByID(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := ur.Create(station)
 	cr := NewCommentRepository(ur)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
 		UserID:   "test user id",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	id, err := cr.Create(sid, comment)
@@ -65,18 +68,20 @@ func TestCommentFindByUserName(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := ur.Create(station)
 	cr := NewCommentRepository(ur)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
 		UserID:   "test user id",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	_, err = cr.Create(sid, comment)
@@ -91,28 +96,30 @@ func TestCommentUpdateByID(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := ur.Create(station)
 	cr := NewCommentRepository(ur)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
 		UserID:   "test user id",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	id, err := cr.Create(sid, comment)
 	assert.Nil(t, err)
-	comment.Raiting = 4
+	comment.Rating = 4
 	err = cr.UpdateByID(sid, id, comment)
 	assert.Nil(t, err)
 	c, err := cr.FindByID(sid, id)
 	assert.Nil(t, err)
-	assert.EqualValues(t, c.Raiting, comment.Raiting)
+	assert.EqualValues(t, c.Rating, comment.Rating)
 }
 
 func TestCommentDeleteByID(t *testing.T) {
@@ -120,18 +127,20 @@ func TestCommentDeleteByID(t *testing.T) {
 	station := &models.Station{
 		Description: "testText",
 		StationName: "station name",
-		Location:    "156.12 1235.2",
+		Latitude:    156.12,
+		Longitude:   1235.2,
 	}
 	sid, err := ur.Create(station)
 	cr := NewCommentRepository(ur)
+	ti := models.GetTimeNow()
 	comment := &models.Comment{
 		UserID:   "test user id",
-		Raiting:  3,
+		Rating:   3,
 		Text:     "some text",
 		UserName: "test username",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	id, err := cr.Create(sid, comment)

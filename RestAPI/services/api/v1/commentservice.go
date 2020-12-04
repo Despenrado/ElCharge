@@ -1,6 +1,8 @@
 package v1
 
 import (
+	"log"
+
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/Despenrado/ElCharge/RestAPI/storage"
 )
@@ -28,6 +30,12 @@ func (s *CommentService) CreateComment(sid string, c *models.Comment) (*models.C
 	if err != nil {
 		return nil, err
 	}
+	go func() {
+		err := s.storage.Station().UpdateRaitingByID(sid)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}()
 	c, err = s.storage.Comment().FindByID(sid, id)
 	if err != nil {
 		return nil, err

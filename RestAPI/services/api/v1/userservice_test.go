@@ -3,7 +3,6 @@ package v1
 import (
 	"log"
 	"testing"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	teststorage "github.com/Despenrado/ElCharge/RestAPI/storage/teststore"
@@ -25,13 +24,14 @@ func testHelper() (*UserService, string) {
 	cr := teststorage.NewCommentRepository(sr)
 	st := teststorage.NewStorage(ur, sr, cr)
 	us := NewUserService(st)
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	if err := user.BeforeCreate(); err != nil {
@@ -46,13 +46,14 @@ func testHelper() (*UserService, string) {
 
 func TestUserCreate(t *testing.T) {
 	us, _ := testHelper()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_2",
 		Email:    "2@email.com",
 		Password: "passwoed_2",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	id, err := us.CreateUser(user)
@@ -113,26 +114,28 @@ func TestDeleteByID(t *testing.T) {
 }
 func TestUserRead(t *testing.T) {
 	ur, _ := testHelper()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_2",
 		Email:    "2@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
-			DeleteAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
+			DeleteAt: ti,
 		},
 	}
 	_, err := ur.CreateUser(user)
 	assert.Nil(t, err)
+	ti = models.GetTimeNow()
 	user = &models.User{
 		UserName: "username_3",
 		Email:    "3@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
-			DeleteAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
+			DeleteAt: ti,
 		},
 	}
 	_, err = ur.CreateUser(user)

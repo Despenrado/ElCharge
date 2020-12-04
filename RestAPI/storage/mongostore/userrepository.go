@@ -3,7 +3,6 @@ package mongostorage
 import (
 	"context"
 	"log"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/Despenrado/ElCharge/RestAPI/utils"
@@ -74,7 +73,7 @@ func (r *UserRepository) UpdateByID(id string, u *models.User) error {
 		"model.update_at": u.UpdateAt,
 	}
 	update := bson.M{
-		"model.update_at": time.Now(),
+		"model.update_at": models.GetTimeNow(),
 	}
 	if u.UserName != "" {
 		update["user_name"] = u.UserName

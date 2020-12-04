@@ -3,7 +3,6 @@ package mongostorage
 import (
 	"log"
 	"testing"
-	"time"
 
 	"github.com/Despenrado/ElCharge/RestAPI/models"
 	"github.com/stretchr/testify/assert"
@@ -20,13 +19,14 @@ func testHelperUser() *UserRepository {
 
 func TestCreate(t *testing.T) {
 	ur := testHelperUser()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
 		},
 	}
 	id, err := ur.Create(user)
@@ -37,14 +37,15 @@ func TestCreate(t *testing.T) {
 
 func TestFindByID(t *testing.T) {
 	ur := testHelperUser()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
-			DeleteAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
+			DeleteAt: ti,
 		},
 	}
 	id, err := ur.Create(user)
@@ -56,14 +57,15 @@ func TestFindByID(t *testing.T) {
 
 func TestFindByEmail(t *testing.T) {
 	ur := testHelperUser()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
-			DeleteAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
+			DeleteAt: ti,
 		},
 	}
 	id, err := ur.Create(user)
@@ -75,14 +77,15 @@ func TestFindByEmail(t *testing.T) {
 
 func TestUpdateByID(t *testing.T) {
 	ur := testHelperUser()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
-			DeleteAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
+			DeleteAt: ti,
 		},
 	}
 	id, err := ur.Create(user)
@@ -98,14 +101,15 @@ func TestUpdateByID(t *testing.T) {
 
 func TestDeleteByID(t *testing.T) {
 	ur := testHelperUser()
+	ti := models.GetTimeNow()
 	user := &models.User{
 		UserName: "username_1",
 		Email:    "1@email.com",
 		Password: "passwoed_1",
 		Model: models.Model{
-			UpdateAt: time.Now(),
-			CreateAt: time.Now(),
-			DeleteAt: time.Now(),
+			UpdateAt: ti,
+			CreateAt: ti,
+			DeleteAt: ti,
 		},
 	}
 	id, err := ur.Create(user)

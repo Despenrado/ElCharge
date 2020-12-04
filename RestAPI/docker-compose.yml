@@ -4,14 +4,14 @@ services: # Here we define our service(s)
         container_name: mongodb-elcharge # Container name
         image: mongo # image name to start/build
         ports: # Port mapping
-            - "27017:27017"
+            - "2717:27017"
         volumes: # Volume binding
             - "~/example:/data/db"
     cache-db:
         container_name: redis-elcharge # Container name
         image: redis
         ports:
-            - "6379:6379"
+            - "63799:6379"
         volumes: # Volume binding
             - "/opt/redis/data:/data"
     golang-restapi: # The name of the service
