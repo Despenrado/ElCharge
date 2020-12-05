@@ -8,7 +8,7 @@ type Station struct {
 	ID          string    `bson:"_id,omitempty" json:"_id,omitempty"`
 	StationName string    `bson:"station_name,omitempty" json:"station_name,omitempty"`
 	OwnerID     string    `bson:"owner_id,omitempty" json:"owner_id,omitempty"`
-	Rating      float32   `bson:"rating" json:"rating"`
+	Rating      float32   `bson:"rating,truncate" json:"rating,truncate"`
 	Description string    `bson:"description,omitempty" json:"description,omitempty"`
 	Comments    []Comment `bson:"comments,omitempty" json:"comments,omitempty"`
 	Latitude    float64   `bson:"latitude" json:"latitude"`

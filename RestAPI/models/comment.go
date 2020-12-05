@@ -10,7 +10,7 @@ type Comment struct {
 	UserID   string  `bson:"user_id,omitempty" json:"user_id,omitempty"`
 	UserName string  `bson:"user_name,omitempty" json:"user_name,omitempty"`
 	Text     string  `bson:"text,omitempty" json:"text,omitempty"`
-	Rating   float32 `bson:"rating,omitempty" json:"rating,omitempty"`
+	Rating   float32 `bson:"rating,omitempty,truncate" json:"rating,omitempty,truncate"`
 	Model
 }
 

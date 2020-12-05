@@ -42,19 +42,20 @@ Ta aplikacja musi być w pełni wspierana przez społeczność: tworzenie i ocen
 Interfejs użytkownika, którym jest aplikacja mobilna, musi mieć zintegrowaną mapę, aby ułatwić wyszukiwanie i tworzenie miejsc.
 Należy wdrożyć system rejestracji i logowania.
 Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników.
-A także baza danych do przechowywania stacji i komentarzy.
+A także baza danych do przechowywania stacji i komentarzy. Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
         \caption{zarys uskladu serwisu \cite{diagrams_net}}
-    \label{fig:zarys uskladu serwisu }
+    \label{fig:zarysuskladuserwisu}
 \end{figure}\newline
 \newpage
 \section{Analiza wymagań}
 \subsection{Wymagania funkcjonalne}
-W tabeli przedstawione wymagania funkc do aplikacji mobilnej razem z celem ich wdrożenia.
+W tabeli \ref{tab:wymaganiafunkcjonalne} przedstawione wymagania funkc do aplikacji mobilnej razem z celem ich wdrożenia.
 \begin{table}[htb] \small
     \caption{Wymagania funkcjonalne}
+    \label{tab:wymaganiafunkcjonalne}
     \begin{tabular}{| m{0.5cm} | m{7cm} | m{7cm} |} 
     \hline
     № & Opis & Cel \\
@@ -83,18 +84,19 @@ W tabeli przedstawione wymagania funkc do aplikacji mobilnej razem z celem ich w
 \end{table}
 \newpage
 \paragraph{Diagram Przypadków użycia}
-Diagram przypadków użycia graficznie pokazuje użytkowników oraz funkcje aplikacji dostępne do różnych rodzajów użytkowników (w tym przypadku jeden rodzaj).
+Diagram przypadków użycia (rys. \ref{fig:usecasediagram}) graficznie pokazuje użytkowników oraz funkcje aplikacji dostępne do różnych rodzajów użytkowników (w tym przypadku jeden rodzaj).
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.7\linewidth]{rys02/use_case_diagram.png}
         \caption{dagram przypadków uzycia \cite{diagrams_net}}
-    \label{fig:use cased iagram}
+    \label{fig:usecasediagram}
 \end{figure}
 \newpage
 \subsection{Wymagania niefunkcjonalne}
-W poniższej tabeli przdstawione wymagania niefunkcjonalne: krótki opis wymagania, typ (jakiej dziedziny to dotyczy) oraz uwagi do tego wymagania.
+W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonalne: krótki opis wymagania, typ (jakiej dziedziny to dotyczy) oraz uwagi do tego wymagania.
 \begin{table}[htb] \small
     \caption{Wymagania niefunkcjonalne}
+    \label{tab:wymaganianiefunkcjonalne}
     \begin{tabular}{| m{0.5cm} | m{3cm} | m{5.75cm} | m{5.75cm} |} 
     \hline
     № & typ & Opis & Uwagi \\
@@ -131,8 +133,8 @@ W poniższej tabeli przdstawione wymagania niefunkcjonalne: krótki opis wymagan
 \end{table}
 \newpage
 \subsubsection{Nażędzia i technologie}
-Jako Baza danych wykożystuję się NoSQL (ang. (ang. \textit{Not only Structured Query Language}) baza danych Mongodb \cite{mongodb,mongodb_doc}.
-Część serwerowa naapisana w języku Go \cite{golang1,golang2,golang3,godoc} w architekturze Rest API \cite{rest_api_best}.
+Jako Baza danych wykorzystuje się NoSQL (ang. (ang. \textit{Not only Structured Query Language}) baza danych Mongodb \cite{mongodb,mongodb_doc}.
+Część serwerowa napisana w języku Go \cite{golang1,golang2,golang3,godoc} w architekturze Rest API \cite{rest_api_best}.
 Część serwerowa i Baza Danych muszą uruchamiać się w Docker kontenerze \cite{docker,docker_doc}.
 Aplikacja mobilna działa w systemie Android za pomocą Android Studio \cite{android_doc,android_studio,gradle,gradle_android_doc} w języku Java \cite{java_doc}.
 Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google Cloud \cite{google_cloud} Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}.
@@ -141,17 +143,47 @@ Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google
 Po analizie wymagań zostały stworzone możliwe makiety aplikacji, która ma powstać.
 
 Na dole ekranu aplikacji znajduje się główne menu zawierające 4 pozycje: mapę, wyszukiwanie stacji, tworzenie stacji i parametry.
-Na rysunku[nr] przedstawiony pierwszy etap wyszukiwania stacji ładowania.
+Na rysunku \ref{fig:search_makiet} przedstawiony pierwszy etap wyszukiwania stacji ładowania.
 Pod polem wyszukiwania znajduje się rozwijane menu, które pozwala wybierać typ wyszukiwania, w tym wyszukiwanie na podstawie pozycji użytkownika oraz nazwy i opisu stacji.
 Poniżej znajduje się możliwość do zmiany dystansu wyszukiwania oraz przycisk wyszukiwania.
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=0.4\linewidth]{rys02/search_makiet.jpg}
+        \caption{dagram przypadków uzycia}
+    \label{fig:search_makiet}
+\end{figure}
+\newpage
+Na tym makiecie (rys. \ref{fig:main_makiet}) został przedstawiony przykładowy sposób wyboru stacji ładowania. Stacje poznaczone markierami na mapie. Dla otrzymania informacji o wybranej stacji (wybierany jest markier na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=0.5\linewidth]{rys02/main_makiet.jpg}
+        \caption{dagram przypadków uzycia}
+    \label{fig:main_makiet}
+\end{figure}
+% \newpage
 
-Na tym makiecie (rys. [nr]) został przedstawiony przykładowy sposób wyboru stacji ładowania. Stacje poznaczone markierami na mapie. Dla otrzymania informacji o wybranej stacji (wybierany jest markier na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
-
-Przy tworzeniu stacji (rys. [nr]) dla wybranego użycia można ustalić miejsce na mapie poprzez odpowiedni przycisk.
-
-Dla rejestracji i logowania wykorzystują się dwa różne ekrany (rys.[nr] oraz rys[nr])
-
-
+Podczs tworzenia stacji ładowania (rys. \ref{fig:create_makiet}) dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk.
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=0.3\linewidth]{rys02/create_makiet.jpg}
+        \caption{dagram przypadków uzycia}
+    \label{fig:create_makiet}
+\end{figure}
+\newpage
+Dla rejestracji i logowania wykorzystują się dwa różne ekrany (rys.\ref{fig:login_makiet} oraz \ref{fig:register_makiet})
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=0.3\linewidth]{rys02/login_makiet.jpg}
+        \caption{dagram przypadków uzycia}
+    \label{fig:login_makiet}
+\end{figure}
+\begin{figure}[ht]
+    \centering
+        \includegraphics[width=0.3\linewidth]{rys02/register_makiet.jpg}
+        \caption{dagram przypadków uzycia}
+    \label{fig:register_makiet}
+\end{figure}
+\newpage
 
 
 % \paragraph{Część serwerowa:}
