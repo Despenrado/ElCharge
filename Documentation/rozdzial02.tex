@@ -1,7 +1,7 @@
 \chapter{Założenia projektowe}
-W tym rozdziale został opisany probliem i jego możliwe rozwiązanie.
-Została prowadzona wnaliza wymagań: wymagania funkcjonalne i niefunkcjonalne.
-W niniejszym rozdiale został przedstawiony początkowy makiet interfejsu użytkownika.
+W tym rozdziale został opisany problem i jego możliwe rozwiązanie.
+Została przeprowadzona analiza wymagań: wymagania funkcjonalne i niefunkcjonalne.
+W niniejszym rozdziale został przedstawiony początkowy makiet interfejsu użytkownika oraz narzędzia i technologie.
 
 \section{Zarys architektury systemu}
 % Описание проблемы:
@@ -103,7 +103,7 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     1 & Bezpiczeństwo & Hasła muszą być przechowywane w biezpicznej formie & Hasła nie przchowyją się w pierwotnej formie tylko w formie zaszyfrowanej \\ 
     \hline
-    2 & Bezpiczeństwo & Małe ryzyka przechwytywania hasła przaz trzecich osób podczas komunikacji interfejsu użytkownika i części serwerowej & Autentykacja użytkownika na serwerze powinna zachodzić za pomocą tokenów \\ 
+    2 & Bezpiczeństwo & Małe ryzyka przechwytywania hasła przez trzecich osób podczas komunikacji interfejsu użytkownika i części serwerowej & Autentykacja użytkownika na serwerze powinna zachodzić za pomocą tokenów \\ 
     \hline
     3 & Przenoszlność & wdrożenie systemu powinno być szybkie i łatwe & \\ 
     \hline
@@ -144,32 +144,59 @@ Do sworzenia aplikacji mobilnej, części serwerowej oraz bazy daych zostały wy
     \item Android Studio;
     \item Gradle;
     \item Android SDK;
-    \item Java 8;
+    \item Java JDK 8;
     \item RxJava 2;
-    \item Google Cloud;
+    \item Google Cloud Platform;
     \item GMS;
     \item Docker;
 \end{itemize}
 
 \paragraph{Visual Studio Code} \cite{vscode} to darmowy edytor kodu źródłowego, który został wyprodukowany przez Microsoft. Działa na systemach Windows, Linux, macOS. Jest rozszerzalny za pomocą plug-inów.
 Lista podtrzymywanych języków i możliwości jest dość wielka i może być rozszerzona za pomocą plug-inów. Kilka funkcji: podświetlanie składni, IntelliSense, refaktoryzacja, debugowanie i inne.
-Ten edytor został wykorzystany do napisania części serwerowej w języku Go oraz plików konfiguracyjnych Docker.
 
 \paragraph{Go} (golang) \cite{golang1,golang2,golang3,godoc} jest językiem programowania. Kompilowany, wielowątkowy. Stworzony przez Google. Kod tego języku może być kompilowany do Linux, Windows, macOS, FreeBSD, Android i inne.
-Język jest przeznaczony do budowania serwisów z wysokim obciążeniem i efektywnością, które pracują na systemach rozproszonych z wielowątkowymi procesorami. Ten język został wybrany dla napisania części serwerowej aplikacji.
+Język jest przeznaczony do budowania serwisów z wysokim obciążeniem i efektywnością, które pracują na systemach rozproszonych z wielowątkowymi procesorami.
 
 \paragraph{REST API} (ang. \textit{REpresentational State Transfer}) (ang. \textit{Application Programming Interface}) \cite{rest_api,rest_api_best} Jest to popularne podejście w architekturze tworzenia interfejsów programistycznych.
 Podstawowe zasady to: architektura klient-serwer (na przykład przydzielamy klienta i magazyn danych), Brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z żądaniem),
 buforowalność (buforowanie danych jest dozwolone, jeśli w odpowiedzi jest na to zgoda), jednorodność interfejsu (ograniczenia stylu pisania), wielopoziomowość systemu (komponenty systemu mają bezpośredni dostęp tylko do sąsiednich warstw), łatwość rozszerzenia funkcjonalności (opcjonalnie).
 
-\paragraph{JWT} (ang. \textit{JSON Web Token}) \cite{jwt}
+\paragraph{JWT} (ang. \textit{JSON Web Token}) \cite{jwt} jest standardem, który jest przeznaczony do tworzenia tokenów dostępu. Za pomocą JWT sprawdza się, czy wchodzące dane zostały wysłane przez autoryzowane źródło.
+Składa się z trzech części: nagłówek (informacja o tym, w jaki sposób odszyfrować token), dane (zaszyfrowane dane) oraz sygnatura. Każdy taki token ma czas działania. Nie może być oznaczony jako nieroboczy, dopóki nie skończy się czas jego działania.
 
-Jako Baza danych wykorzystuje się NoSQL (ang. (ang. \textit{Not only Structured Query Language}) baza danych MongoDB \cite{mongoDB,mongoDB_doc}.
-Część serwerowa napisana w języku Go \cite{golang1,golang2,golang3,godoc} w architekturze Rest API \cite{rest_api_best}.
-Część serwerowa i Baza Danych muszą uruchamiać się w Docker kontenerze \cite{docker,docker_doc}.
-Aplikacja mobilna działa w systemie Android za pomocą Android Studio \cite{android_doc,android_studio,gradle,gradle_android_doc} w języku Java \cite{java_doc}.
-Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google Cloud \cite{google_cloud} Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}.
+\paragraph{MongoDB} \cite{mongoDB,mongoDB_doc,mongodb_habr} jest NoSQL (ang. \textit{Not only Structured Query Language}) rozwiązaniem do przechowywania danych. Dane przehowywane w formacie BSON (ang. \textit{Binary JavaScript Object Notation}).
+Format licencji SSPL (ang. \textit{Server Side Public License}). Wykorzystuje technikę segmentacji obiektów bazy danych, co pozwala na bilansowanie obciążenia.
 
+\paragraph{Redis} \cite{redis} system zarządzania bazami danych klasy NoSQL, który współpracuje ze strukturami danych typu ,,klucz-wartość''. Najczęściej używa sie do implementacji baz dabych, pamięci podręcznej. brokerów wiadowmości.
+
+\paragraph{Android Studio} \cite{android_doc,android_studio} zintegrowane środowisko programistyczne, które zostało wyprodukowane przez JetBrains na podstawie IelliJ IDEA, do budowania aplikacji na platformie Android. Jest dostępna do system<ow Windows, Linux, macOS. Jest udostępniona za pomocą bezpłatnej licencji Apache 2.0.
+
+\paragraph{Gradle} \cite{gradle,gradle_android_doc} jest systemem automatycznego budowania aplikacji oraz zarządzania zależnościami, który służy do uproszczenia pracy z Javą.
+
+\paragraph{Android SDK} \cite{android_studio} (ang. \textit{Software development kit}) jest narzędziem do tworzenia aplikacji mobilnych dla systemów na bazie Android, które został wyprodukowane prze Google.
+Ten zestaw SKD zawiera nażędzia programistyczne: zestaw bibliotek Android i Java, emulator telefonu, debugger, dokunentację, szablony prostych aplikacji.
+
+\paragraph{Java JDK 8} (and. \textit{Java Development Kit}) \cite{java_doc} jest zestawem programisty do programowania w języku Java. Zawiera: kompilator języka Java, przykłady, dokumentację, system uruchomiania koda Java (JDK (ang. \textit{Java Runtime Environment})).
+Java jest językiem ogólnego zastosowania, obiektowym, krosplatformowym, dzięki uruchomianiu się kodu na maszynie wirtualnej, został wyprodukowany przez Sun Microsystems.
+Przy tworzeniu aplikacji został użyty język wersji 8, ponieważ kompatybilność tej wersji jest bardzo wysoka.
+
+\paragraph{RxJava 2} jest to biblioteka pozwalająca na stosowanie reaktywnego programowania w języku Java. Programowanie reaktywne jest paradygmatem programowania pozwalający na programowanie z asynchronicznymi strumieniami (sekwencja stałych zderzeń, które posortowane według czasu) danych.
+Ta biblioteka jest bardzo przydatna na przykład, żeby interfejs użytkownika ciągle był dostępny do użycia nawet w podczas obliczania jakiejś logiki, na przykład oczekiwanie odpowiedzi od serwera.
+
+\paragraph{Google Cloud} \cite{google_cloud} jest pakietem Google usług w chmurze. Ten serwis pozwala na wykorzystanie serwisów Google Search, Gmail, przechowywanie plików, Youtube, obliczenie i przechowywanie danych, uczenie maszynowe i inne usługi, z których korzysta Google w swoich projektach.
+Usługa ta jest płatna. Różne części mają różne koszty w zależności od ilości zapytań do serwisów Google. Jeśli koszty użycia tych serwisów mniej niż 200 dolarów, Google nie pobiera opłaty. W tej pracy inżynierskiej został wykorzystany serwis Static Maps \cite{google_cloud_pricing}.
+Ten serwis jest darmowy przy tworzeniu oprogramowania do telefonów (Android Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}).
+
+\paragraph{GMS}  (and. \textit{Google Mobile Services}) jest to zestaw aplikacji dostarczonych przez Google: Goole Maps, Google Paly Store, Gmail Google Drive Google Duo, Google Chrome, Google Photos, Google TV, YOutube, Youtube Music.
+
+\paragraph{Docker} \cite{docker,docker_doc} jest to oprogramowanie przeznaczone do automatyzacji wdrażania i zarządzania aplikacjami. Aplikacje uruchamiają się w kontenerach. Docker pozwala na upakowanie aplikacji oraz wszystkich zależności w niezależny od podstawowego systemu kontener, który może być łatwo przeniesiony na dowolny *nix system.
+
+% Jako Baza danych wykorzystuje się NoSQL (ang. (ang. \textit{Not only Structured Query Language}) baza danych MongoDB \cite{mongoDB,mongoDB_doc}.
+% Część serwerowa napisana w języku Go \cite{golang1,golang2,golang3,godoc} w architekturze Rest API \cite{rest_api_best}.
+% Część serwerowa i Baza Danych muszą uruchamiać się w Docker kontenerze \cite{docker,docker_doc}.
+% Aplikacja mobilna działa w systemie Android za pomocą Android Studio \cite{android_doc,android_studio,gradle,gradle_android_doc} w języku Java \cite{java_doc}.
+% Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google Cloud \cite{google_cloud} Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}.
+% 
 \subsection{Makiety interfejsu użytkownika}
 Po analizie wymagań zostały stworzone możliwe makiety aplikacji, która ma powstać.
 

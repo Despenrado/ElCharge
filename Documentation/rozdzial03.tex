@@ -4,7 +4,7 @@
 Aplikacja składa się z następujących elementów (rys. \ref{fig:systemarchitecturediagram}):
 \begin{itemize}
 \item MongoDB - baza danych;
-\item Redis \cite{redis} - przechowywanie JWT tokenów po wylogowaniu;
+\item Redis - przechowywanie JWT tokenów po wylogowaniu;
 \item Go - część serwerowa napisana w języku Go;
 \item Android - aplikacja mobilna;
 \item Docker - kontener dla wdrożenia aplikacji webowej;
@@ -290,7 +290,7 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
     \hline
     \end{tabular}
 \end{table}
-
+\newpage
 Kodem \ref{list:routers} została przedstawiona implementacja endpointów.
 Dla rejestracji połączeń wchodzący zostanły użyte metody medialne ,,s.logger.SetRequestID'' do przyznaczenia id kożnemu mołączniu oraz ,,s.logger.LogRequest'' do wypisywania tego do konsoli.
 Dla większośc przypadków też jest sprawdzano czy jest użytkownik zalogowany do systemu ,,s.authController.CheckToken''. To będzie wyjaśnione później (sekcja \ref{sec:autentykacja}).
@@ -338,7 +338,7 @@ W tej sekcji są opisane implementacje endpointów części serwerowej.
 \subsubsection{Użytkownik}
 Użytkownik jest niezbędny w pierwszej kolejności do autentykacji. Niektóre dane użytkownika też są używane dla rozumienia: do kogo należy stacja ładownicza lub komentarz.
 
-W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON (ang. \textit{Binary JavaScript Object Notation}), która znajdująca się w pliku ,,models/user''.
+W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku ,,models/user''.
 \begin{lstlisting}[label=list:user_model,caption=Model danych użytkownika,basicstyle=\tiny\ttfamily]
     type User struct {
         ID       string `bson:"_id,omitempty" json:"_id,omitempty"`
