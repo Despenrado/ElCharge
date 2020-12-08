@@ -82,10 +82,7 @@ func (r *UserRepository) UpdateByID(id string, u *models.User) error {
 		update["email"] = u.Email
 	}
 	if u.Password != "" {
-		update["password"], err = models.EncryptString(u.Password)
-		if err != nil {
-			return err
-		}
+		update["password"] = u.Password
 	}
 	_, err = r.col.UpdateOne(context.TODO(), filter, bson.M{
 		"$set": update})

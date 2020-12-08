@@ -90,15 +90,12 @@ func TestUpdateByID(t *testing.T) {
 	us, id := testHelper()
 	user, err := us.FindByID(id)
 	user.UserName = "username_2"
-	user.Password = "passwoed_2"
 	u, err := us.UpdateByID(id, user)
 	assert.Nil(t, err)
 	assert.EqualValues(t, u.UserName, "username_2")
 	assert.EqualValues(t, u.Email, "1@email.com")
-	assert.EqualValues(t, u.VerifyPassword("passwoed_2"), true)
 	assert.NotEqualValues(t, u.UserName, "username_1")
 	assert.NotEqualValues(t, u.Email, "2@email.com")
-	assert.NotEqualValues(t, u.VerifyPassword("passwoed_1"), true)
 }
 
 func TestDeleteByID(t *testing.T) {

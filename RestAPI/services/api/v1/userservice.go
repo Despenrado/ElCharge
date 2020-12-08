@@ -74,6 +74,13 @@ func (s *UserService) FindByID(id string) (*models.User, error) {
 
 // UpdateByID update user
 func (s *UserService) UpdateByID(id string, u *models.User) (*models.User, error) {
+	if u.Password != "" {
+		tmp, err := models.EncryptString(u.Password)
+		u.Password = tmp
+		if err != nil {
+			return nil, err
+		}
+	}
 	err := s.storage.User().UpdateByID(id, u)
 	if err != nil {
 		return nil, err
@@ -82,6 +89,7 @@ func (s *UserService) UpdateByID(id string, u *models.User) (*models.User, error
 	if err != nil {
 		return nil, err
 	}
+	u.Sanitize()
 	return u, nil
 }
 

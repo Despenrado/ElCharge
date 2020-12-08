@@ -1,2 +1,71 @@
-\chapter{Opis załączonej płyty CD/DVD}
-Instrukcja wdrożeniowa (dodatek, w którym opisano jak wdrożyć/zainstalować/uruchomić rozwiązanie)
+\chapter{Wdrożenie aplikacji}
+\paragraph{RestAPI}
+% Для развертывая серверной части вместе с базами данных MongoDB и Redis достаточно двух комманд.
+% Должны быть установлены docker и docker-compose.
+
+% Первая команда создает 3 образа: образ базы даннх MongoDB, образ базы данных Redis и образ серверной части приложения написаной на Go:
+Do wdrożenia części serwerowej wraz z bazami danych MongoDB i Redis wystarczy wykonać dwa polecenia.
+Musi być zainstalowany docker i Docker-compose.
+
+Pierwsze polecenie tworzy 3 obrazy: obraz bazy danych dunnh MongoDB, Obraz bazy danych Redis i obraz zaplecza aplikacji napisany w Go:
+
+\texttt{\$ docker-compose build}
+% Вторая команда запускает созданные ранее образы в оперделенной последовательности, а также создает каналы для взаимодействия приложений из контейнеров.
+Drugie polecenie uruchamia wcześniej utworzone obrazy w określonej kolejności, a także tworzy kanały do interakcji części aplikacji między kontenerami oraz środowyskiem wewnętrznym.
+
+\texttt{\$ docker-compose up}
+
+% Для управления контейнерами ипользуется файл docker-compose:
+Do zarządzania kontenerami służy plik \texttt{docker-compose.yml} \ref{list:docker-compose.yml}:
+\begin{lstlisting}[label=list:docker-compose.yml,caption=docker-compose.yml,basicstyle=\tiny\ttfamily]
+    version: "3.5" # Use version 3.5 syntax
+    services: # Here we define our service(s)
+        db:
+            container_name: mongoDB-elcharge # Container name
+            image: mongo # image name to start/build
+            ports: # Port mapping
+                - "2717:27017"
+            volumes: # Volume binding
+                - "~/example:/data/db"
+        cache-db:
+            container_name: redis-elcharge # Container name
+            image: redis
+            ports:
+                - "63799:6379"
+            volumes: # Volume binding
+                - "/opt/redis/data:/data"
+        golang-restapi: # The name of the service
+            build:
+                context: .
+                dockerfile: Dockerfile # Location of our Dockerfile
+            image: despenrado/golang-restapi-elcharge:prod.0.1
+            container_name: restapi-elcharge # Container name
+            depends_on: # start after
+                - cache-db
+                - db
+            ports:
+                - "8081:8081"
+            links: # list mapping: service_name:name_how_will_see_your_program
+                - "db:mymongo"
+                - "cache-db:myredis"
+    
+\end{lstlisting}
+
+% Для этапов устновки зависимостей, компиляции и самого создания образа серверной части приложения использется Dockerfile:
+Plik Dockerfile \ref{list:dockerfile} jest używany do etapów instalacji zależności, kompilacji i samego tworzenia obrazu zaplecza aplikacji:
+\begin{lstlisting}[label=list:dockerfile,caption=Dockerfile,basicstyle=\tiny\ttfamily]
+    FROM golang:1.15 AS builder
+    WORKDIR /go/src/github.com/Ddespenrado/ElCharge/RestAPI/
+    COPY . .
+    RUN go mod tidy
+    RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags '-w' -o restapi .
+    
+    FROM scratch
+    EXPOSE 8081
+    WORKDIR /root/
+    COPY deploy/apiserver.yaml .
+    COPY --from=builder /go/src/github.com/Ddespenrado/ElCharge/RestAPI/restapi .
+    ENTRYPOINT ["./restapi","-config=apiserver.yaml"]
+\end{lstlisting}
+
+Plikiem konfiguracyjnym aplikacji, w przypadku używania dockera jest plik \texttt{RestAPI/deploy/apiserver.yaml}.
