@@ -11,7 +11,7 @@ Aplikacja składa się z następujących elementów (rys. \ref{fig:systemarchite
 \end{itemize}
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.8\linewidth]{rys03/system_architecture_diagram.png}
+\includegraphics[width=0.6\linewidth]{rys03/system_architecture_diagram.png}
 \caption{architektura systemu \cite{diagrams_net}}
 \label{fig:systemarchitecturediagram}
 \end{figure}
@@ -21,12 +21,13 @@ MongoDB jest przeznaczona do przechowywania danych aplikacji.
 Redis wykorzystuje się tylko do czasowego przechowywania tokenów.
 
 % 
-\paragraph{MongoDB}
-
-Baza danych składa się z dwóch kolekcji: ,,station'' i ,,user''.
-\newline
-Kolekcja ,,\textit{user}'' składa się z następujących pól:
-\textit{
+\paragraph{MongoDB\newline}
+% TO DO: proszę stosować czcionkę maszynową do kodu źródłowego, nazw zmiennych i klas, nazw plików itp.
+% TO DO: aby zdefiniować zawartość plików json można posłużyć się specyfikacją json schema : https://json-schema.org/
+% TO DO: prawdopodobnie dokumenty w MongoDB powstają poprzez mapowanie z obiektów dostępnych w języku programowania,
+%  jeśli tak jest, to należy o tym powiedzieć (w opisie implementacji można pokazać diagram klas zawierających odpowiednie pola)
+Baza danych składa się z dwóch kolekcji: \texttt{station} i \texttt{user}. Kolekcja \texttt{user} składa się z następujących pól:
+\texttt{
 \begin{itemize}
     \item \_id : ObjectId(String)
     \item user\_name : String
@@ -39,9 +40,8 @@ Kolekcja ,,\textit{user}'' składa się z następujących pól:
         \item delete\_at : ISODate
     \end{itemize}
 \end{itemize}
-\newline
 }
-\newline
+
 Przykład encji:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
@@ -56,8 +56,8 @@ Przykład encji:
     }
 \end{lstlisting}
 
-Kolekcja ,,\textit{station}'' składa się z następujących pól:
-\textit{
+Kolekcja \texttt{station} składa się z następujących pól:
+\texttt{
 \begin{itemize}
     \item \_id : String
     \item station\_name : String
@@ -88,7 +88,7 @@ Kolekcja ,,\textit{station}'' składa się z następujących pól:
     \end{itemize}
 \end{itemize}
 }
-\newline
+
 Przykład encji:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
@@ -142,13 +142,12 @@ Przykład encji:
 \end{lstlisting}
 
 % 
-\paragraph{Redis}
-\newline
+\paragraph{Redis\newline}
 Baza danych Redis wykorzystana tylko dla przechowywania tokenów użytkowników, które już wylogowane, ponieważ jedną z wad JWT tokenów jest to, że wygenerowany token nie można zrobić nieważny, dopóki nie skończy się czas jego działania.
 Redis częściowo eliminuje ten problem.
 
 W nim przechowuje się para klucz - wartość, pewny czas. Po upływie tego czasu zapis automatycznie jest usuwany.
-Dla szybkiego wyszukiwania encja wygląda w następujący sposób: \textit{token}, \textit{token}. To pozwala często wylogować użytkowniku, ale zajmuje więcej miejsca niż encja typu: ,,\textit{user\_id}'', \textit{token}.
+Dla szybkiego wyszukiwania encja wygląda w następujący sposób: \texttt{token}, \texttt{token}. To pozwala często wylogować użytkowniku, ale zajmuje więcej miejsca niż encja typu: \texttt{user\_id}, \texttt{token}.
 
 \section{Implementacja części serwerowej}
 % 
@@ -173,16 +172,16 @@ Do stworzenia serwerowej części aplikacji użyto następujących technologii:
 
 % 
 \subsubsection{Struktura plików RestApi}
-Na rysunku \ref{fig:backend_file_structure} została przedstawiona struktura plików części serwerowej. Obok plików, niezbędnych do działania aplikacji, znajdują się pliki pozwalające na prowadzenie testów jednostkowych. Te pliki mają nazwę w postaci ,,*\_test.go''.
+Na rysunku \ref{fig:backend_file_structure} została przedstawiona struktura plików części serwerowej. Obok plików, niezbędnych do działania aplikacji, znajdują się pliki pozwalające na prowadzenie testów jednostkowych. Te pliki mają nazwę w postaci \texttt{*\_test.go}.
+% TO DO: proszę poukładać obrazki ze strukturami plików obok siebie (pojedynczo zajmują za dużo miejsca)
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.25\linewidth]{rys03/backend_file_structure.png}
 \caption{Struktura plików}
 \label{fig:backend_file_structure}
 \end{figure}
-\newpage
-Katalog ,,config'' zawiera pliki konfiguracyjne.
-W katalogu ,,controllers'' (rys. \ref{fig:controllers}) znajdują się kontrolery, które są wykorzystywanie do połączenia poziomu serwisów z punktami końcowymi serwera (dalej Endpoint)\textbt{???}.
+
+Katalog \texttt{config} zawiera pliki konfiguracyjne. W katalogu \texttt{controllers} (rys.~\ref{fig:controllers}) znajdują się kontrolery, które są wykorzystywanie do połączenia poziomu serwisów z punktami końcowymi serwera (ang.~\emph{endpoints}).
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.25\linewidth]{rys03/controllers.png}
@@ -190,9 +189,9 @@ W katalogu ,,controllers'' (rys. \ref{fig:controllers}) znajdują się kontroler
 \label{fig:controllers}
 \end{figure}
 
-Do katalogu ,,deploy'' jest kompilowana aplikacja przy uruchomieniu ,,Makefile''.
+Do katalogu \texttt{deploy} jest kompilowana aplikacja przy uruchomieniu \texttt{Makefile}.
 
-Katalog ,,models''(rys. \ref{fig:model}) zawiera modeli danych do przechowywania w bazie danych oraz do przekazania do interfejsu użytkownika.
+Katalog \texttt{models}(rys. \ref{fig:model}) zawiera modeli danych do przechowywania w bazie danych oraz do przekazania do interfejsu użytkownika.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.25\linewidth]{rys03/model.png}
@@ -200,7 +199,7 @@ Katalog ,,models''(rys. \ref{fig:model}) zawiera modeli danych do przechowywania
 \label{fig:model}
 \end{figure}
 
-Katalog ,,routers'' (rys. \ref{fig:routers}) zawiera plik, w którym zachodzi mapowanie punktów końcowych z kontrolerami.
+Katalog \texttt{routers} (rys. \ref{fig:routers}) zawiera plik, w którym zachodzi mapowanie punktów końcowych z kontrolerami.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.25\linewidth]{rys03/routers.png}
@@ -208,7 +207,7 @@ Katalog ,,routers'' (rys. \ref{fig:routers}) zawiera plik, w którym zachodzi ma
 \label{fig:routers}
 \end{figure}
 
-Funkcje lub metody przechowywane w katalogu ,,services'' (rys. \ref{fig:services}) prowadzą obróbkę danych i podejmują decyzję co z nimi trzeba zrobić.
+Funkcje lub metody przechowywane w katalogu \texttt{services} (rys. \ref{fig:services}) prowadzą obróbkę danych i podejmują decyzję co z nimi trzeba zrobić.
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.25\linewidth]{rys03/services.png}
@@ -216,7 +215,7 @@ Funkcje lub metody przechowywane w katalogu ,,services'' (rys. \ref{fig:services
     \label{fig:services}
 \end{figure}
 
-Współpraca z bazą danych zachdzi w katalogu ,,storage'' (rys. \ref{fig:storage}). Katalog ,,mongostore'' wspódziałuje z MongoDB, notomiast ,,teststore'' wykorzystuje się do testowania, które będzie omówione w odpowiednim rozdiale \ref{ch:Testy}.
+Współpraca z bazą danych zachdzi w katalogu \texttt{storage} (rys. \ref{fig:storage}). Katalog \texttt{mongostore} wspódziałuje z MongoDB, notomiast \texttt{teststore} wykorzystuje się do testowania, które będzie omówione w odpowiednim rozdiale \ref{ch:Testy}.
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.25\linewidth]{rys03/storage.png}
@@ -224,7 +223,7 @@ Współpraca z bazą danych zachdzi w katalogu ,,storage'' (rys. \ref{fig:storag
     \label{fig:storage}
 \end{figure}
 
-W katalogu ,,utils'' (rys. \ref{fig:utils}) znajdują się rzeczy wspomagające, naprykład lista błedów lub rejestracja działania serwera.
+W katalogu \texttt{utils} (rys. \ref{fig:utils}) znajdują się rzeczy wspomagające, naprykład lista błedów lub rejestracja działania serwera.
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.25\linewidth]{rys03/utils.png}
@@ -235,6 +234,7 @@ W katalogu ,,utils'' (rys. \ref{fig:utils}) znajdują się rzeczy wspomagające,
 % 
 \subsubsection{Przepływ danych}
 Na rysunku \ref{fig:backend_data_flow} został przedstawiony schemat przetwarzania i przepływu danych przy wysyłaniu zapytania do części serwerowej niniejszej aplikacji.
+% TO DO: rysunek do przerysowania (proszę zacieśnić bloczki, wtedy przy skalowaniu do szerokości strony czcionka stanie się większa
 \begin{figure}[ht]
 \centering
 \includegraphics[width=0.9\linewidth]{rys03/backend_data_flow.png}
@@ -249,7 +249,7 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
 \begin{table}[htb] \small
     \caption{Lista Enpointów części serwerowej}
     \label{tab:endpoints}
-    \begin{tabular}{| m{0.5cm} | m{2cm} | m{6cm} | m{6cm} |}
+    \begin{tabularx}{\linewidth}{| m{0.45cm} | m{1.5cm} | m{6cm} | X |}
     \hline
     № & Metoda & Endpoint & Opis \\
     \hline
@@ -289,12 +289,12 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
     \hline
     18 & GET & /api/v1/stations/{sid}/read?skip=""\&limit="" & Wczytywanie danych limitowanej listy komentarzy należących do pewnej stacji. \\
     \hline
-    \end{tabular}
+    \end{tabularx}
 \end{table}
-\newpage
+
 Kodem \ref{list:routers} została przedstawiona implementacja endpointów.
-Dla rejestracji połączeń wchodzących zostanły użyte metody medialne ,,s.logger.SetRequestID'' do przyznaczenia id każdemu połączniu oraz ,,s.logger.LogRequest'' do wypisywania tego do konsoli.
-Dla większości przypadków też jest sprawdzano czy jest użytkownik zalogowany do systemu ,,s.authController.CheckToken''. To będzie wyjaśnione później (sekcja \ref{sec:autentykacja}).
+Dla rejestracji połączeń wchodzących zostanły użyte metody medialne \texttt{s.logger.SetRequestID} do przyznaczenia id każdemu połączniu oraz \texttt{s.logger.LogRequest} do wypisywania tego do konsoli.
+Dla większości przypadków też jest sprawdzano czy jest użytkownik zalogowany do systemu \texttt{s.authController.CheckToken}. To będzie wyjaśnione później (sekcja \ref{sec:autentykacja}).
 \begin{lstlisting}[label=list:routers,caption=Implementacja punktów końcowych,basicstyle=\tiny\ttfamily]
 func (s *Server) SetupRouters() *mux.Router {
 	v1 := "/api/v1"
@@ -337,9 +337,9 @@ func (s *Server) SetupRouters() *mux.Router {
 W tej sekcji są opisane implementacje endpointów części serwerowej.
 % 
 \subsubsection{Użytkownik}
-Użytkownik jest niezbędny w pierwszej kolejności do autentykacji. Niektóre dane użytkownika też są używane dla rozumienia: do kogo należy stacja ładownicza lub komentarz.
+Użytkownik jest niezbędny w pierwszej kolejności do uwierzytelniania. Niektóre dane użytkownika też są używane dla rozumienia: do kogo należy stacja ładownicza lub komentarz.
 
-W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku ,,models/user''.
+W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user}.
 \begin{lstlisting}[label=list:user_model,caption=Model danych użytkownika,basicstyle=\tiny\ttfamily]
     type User struct {
         ID       string `bson:"_id,omitempty" json:"_id,omitempty"`
@@ -352,8 +352,8 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 
 % 
 % \paragraph{Dodawanie}\mbox{}\\
-% Do tworzenia użytkownika został zaimplementowany endpoint ,,/api/v1/users''.
-% Metoda zapytania ,,POST''.
+% Do tworzenia użytkownika został zaimplementowany endpoint \texttt{/api/v1/users}.
+% Metoda zapytania \texttt{POST}.
 % Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Przykład:
 % \begin{lstlisting}[basicstyle=\tiny\ttfamily]
 %     {
@@ -365,8 +365,8 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 % Na serwerze nie sprawdza się, czy jest użytkownik już zalogowany, ponieważ ten endpoint również używany przy rejestracji.
 % Zwraca JSON obiekt stworzonego użytkownika.
 
-% Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera ,,CreateUser()'' (listing \ref{list:user_controller_create}), w którym zaczyna się obróbka biznesowa zapytania.
-% W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody serwisu ,,CreateUser()'' (listing \ref{list:user_service_create}). Po otrzymaniu danych z serwisu jest wysyłana odpowiedź.
+% Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera \texttt{CreateUser()} (listing \ref{list:user_controller_create}), w którym zaczyna się obróbka biznesowa zapytania.
+% W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody serwisu \texttt{CreateUser()} (listing \ref{list:user_service_create}). Po otrzymaniu danych z serwisu jest wysyłana odpowiedź.
 % \begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
 %     func (c *UserController) CreateUser() http.HandlerFunc {
 %         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -386,7 +386,7 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 %     }
 % \end{lstlisting}
 
-% W metodzie ,,CreateUser()'' (listing \ref{list:user_service_create}) zachodzi:
+% W metodzie \texttt{CreateUser()} (listing \ref{list:user_service_create}) zachodzi:
 % \begin{itemize}
 %     \item walidacja danych;
 %     \item sprawdzanie, czy istnieje użytkownik z taką pocztą mailową;
@@ -394,7 +394,7 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 %     \item tworzenie nowego użytkownika w bazie danych;
 %     \item przygotowanie obiektu użytkownika do transmisji: usuwanie hasła i daty tworzenia dla bezpieczeństwa oraz szybkości transmisji danych.
 % \end{itemize}
-% Ta metoda znajduje się w pliku ,,services/v1/userservice.go''.
+% Ta metoda znajduje się w pliku \texttt{services/v1/userservice.go}.
 % \begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
 %     func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
 %         if err := u.Validate(); err != nil {
@@ -423,8 +423,8 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 %     }
 % \end{lstlisting}
 
-% Metoda ,,Create()'' (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
-% Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
+% Metoda \texttt{Create()} (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
+% Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 % \begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
 %     func (r *UserRepository) Create(u *models.User) (string, error) {
 %         res, err := r.col.InsertOne(context.TODO(), u)
@@ -439,14 +439,14 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 % 
 \paragraph{Wczytywanie}\mbox{}\\
 
-Do wczytywania konkretnego użytkownika został zaimplementowany endpoint ,,/api/v1/users/{id}''.
-Metoda zapytania ,,GET''.
+Do wczytywania konkretnego użytkownika został zaimplementowany endpoint \texttt{/api/v1/users/{id}}.
+Metoda zapytania \texttt{GET}.
 W adresie URL musi być podany id użytkownika.
 Dla korzystania z danego endpointu użytkownik musi być zalogowany.
 Zwraca JSON obiekt znalezionego użytkownika.
 
-Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika ,,FindByID()'' (listing \ref{list:user_controller_findbyid}), która zaczyna obróbkę biznesową zapytania.
-W tej metodzie jest wywoływana metoda serwisu ,,FindByID()'' (listing \ref{list:user_service_findbyid}). Później jest wysyłana odpowiedź.
+Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika \texttt{FindByID()} (listing \ref{list:user_controller_findbyid}), która zaczyna obróbkę biznesową zapytania.
+W tej metodzie jest wywoływana metoda serwisu \texttt{FindByID()} (listing \ref{list:user_service_findbyid}). Później jest wysyłana odpowiedź.
 \begin{lstlisting}[label=list:user_controller_findbyid,caption=Kontroler wczytywania użytkownika,basicstyle=\tiny\ttfamily]
     func (c *UserController) FindByID() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -466,7 +466,7 @@ W tej metodzie jest wywoływana metoda serwisu ,,FindByID()'' (listing \ref{list
     }
 \end{lstlisting}
 % 
-Metoda ,,FindByID()'' (listing \ref{list:user_service_findbyid}) z pliku ,,services/v1/userservice.go'':
+Metoda \texttt{FindByID()} (listing \ref{list:user_service_findbyid}) z pliku \texttt{services/v1/userservice.go}:
 \begin{lstlisting}[label=list:user_service_findbyid,caption=Serwis wczytywania użytkownika,basicstyle=\tiny\ttfamily]
     func (s *UserService) FindByID(id string) (*models.User, error) {
         u, err := s.storage.User().FindByID(id)
@@ -478,8 +478,8 @@ Metoda ,,FindByID()'' (listing \ref{list:user_service_findbyid}) z pliku ,,servi
     }
 \end{lstlisting}
 % 
-Metoda ,,FindByID()'' (listing \ref{list:user_repository_findbyid}) wyszukuje użytkownika z pewnym ID w bazie dabych.
-Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
+Metoda \texttt{FindByID()} (listing \ref{list:user_repository_findbyid}) wyszukuje użytkownika z pewnym ID w bazie dabych.
+Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 \begin{lstlisting}[label=list:user_repository_findbyid,caption=Wczytywanie uzytkownika z bazy danych,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) FindByID(id string) (*models.User, error) {
         idi, err := primitive.ObjectIDFromHex(id)
@@ -500,8 +500,8 @@ Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
 % 
 \paragraph{Edycja}\mbox{}\\
 
-Do edycji użytkownika został zaimplementowany endpoint ,,/api/v1/users/{id}''.
-Metoda zapytania ,,PUT''.
+Do edycji użytkownika został zaimplementowany endpoint \texttt{/api/v1/users/{id}}.
+Metoda zapytania \texttt{PUT}.
 W adresie URL musi być podany id użytkownika.
 Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Przykład:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
@@ -513,8 +513,8 @@ Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Przykład:
 \end{lstlisting}
 Dla korzystania z danego endpointu użytkownik musi być zalogowany.
 
-Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika ,,UpdateByID()'' (listing \ref{list:user_controller_UpdateByID}), która zaczyna obróbkę biznesową zapytania.
-W tej metodzie jest wywoływana metoda serwisu ,,UpdateByID()'' (listing \ref{list:user_service_UpdateByID}). Później jest wysyłana odpowiedź.
+Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika \texttt{UpdateByID()} (listing \ref{list:user_controller_UpdateByID}), która zaczyna obróbkę biznesową zapytania.
+W tej metodzie jest wywoływana metoda serwisu \texttt{UpdateByID()} (listing \ref{list:user_service_UpdateByID}). Później jest wysyłana odpowiedź.
 \begin{lstlisting}[label=list:user_controller_UpdateByID,caption=Kontroler edycji użytkownika,basicstyle=\tiny\ttfamily]
     func (c *UserController) UpdateByID() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -540,7 +540,7 @@ W tej metodzie jest wywoływana metoda serwisu ,,UpdateByID()'' (listing \ref{li
     }
 \end{lstlisting}
 % % 
-Metoda ,,UpdateByID()'' (listing \ref{list:user_service_UpdateByID}) z pliku ,,services/v1/userservice.go'':
+Metoda \texttt{UpdateByID()} (listing \ref{list:user_service_UpdateByID}) z pliku \texttt{services/v1/userservice.go}:
 \begin{lstlisting}[label=list:user_service_UpdateByID,caption=Serwis edycji użytkownika,basicstyle=\tiny\ttfamily]
     func (s *UserService) UpdateByID(id string, u *models.User) (*models.User, error) {
         if u.Password != "" {
@@ -563,7 +563,7 @@ Metoda ,,UpdateByID()'' (listing \ref{list:user_service_UpdateByID}) z pliku ,,s
     }
 \end{lstlisting}
 % % 
-Metoda ,,UpdateByID()'' (listing \ref{list:user_repository_UpdateByID}) wyszukuje i aktualizuje użytkownika z pewnym ID i \texttt{update\_at} w bazie dabych.
+Metoda \texttt{UpdateByID()} (listing \ref{list:user_repository_UpdateByID}) wyszukuje i aktualizuje użytkownika z pewnym ID i \texttt{update\_at} w bazie dabych.
 Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 \begin{lstlisting}[label=list:user_repository_UpdateByID,caption=Edycja uzytkownika w bazie danych,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) UpdateByID(id string, u *models.User) error {
@@ -599,14 +599,14 @@ Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 % % 
 \paragraph{Usunięcie}\mbox{}\\
 
-Do Usunięcia użytkownika został zaimplementowany endpoint ,,/api/v1/users/{id}''.
-Metoda zapytania ,,DELETE''.
+Do Usunięcia użytkownika został zaimplementowany endpoint \texttt{/api/v1/users/{id}}.
+Metoda zapytania \texttt{DELETE}.
 W adresie URL musi być podany id użytkownika.
 
 Dla korzystania z danego endpointu użytkownik musi być zalogowany.
 
-Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika ,,DeleteByID()'' (listing \ref{list:user_controller_DeleteByID}), która zaczyna obróbkę biznesową zapytania.
-W tej metodzie jest wywoływana metoda serwisu ,,DeleteByID()'' (listing \ref{list:user_service_DeleteByID}). Później jest wysyłana odpowiedź.
+Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika \texttt{DeleteByID()} (listing \ref{list:user_controller_DeleteByID}), która zaczyna obróbkę biznesową zapytania.
+W tej metodzie jest wywoływana metoda serwisu \texttt{DeleteByID()} (listing \ref{list:user_service_DeleteByID}). Później jest wysyłana odpowiedź.
 \begin{lstlisting}[label=list:user_controller_DeleteByID,caption=Kontroler usunięcia użytkownika,basicstyle=\tiny\ttfamily]
     func (c *UserController) DeleteByID() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -626,15 +626,15 @@ W tej metodzie jest wywoływana metoda serwisu ,,DeleteByID()'' (listing \ref{li
     }
 \end{lstlisting}
 % % 
-Metoda ,,DeleteByID()'' (listing \ref{list:user_service_DeleteByID}) z pliku ,,services/v1/userservice.go'':
+Metoda \texttt{DeleteByID()} (listing \ref{list:user_service_DeleteByID}) z pliku \texttt{services/v1/userservice.go}:
 \begin{lstlisting}[label=list:user_service_DeleteByID,caption=Serwis usunięcia użytkownika,basicstyle=\tiny\ttfamily]
     func (s *UserService) DeleteByID(id string) error {
         return s.storage.User().DeleteByID(id)
     }
 \end{lstlisting}
 % 
-Metoda ,,DeleteByID()'' (listing \ref{list:user_repository_DeleteByID}) usuwa użytkownika z pewnym ID z bazy dabych.
-Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
+Metoda \texttt{DeleteByID()} (listing \ref{list:user_repository_DeleteByID}) usuwa użytkownika z pewnym ID z bazy dabych.
+Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 \begin{lstlisting}[label=list:user_repository_DeleteByID,caption=Usunięcie uzytkownika z bazy danych,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) DeleteByID(id string) error {
         idi, err := primitive.ObjectIDFromHex(id)
@@ -652,16 +652,15 @@ Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
         return nil
     }
 \end{lstlisting}
-\newpage
+
 \subsubsection{Autentykacja / Logowanie i rejestracja}
 \label{sec:autentykacja}
 Dla autentykacji został wykorzystany JWT token, który jest generowany na serwerze, przy znalezieniu użytkownika o podanym adresie mailowym i haśle w bazie danych, i za tym jest wysłany w nagłówku odpowiedzi razem z danymi tego użytkownika.
 Ten token jest ważny jeden tydzień, za tym traci ważność i należy zalogować się ponownie. Wewnątrz tokena znajduje się nagłówek, sygnatura, czas ważności i id użytkownika.
 Większość endpointów dostępny tylko dla uwierzytelnionych użytkowników. W nagłówku zapytania musi znajdować się ważny token oraz ten token nie musi znajdować się na czarnej liście tokenów przechowywanych w bazie danych Redis.
 
-\paragraph{Logowanie}
-\newline
-Dla zalogowania należy wysłać metodą POST zapytanie na endpoint ,,api/v1/login'' z ciałem zawierającym ,,email'' i ,,password'' w formacie JSON:
+\paragraph{Logowanie\newline}
+Dla zalogowania należy wysłać metodą POST zapytanie na endpoint \texttt{api/v1/login} z ciałem zawierającym \texttt{email} i \texttt{password} w formacie JSON:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
         "email": "test@test.test",
@@ -669,7 +668,7 @@ Dla zalogowania należy wysłać metodą POST zapytanie na endpoint ,,api/v1/log
     }
 \end{lstlisting}
 
-Mapowanie routera przekieruje to zapytanie do metody ,,Login()'', która się znajduje w ,,controllers/api/authcontroller.go'' \ref{list:authcontroller_login}.
+Mapowanie routera przekieruje to zapytanie do metody \texttt{Login()}, która się znajduje w \texttt{controllers/api/authcontroller.go} \ref{list:authcontroller_login}.
 W tej metodzie, po znalezieniu użytkownika o takim adresie mailowym i hasle (\ref{list:authcontroller_login}), jest generowany token JWT (\ref{list:get_jwt_token}) i wysyła się odpowidż zawierająca nagłówek z tokenem oraz ciało z danymi użytkownika.
 \begin{lstlisting}[label=list:authcontroller_login,caption=Kontroller logowania użytkownika,basicstyle=\tiny\ttfamily]
     func (c *AuthController) Login() http.HandlerFunc {
@@ -714,8 +713,8 @@ W tej metodzie, po znalezieniu użytkownika o takim adresie mailowym i hasle (\r
     }
 \end{lstlisting}
 
-Dla wyszukiwania użytkownika o podanym adresie mailowym i haśle jest używana metoda ,,Login'' (\ref{list:userservice_login}) znajdująca się w ,,serwices/api/v1/userservice.go'',
-która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe są unikalne) za pomocą metody ,,FindByEmal()'' (\ref{list:userrepository_findbyemail}) z pliku ,,storage/mongostore/userrepository.go'' i porównuje hashowane hasło, z bazy danych, z nie haszowanym, z zapytania (\ref{list:validate_password}).
+Dla wyszukiwania użytkownika o podanym adresie mailowym i haśle jest używana metoda \texttt{Login} (\ref{list:userservice_login}) znajdująca się w \texttt{serwices/api/v1/userservice.go},
+która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe są unikalne) za pomocą metody \texttt{FindByEmal()} (\ref{list:userrepository_findbyemail}) z pliku \texttt{storage/mongostore/userrepository.go} i porównuje hashowane hasło, z bazy danych, z nie haszowanym, z zapytania (\ref{list:validate_password}).
 \begin{lstlisting}[label=list:userservice_login,caption=Serwis logowania uzytkownika,basicstyle=\tiny\ttfamily]
     func (s *UserService) Login(u *models.User) (*models.User, error) {
         if err := u.Validate(); err != nil {
@@ -752,10 +751,8 @@ która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe s
     }
 \end{lstlisting}
 
-\paragraph{Rejestracja}\newline
-\newline
-
-Aby zarejestrować nowego użytkownika, należy wysłać zapytanie POST na adres ,,api/v1/users'' z odpowiednim ciałem JSON:
+\paragraph{Rejestracja\newline}
+Aby zarejestrować nowego użytkownika, należy wysłać zapytanie POST na adres \texttt{api/v1/users} z odpowiednim ciałem JSON:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
         "email": "email@test3.com",
@@ -764,8 +761,8 @@ Aby zarejestrować nowego użytkownika, należy wysłać zapytanie POST na adres
     }
 \end{lstlisting}
 
-Dalej zostanie wykonana metoda ,,CreateUser()'' z pliku ,,controllers/api/v1/authcontroller.go'' \ref{list:user_controller_create}.
-W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody ,,CreateUser()'' (listing \ref{list:user_service_create}), która znajduje się w pliku ,,services/api/v1/userservice.go''. Po otrzymaniu danych z serwisu jest tworzony token oraz wysyłana odpowiedź, która zawiera wygenerowany token i dane utworzonego użytkownika.
+Dalej zostanie wykonana metoda \texttt{CreateUser()} z pliku \texttt{controllers/api/v1/authcontroller.go} \ref{list:user_controller_create}.
+W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody \texttt{CreateUser()} (listing \ref{list:user_service_create}), która znajduje się w pliku \texttt{services/api/v1/userservice.go}. Po otrzymaniu danych z serwisu jest tworzony token oraz wysyłana odpowiedź, która zawiera wygenerowany token i dane utworzonego użytkownika.
 \begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
     func (c *UserController) CreateUser() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -785,7 +782,7 @@ W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSO
     }
 \end{lstlisting}
 
-W metodzie ,,CreateUser()'' (listing \ref{list:user_service_create}) zachodzi:
+W metodzie \texttt{CreateUser()} (listing \ref{list:user_service_create}) zachodzi:
 \begin{itemize}
     \item walidacja danych;
     \item sprawdzanie, czy istnieje użytkownik z taką pocztą mailową;
@@ -793,7 +790,7 @@ W metodzie ,,CreateUser()'' (listing \ref{list:user_service_create}) zachodzi:
     \item tworzenie nowego użytkownika w bazie danych;
     \item przygotowanie obiektu użytkownika do transmisji: usuwanie hasła i daty tworzenia dla bezpieczeństwa oraz szybkości transmisji danych.
 \end{itemize}
-Ta metoda znajduje się w pliku ,,services/api/v1/userservice.go''.
+Ta metoda znajduje się w pliku \texttt{services/api/v1/userservice.go}.
 \begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
     func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
         if err := u.Validate(); err != nil {
@@ -831,8 +828,8 @@ Ta metoda znajduje się w pliku ,,services/api/v1/userservice.go''.
     }
 \end{lstlisting}
 
-Metoda ,,Create()'' (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
-Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
+Metoda \texttt{Create()} (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
+Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 \begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) Create(u *models.User) (string, error) {
         res, err := r.col.InsertOne(context.TODO(), u)
@@ -844,11 +841,10 @@ Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
     }
 \end{lstlisting}
 
-\paragraph{Sprawdzenie tokenu}
-\newline
+\paragraph{Sprawdzenie tokenu\newline}
 Większość, jak juz zostało powiedziano, endpointów pracują tylko z uwierzytelnionymi użytkownikami. Dla realizacji tej funkcji należy sprawdzić token, który zawiera nagłówek zapytania.
 Token musi nie tylko nie stracić ważności, ale i nie znajdować się w czarnej liście tokenów, która znajduje się Redis, bazie danych wykonującej rolę pamięci podręcznej.
-Metoda ,,CheckToken()'' sprawdza te rzeczy (\ref{list:CheckToken}).
+Metoda \texttt{CheckToken()} sprawdza te rzeczy (\ref{list:CheckToken}).
 \begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokenu,basicstyle=\tiny\ttfamily]
     func (c *AuthController) CheckToken(next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -884,9 +880,8 @@ Metoda ,,CheckToken()'' sprawdza te rzeczy (\ref{list:CheckToken}).
     }
 \end{lstlisting}
 
-\paragraph{Wylogowanie}
-\newline
-Po wysłaniu zapytania GET na adres ,,api/v1/logout'', zostanie wywoływana metoda ,,Logout()'' (\ref{list:logout}) podczas działania której zostanie sprawdzony token (\ref{list:CheckToken}), za tym dodany do bazy danych Redis (pamięci podręcznej) oraz usunięty z nagłówka odpowiedzi.
+\paragraph{Wylogowanie\newline}
+Po wysłaniu zapytania GET na adres \texttt{api/v1/logout}, zostanie wywoływana metoda \texttt{Logout()} (\ref{list:logout}) podczas działania której zostanie sprawdzony token (\ref{list:CheckToken}), za tym dodany do bazy danych Redis (pamięci podręcznej) oraz usunięty z nagłówka odpowiedzi.
 \begin{lstlisting}[label=list:logout,caption=Wylogowanie,basicstyle=\tiny\ttfamily]
     func (c *AuthController) Logout() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
