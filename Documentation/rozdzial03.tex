@@ -154,7 +154,7 @@ Dla szybkiego wyszukiwania encja wygląda w następujący sposób: \textit{token
 % 
 \subsection{Struktura RestApi}
 % 
-\subsubsection{Narzędzia i technologie}
+\subsubsection{Narzędzia, technologie, biblioteki}
 Do stworzenia serwerowej części aplikacji użyto następujących technologii:
 \begin{itemize}
 \item Visual Studio Code - środowisko programistyczne;
@@ -165,6 +165,7 @@ Do stworzenia serwerowej części aplikacji użyto następujących technologii:
 \item mongo-driver - sterowanie MongoDB z języka Go;
 \item go-redis/redis - sterowanie Redis z języka Go;
 \item dgrijalva/jwt-go - realizacja JWT w języku Go;
+\item crypto/bcrypt - realizuje algorytm haszowania bcrypt Provosa i Mazierao;
 \item go-ozzo/ozzo-validation - pakiet wspomagający na walidację danych;
 \item yaml.v2 - implementuje obsługę YAML (ang. \textit{Yet Another Markup Language});
 \item google/uuid - sprawdza i generuje UUID (ang. \textit{universally unique identifier});
@@ -215,7 +216,7 @@ Funkcje lub metody przechowywane w katalogu ,,services'' (rys. \ref{fig:services
     \label{fig:services}
 \end{figure}
 
-Współpraca z bazą danych zachdzi w katalogu ,,storage'' (rys. \ref{fig:storage}). Katalog ,,mongostore'' wspódziałuje z MongoDB, notomiast ,,teststore'' wykorzystuje się do testowania, które będzie omówione w odpowiednim rozdiale \ref{chap:Testy}.
+Współpraca z bazą danych zachdzi w katalogu ,,storage'' (rys. \ref{fig:storage}). Katalog ,,mongostore'' wspódziałuje z MongoDB, notomiast ,,teststore'' wykorzystuje się do testowania, które będzie omówione w odpowiednim rozdiale \ref{ch:Testy}.
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.25\linewidth]{rys03/storage.png}
@@ -292,8 +293,8 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
 \end{table}
 \newpage
 Kodem \ref{list:routers} została przedstawiona implementacja endpointów.
-Dla rejestracji połączeń wchodzący zostanły użyte metody medialne ,,s.logger.SetRequestID'' do przyznaczenia id kożnemu mołączniu oraz ,,s.logger.LogRequest'' do wypisywania tego do konsoli.
-Dla większośc przypadków też jest sprawdzano czy jest użytkownik zalogowany do systemu ,,s.authController.CheckToken''. To będzie wyjaśnione później (sekcja \ref{sec:autentykacja}).
+Dla rejestracji połączeń wchodzących zostanły użyte metody medialne ,,s.logger.SetRequestID'' do przyznaczenia id każdemu połączniu oraz ,,s.logger.LogRequest'' do wypisywania tego do konsoli.
+Dla większości przypadków też jest sprawdzano czy jest użytkownik zalogowany do systemu ,,s.authController.CheckToken''. To będzie wyjaśnione później (sekcja \ref{sec:autentykacja}).
 \begin{lstlisting}[label=list:routers,caption=Implementacja punktów końcowych,basicstyle=\tiny\ttfamily]
 func (s *Server) SetupRouters() *mux.Router {
 	v1 := "/api/v1"
@@ -350,90 +351,90 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 \end{lstlisting}
 
 % 
-\paragraph{Dodawanie}\mbox{}\\
-Do tworzenia użytkownika został zaimplementowany endpoint ,,/api/v1/users''.
-Metoda zapytania ,,POST''.
-Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Przykład:
-\begin{lstlisting}[basicstyle=\tiny\ttfamily]
-    {
-        "email": "email@test3.com",
-        "user_name": "test_user_1",
-        "password": "password"
-    }
-\end{lstlisting}
-Na serwerze nie sprawdza się, czy jest użytkownik już zalogowany, ponieważ ten endpoint również używany przy rejestracji.
-Zwraca JSON obiekt stworzonego użytkownika.
+% \paragraph{Dodawanie}\mbox{}\\
+% Do tworzenia użytkownika został zaimplementowany endpoint ,,/api/v1/users''.
+% Metoda zapytania ,,POST''.
+% Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Przykład:
+% \begin{lstlisting}[basicstyle=\tiny\ttfamily]
+%     {
+%         "email": "email@test3.com",
+%         "user_name": "test_user_1",
+%         "password": "password"
+%     }
+% \end{lstlisting}
+% Na serwerze nie sprawdza się, czy jest użytkownik już zalogowany, ponieważ ten endpoint również używany przy rejestracji.
+% Zwraca JSON obiekt stworzonego użytkownika.
 
-Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera ,,CreateUser()'' (listing \ref{list:user_controller_create}), w którym zaczyna się obróbka biznesowa zapytania.
-W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody serwisu ,,CreateUser()'' (listing \ref{list:user_service_create}). Po otrzymaniu danych z serwisu jest wysyłana odpowiedź.
-\begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
-    func (c *UserController) CreateUser() http.HandlerFunc {
-        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-            u := &models.User{}
-            err := json.NewDecoder(r.Body).Decode(u)
-            if err != nil {
-                utils.Error(w, r, http.StatusBadRequest, err)
-                return
-            }
-            u, err = c.service.User().CreateUser(u)
-            if err != nil {
-                utils.Error(w, r, http.StatusBadRequest, err)
-                return
-            }
-            utils.Respond(w, r, http.StatusCreated, u)
-        })
-    }
-\end{lstlisting}
+% Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera ,,CreateUser()'' (listing \ref{list:user_controller_create}), w którym zaczyna się obróbka biznesowa zapytania.
+% W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody serwisu ,,CreateUser()'' (listing \ref{list:user_service_create}). Po otrzymaniu danych z serwisu jest wysyłana odpowiedź.
+% \begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+%     func (c *UserController) CreateUser() http.HandlerFunc {
+%         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+%             u := &models.User{}
+%             err := json.NewDecoder(r.Body).Decode(u)
+%             if err != nil {
+%                 utils.Error(w, r, http.StatusBadRequest, err)
+%                 return
+%             }
+%             u, err = c.service.User().CreateUser(u)
+%             if err != nil {
+%                 utils.Error(w, r, http.StatusBadRequest, err)
+%                 return
+%             }
+%             utils.Respond(w, r, http.StatusCreated, u)
+%         })
+%     }
+% \end{lstlisting}
 
-W metodzie ,,CreateUser()'' (listing \ref{list:user_service_create}) zachodzi:
-\begin{itemize}
-    \item walidacja danych;
-    \item sprawdzanie, czy istnieje użytkownik z taką pocztą mailową;
-    \item jeśli nie istnieje, to zachodzi szyfrowanie hasła oraz ustalenie czasu tworzenia i edycji obiektu. Jeśli już istnieje, to zwraca błąd;
-    \item tworzenie nowego użytkownika w bazie danych;
-    \item przygotowanie obiektu użytkownika do transmisji: usuwanie hasła i daty tworzenia dla bezpieczeństwa oraz szybkości transmisji danych.
-\end{itemize}
-Ta metoda znajduje się w pliku ,,services/v1/userservice.go''.
-\begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
-    func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
-        if err := u.Validate(); err != nil {
-            return u, err
-        }
-        _, err := s.storage.User().FindByEmail(u.Email)
-        if err != utils.ErrRecordNotFound {
-            if err != nil {
-                return nil, err
-            }
-            return u, utils.ErrRecordAlreadyExists
-        }
-        if err := u.BeforeCreate(); err != nil {
-            return u, err
-        }
-        id, err := s.storage.User().Create(u)
-        if err != nil {
-            return nil, err
-        }
-        u, err = s.storage.User().FindByID(id)
-        if err != nil {
-            return nil, err
-        }
-        u.Sanitize()
-        return u, nil
-    }
-\end{lstlisting}
+% W metodzie ,,CreateUser()'' (listing \ref{list:user_service_create}) zachodzi:
+% \begin{itemize}
+%     \item walidacja danych;
+%     \item sprawdzanie, czy istnieje użytkownik z taką pocztą mailową;
+%     \item jeśli nie istnieje, to zachodzi szyfrowanie hasła oraz ustalenie czasu tworzenia i edycji obiektu. Jeśli już istnieje, to zwraca błąd;
+%     \item tworzenie nowego użytkownika w bazie danych;
+%     \item przygotowanie obiektu użytkownika do transmisji: usuwanie hasła i daty tworzenia dla bezpieczeństwa oraz szybkości transmisji danych.
+% \end{itemize}
+% Ta metoda znajduje się w pliku ,,services/v1/userservice.go''.
+% \begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+%     func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
+%         if err := u.Validate(); err != nil {
+%             return u, err
+%         }
+%         _, err := s.storage.User().FindByEmail(u.Email)
+%         if err != utils.ErrRecordNotFound {
+%             if err != nil {
+%                 return nil, err
+%             }
+%             return u, utils.ErrRecordAlreadyExists
+%         }
+%         if err := u.BeforeCreate(); err != nil {
+%             return u, err
+%         }
+%         id, err := s.storage.User().Create(u)
+%         if err != nil {
+%             return nil, err
+%         }
+%         u, err = s.storage.User().FindByID(id)
+%         if err != nil {
+%             return nil, err
+%         }
+%         u.Sanitize()
+%         return u, nil
+%     }
+% \end{lstlisting}
 
-Metoda ,,Create()'' (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
-Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
-\begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
-    func (r *UserRepository) Create(u *models.User) (string, error) {
-        res, err := r.col.InsertOne(context.TODO(), u)
-        if err != nil {
-            return "", err
-        }
-        id := res.InsertedID.(primitive.ObjectID).Hex()
-        return id, nil
-    }
-\end{lstlisting}
+% Metoda ,,Create()'' (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
+% Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
+% \begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
+%     func (r *UserRepository) Create(u *models.User) (string, error) {
+%         res, err := r.col.InsertOne(context.TODO(), u)
+%         if err != nil {
+%             return "", err
+%         }
+%         id := res.InsertedID.(primitive.ObjectID).Hex()
+%         return id, nil
+%     }
+% \end{lstlisting}
 
 % 
 \paragraph{Wczytywanie}\mbox{}\\
@@ -651,9 +652,287 @@ Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
         return nil
     }
 \end{lstlisting}
-
+\newpage
 \subsubsection{Autentykacja / Logowanie i rejestracja}
 \label{sec:autentykacja}
+Dla autentykacji został wykorzystany JWT token, który jest generowany na serwerze, przy znalezieniu użytkownika o podanym adresie mailowym i haśle w bazie danych, i za tym jest wysłany w nagłówku odpowiedzi razem z danymi tego użytkownika.
+Ten token jest ważny jeden tydzień, za tym traci ważność i należy zalogować się ponownie. Wewnątrz tokena znajduje się nagłówek, sygnatura, czas ważności i id użytkownika.
+Większość endpointów dostępny tylko dla uwierzytelnionych użytkowników. W nagłówku zapytania musi znajdować się ważny token oraz ten token nie musi znajdować się na czarnej liście tokenów przechowywanych w bazie danych Redis.
+
+\paragraph{Logowanie}
+\newline
+Dla zalogowania należy wysłać metodą POST zapytanie na endpoint ,,api/v1/login'' z ciałem zawierającym ,,email'' i ,,password'' w formacie JSON:
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+    {
+        "email": "test@test.test",
+        "password": "password"
+    }
+\end{lstlisting}
+
+Mapowanie routera przekieruje to zapytanie do metody ,,Login()'', która się znajduje w ,,controllers/api/authcontroller.go'' \ref{list:authcontroller_login}.
+W tej metodzie, po znalezieniu użytkownika o takim adresie mailowym i hasle (\ref{list:authcontroller_login}), jest generowany token JWT (\ref{list:get_jwt_token}) i wysyła się odpowidż zawierająca nagłówek z tokenem oraz ciało z danymi użytkownika.
+\begin{lstlisting}[label=list:authcontroller_login,caption=Kontroller logowania użytkownika,basicstyle=\tiny\ttfamily]
+    func (c *AuthController) Login() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            u := &models.User{}
+            err := json.NewDecoder(r.Body).Decode(u)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            u, err = c.service.User().Login(u)
+            if err != nil {
+                utils.Error(w, r, http.StatusUnauthorized, utils.ErrIncorrectEmailOrPassword)
+                return
+            }
+            token, err := c.createTokenString(u.ID)
+            if err != nil {
+                utils.Error(w, r, http.StatusInternalServerError, err)
+                return
+            }
+            w.Header().Set("Authorization", "Bearer "+token)
+            utils.Respond(w, r, http.StatusOK, u)
+        })
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:get_jwt_token,caption=Generacja JWT tokena,basicstyle=\tiny\ttfamily]
+    func (c *AuthController) createTokenString(uid string) (string, error) {
+        expirationTime := time.Now().Add(168 * time.Hour)
+        claims := &Claims{
+            UID: uid, // user id
+            StandardClaims: jwt.StandardClaims{
+                ExpiresAt: expirationTime.Unix(), //lifetime
+            },
+        }
+        token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+        tokenString, err := token.SignedString([]byte(c.jwtKey))
+        if err != nil {
+            return "", err
+        }
+        return tokenString, nil
+    }
+\end{lstlisting}
+
+Dla wyszukiwania użytkownika o podanym adresie mailowym i haśle jest używana metoda ,,Login'' (\ref{list:userservice_login}) znajdująca się w ,,serwices/api/v1/userservice.go'',
+która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe są unikalne) za pomocą metody ,,FindByEmal()'' (\ref{list:userrepository_findbyemail}) z pliku ,,storage/mongostore/userrepository.go'' i porównuje hashowane hasło, z bazy danych, z nie haszowanym, z zapytania (\ref{list:validate_password}).
+\begin{lstlisting}[label=list:userservice_login,caption=Serwis logowania uzytkownika,basicstyle=\tiny\ttfamily]
+    func (s *UserService) Login(u *models.User) (*models.User, error) {
+        if err := u.Validate(); err != nil {
+            return nil, err
+        }
+        u2, err := s.storage.User().FindByEmail(u.Email)
+        if err != nil {
+            return nil, err
+        }
+        if !u2.VerifyPassword(u.Password) {
+            return nil, utils.ErrIncorrectEmailOrPassword
+        }
+        u2.Sanitize()
+        return u2, nil
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:userrepository_findbyemail,caption=Wysukiwanie użytkownika w bazie po adresie mailowym,basicstyle=\tiny\ttfamily]
+    func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
+        filter := bson.M{"email": email}
+        res := r.col.FindOne(context.TODO(), filter)
+        u := &models.User{}
+        err := res.Decode(u)
+        if err != nil {
+            return nil, utils.ErrRecordNotFound
+        }
+        return u, nil
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:validate_password,caption=Porównywanie hasła,basicstyle=\tiny\ttfamily]
+    func (u *User) VerifyPassword(p string) bool {
+        return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(p)) == nil
+    }
+\end{lstlisting}
+
+\paragraph{Rejestracja}\newline
+\newline
+
+Aby zarejestrować nowego użytkownika, należy wysłać zapytanie POST na adres ,,api/v1/users'' z odpowiednim ciałem JSON:
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+    {
+        "email": "email@test3.com",
+        "user_name": "test_user_1",
+        "password": "password"
+    }
+\end{lstlisting}
+
+Dalej zostanie wykonana metoda ,,CreateUser()'' z pliku ,,controllers/api/v1/authcontroller.go'' \ref{list:user_controller_create}.
+W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody ,,CreateUser()'' (listing \ref{list:user_service_create}), która znajduje się w pliku ,,services/api/v1/userservice.go''. Po otrzymaniu danych z serwisu jest tworzony token oraz wysyłana odpowiedź, która zawiera wygenerowany token i dane utworzonego użytkownika.
+\begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+    func (c *UserController) CreateUser() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            u := &models.User{}
+            err := json.NewDecoder(r.Body).Decode(u)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            u, err = c.service.User().CreateUser(u)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusCreated, u)
+        })
+    }
+\end{lstlisting}
+
+W metodzie ,,CreateUser()'' (listing \ref{list:user_service_create}) zachodzi:
+\begin{itemize}
+    \item walidacja danych;
+    \item sprawdzanie, czy istnieje użytkownik z taką pocztą mailową;
+    \item jeśli nie istnieje, to zachodzi haszowanie hasła \ref{list:hash_pass} oraz ustalenie czasu tworzenia i edycji obiektu. Jeśli już istnieje, to zwraca błąd;
+    \item tworzenie nowego użytkownika w bazie danych;
+    \item przygotowanie obiektu użytkownika do transmisji: usuwanie hasła i daty tworzenia dla bezpieczeństwa oraz szybkości transmisji danych.
+\end{itemize}
+Ta metoda znajduje się w pliku ,,services/api/v1/userservice.go''.
+\begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+    func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
+        if err := u.Validate(); err != nil {
+            return u, err
+        }
+        _, err := s.storage.User().FindByEmail(u.Email)
+        if err != utils.ErrRecordNotFound {
+            if err != nil {
+                return nil, err
+            }
+            return u, utils.ErrRecordAlreadyExists
+        }
+        if err := u.BeforeCreate(); err != nil {
+            return u, err
+        }
+        id, err := s.storage.User().Create(u)
+        if err != nil {
+            return nil, err
+        }
+        u, err = s.storage.User().FindByID(id)
+        if err != nil {
+            return nil, err
+        }
+        u.Sanitize()
+        return u, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:hash_pass,caption=Haszowanie hasła,basicstyle=\tiny\ttfamily]
+    func EncryptString(str string) (string, error) {
+        b, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.MinCost)
+        if err != nil {
+            return "", err
+        }
+        return string(b), nil
+    }
+\end{lstlisting}
+
+Metoda ,,Create()'' (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
+Ona znajduję się w ,,/storage/mongostore/userrepository.go''.
+\begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
+    func (r *UserRepository) Create(u *models.User) (string, error) {
+        res, err := r.col.InsertOne(context.TODO(), u)
+        if err != nil {
+            return "", err
+        }
+        id := res.InsertedID.(primitive.ObjectID).Hex()
+        return id, nil
+    }
+\end{lstlisting}
+
+\paragraph{Sprawdzenie tokenu}
+\newline
+Większość, jak juz zostało powiedziano, endpointów pracują tylko z uwierzytelnionymi użytkownikami. Dla realizacji tej funkcji należy sprawdzić token, który zawiera nagłówek zapytania.
+Token musi nie tylko nie stracić ważności, ale i nie znajdować się w czarnej liście tokenów, która znajduje się Redis, bazie danych wykonującej rolę pamięci podręcznej.
+Metoda ,,CheckToken()'' sprawdza te rzeczy (\ref{list:CheckToken}).
+\begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokenu,basicstyle=\tiny\ttfamily]
+    func (c *AuthController) CheckToken(next http.Handler) http.Handler {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            tokenString := r.Header.Get("Authorization")
+            if len(tokenString) == 0 {
+                utils.Error(w, r, http.StatusUnauthorized, errors.New("Missing Authorization Header"))
+                return
+            }
+            tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
+            claims := &Claims{}
+            tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+                return []byte(c.jwtKey), nil
+            })
+            if err != nil {
+                if err == jwt.ErrSignatureInvalid {
+                    utils.Error(w, r, http.StatusUnauthorized, err)
+                    return
+                }
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            if !tkn.Valid {
+                utils.Error(w, r, http.StatusUnauthorized, err)
+                return
+            }
+            _, err = c.rClient.Get(tokenString[37:]).Result() // find tocken in Redis
+            if err != redis.Nil {
+                utils.Error(w, r, http.StatusUnauthorized, errors.New("Invalid token"))
+                return
+            }
+            next.ServeHTTP(w, r)
+        })
+    }
+\end{lstlisting}
+
+\paragraph{Wylogowanie}
+\newline
+Po wysłaniu zapytania GET na adres ,,api/v1/logout'', zostanie wywoływana metoda ,,Logout()'' (\ref{list:logout}) podczas działania której zostanie sprawdzony token (\ref{list:CheckToken}), za tym dodany do bazy danych Redis (pamięci podręcznej) oraz usunięty z nagłówka odpowiedzi.
+\begin{lstlisting}[label=list:logout,caption=Wylogowanie,basicstyle=\tiny\ttfamily]
+    func (c *AuthController) Logout() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            tokenString := r.Header.Get("Authorization")
+            if len(tokenString) == 0 {
+                utils.Error(w, r, http.StatusUnauthorized, errors.New("Missing Authorization Header"))
+                return
+            }
+            tokenString = strings.Replace(tokenString, "Bearer ", "", 1)
+            claims := &Claims{}
+            tkn, err := jwt.ParseWithClaims(tokenString, claims, func(token *jwt.Token) (interface{}, error) {
+                return []byte(c.jwtKey), nil
+            })
+            if err != nil {
+                if err == jwt.ErrSignatureInvalid {
+                    utils.Error(w, r, http.StatusUnauthorized, err)
+                    return
+                }
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            if !tkn.Valid {
+                utils.Error(w, r, http.StatusUnauthorized, err)
+                return
+            }
+            _, err = c.rClient.Get(tokenString[37:]).Result() // find in Redis db
+            if err != redis.Nil {
+                utils.Error(w, r, http.StatusUnauthorized, errors.New("Invalid token"))
+                return
+            }
+            params := mux.Vars(r)
+            uid, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            if uid != claims.UID {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            c.rClient.Set(tokenString[37:], tokenString, 168*time.Hour) // save to Redis db
+            utils.Respond(w, r, http.StatusOK, nil)
+        })
+    }
+\end{lstlisting}
+
 \subsubsection{Stacja}
 \paragraph{Dodawanie}
 \paragraph{Wczytywanie}

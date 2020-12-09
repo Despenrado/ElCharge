@@ -7,7 +7,7 @@ W niniejszym rozdzialie zostały przedstawione listy przeprowadzonych testów or
 % % Файлы преднозначенные для тестирования находятся рядом с тестируеммыми файлами. Они отличаются от вайлов приложения названием: '*\_test.go'.
 % % Код показывает пример тестирования валидации данных для сущности пользователя, которое используется, напривер, перед добавлением пользователя в базу данных:
 Aby przeprowadzić testy po stronie serwera, wystarczy uruchomić polecenie \texttt{make test} w folderze 'RestAPI'.
-Do testowania użyto biblioteki stretchr/testify.
+Do testowania użyto biblioteki ,,stretchr/testify''.
 Pliki przeznaczone do testowania znajdują się obok testowanych plików. Różnią się one od plików aplikacji nazwą: *\_test.go.
 
 Kod \ref{list:test_user_valitation} pokazuje przykład testowania walidacji danych dla jednostki użytkownika, która jest używana na przykład przed dodaniem użytkownika do bazy danych.
@@ -93,7 +93,7 @@ Kod \ref{list:test_user_valitation} pokazuje przykład testowania walidacji dany
 \end{lstlisting}
 
 % Для тестирования функций, которые не требуют прямого подлючения к MongoDB, используется пакет-заглушка 'storage/teststorage' с базой данных в виде карты ключ-значение. Тесты взаимодеййствия с реальной базой даннх также проведены.
-Do testowania funkcji, które nie wymagają bezpośredniego połączenia z MongoDB, używany jest pakiet "storage/teststorage" z bazą danych jako mapą klucz-wartość. Przeprowadzono również testy interakcji z rzeczywistą bazą danych.
+Do testowania funkcji, które nie wymagają bezpośredniego połączenia z MongoDB, używany jest pakiet ,,storage/teststorage'' z bazą danych zaimplementowanej jako mapa klucz-wartość. Przeprowadzono również testy interakcji z rzeczywistą bazą danych.
 
 % Примером тестирования создания пользователя в базе данных служит код:
 Przykładem testowania tworzenia użytkownika w bazie danych jest kod \ref{list:test_mongoDB}:

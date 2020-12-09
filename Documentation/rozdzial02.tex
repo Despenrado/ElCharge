@@ -25,17 +25,17 @@ W niniejszym rozdziale został przedstawiony początkowy makiet interfejsu użyt
 
 % Предположительный макет сервиса:
 \paragraph{Opis problemu:}
-Istnieje problem ze znalezieniem stacji ładującej samochody elektryczne, gdy w samochodzie pozostaje niewiele ładowania.
+Istnieje problem ze znalezieniem dobrej stacji ładującej pojazdy elektryczne.
 Stacja może nie działać, źle ładować, może być zainstalowana tak, że nie można jej używać.
-Większość istniejących aplikacji najczęściej mają dostęp tylko do stacji konkretnych firm i mogą nie mieć najbardziej aktualnych informacji o pojawieniu się stacji innych producentów oraz oceny rzeczewistych użytkowników.
-Istnieje chęć po prostu wziąć telefon i zobaczyć bezpośrednio na mapie, gdzie są stacje i zobaczyć recenzje prawdziwych ludzi na ten temat..
+Większość istniejących aplikacji najczęściej mają dostęp tylko do stacji konkretnych firm i mogą nie mieć najbardziej aktualnych informacji o pojawieniu się stacji innych producentów oraz ocen rzeczewistych użytkowników.
+Istnieje chęć po prostu wziąć telefon i zobaczyć bezpośrednio na mapie, gdzie są stacje i zobaczyć recenzje prawdziwych ludzi na ten temat.
 
 \paragraph{W wyniku pracy ma powstać aplikacja mobilna w której:}
 Kierowcy samochodów elektrycznych mogą łatwo i szybko znaleźć najbliższe stacje ładowania i wybrać najlepszą.
 Właściciele stacji mogą dodawać swoje stacje, co da im dodatkową reklamę.
 Aby określić jakość stacji, należy użyć systemu aktualnych komentarzy i ocen zarejestrowanych użytkowników.
 Każdy użytkownik musi posiadać własne konto, aby móc korzystać z aplikacji.
-Taki system może spowodować zwiększenie jakośi punktów ładowania.
+Taki system może spowodować zwiększenie jakośi punktów ładowania pojazdów elektrycznych.
 Ta aplikacja musi być w pełni wspierana przez społeczność: tworzenie i ocena stacji odbywa się przez użytkowników.
 
 \paragraph{Przypuszczalny układ serwisu:}
@@ -60,30 +60,31 @@ W tabeli \ref{tab:wymaganiafunkcjonalne} przedstawione wymagania funkc do aplika
     \hline
     № & Opis & Cel \\
     \hline
-    1 & Użytkownik loguje się do własnego kąta. & Umożliwia korzystanie z funkjalności aplikacji. \\ 
+    1 & Użytkownik loguje się do własnego konta. & Umożliwia korzystanie z funkjalności aplikacji. \\ 
     \hline
-    2 & Użytkownik rejestruje się. & Założenie kąta tworzy nowe kąto dla logowania się. \\ 
+    2 & Użytkownik rejestruje się. & Założenie konta tworzy nowy wpis w bazie danych pozwalający na logowanie. \\ 
     \hline
-    3 & Użytkownik wyszkuję stacje ładownicze obok wybranego miejca  & dać użytkownikowi możliwość wyboru dogodnej dla niego stacjD \\
+    3 & Użytkownik wyszkuję stacje ładownicze obok wybranego miejca  & dać użytkownikowi możliwość wyboru dogodnej dla niego stacji \\
     \hline
-    4 & Użytkownik ma możliwość określenia własnej pozycji & Robi wyszukiwanie wygodniejszych stacji było bardziej intuicyjne dla użytkownika  \\
+    4 & Użytkownik ma możliwość określenia własnej pozycji & Wyszukiwanie wygodniejszych stacji bardziej intuicyjne dla użytkownika  \\
     \hline
     5 & Użytkownik ma możliwość przęgliądania mapy razem ze swoją lokalizacją oraz stacji łaowniczych obok wybranego mijsca. & Ułatwienie wyszukiwania najwygodniejszej stacji ładowniczej. \\
     \hline
-    6 & Użytkownik ma możliwość wyszukiwania stacji według słów kluczowych & Wyszukiwanie najwygoniejszej stacji z punktu widzenia typu lub nazwy stacji \\
+    6 & Użytkownik ma możliwość wyszukiwania stacji ładowniczej według słów kluczowych & Wyszukiwanie najwygoniejszej stacji z punktu widzenia typu lub nazwy stacji \\
     \hline
-    7 & Użytkownik ma możliwość przeglądania informacji dotyczącej stacji ładowniczej, w tym liku oceny i komentarzy innych użytkowników & Podjęcie decyzji i dobór odpowiedniej dla użytkownika stacji \\
+    7 & Użytkownik ma możliwość przeglądania informacji dotyczącej stacji ładowniczej, w tym liku oceny i komentarzy innych użytkowników & Podjęcie decyzji i dobór odpowiedniej dla użytkownika stacji ładowniczej \\
     \hline
     8 & Użytkownik ma możliwość wystawienia oceny i napisania komentarzy do wybranej stacji ładowniczej & Określenie jakości stacji. Pozwala na aktualizację danuch dotyczących stacji ladowniczej \\
     \hline
-    9 & Użytkownik ma możliwość dowdawania (oznaczenia, tworzenie) nowej stacji & Aktualizacja informacji o dostępnych stacjach \\
+    9 & Użytkownik ma możliwość dowdawania (oznaczenia, tworzenie) nowej stacji ładowniczej & Aktualizacja informacji o dostępnych stacjach \\
     \hline
-    10 & Użytkownik, który stworzył stację, ma możliwość zmiany informacji o tej stacji & Aktualizacja informacji istniejącej statji \\
+    10 & Użytkownik, który stworzył stację, ma możliwość zmiany informacji o tej stacji ładowniczej & Aktualizacja informacji istniejącej statji \\
     \hline
 \end{tabular}
 \end{table}
 \newpage
 \paragraph{Diagram Przypadków użycia}
+\newline
 Diagram przypadków użycia (rys. \ref{fig:usecasediagram}) graficznie pokazuje użytkowników oraz funkcje aplikacji dostępne do różnych rodzajów użytkowników (w tym przypadku jeden rodzaj).
 \begin{figure}[ht]
     \centering
@@ -101,19 +102,19 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     № & typ & Opis & Uwagi \\
     \hline
-    1 & Bezpiczeństwo & Hasła muszą być przechowywane w biezpicznej formie & Hasła nie przchowyją się w pierwotnej formie tylko w formie zaszyfrowanej \\ 
+    1 & Bezpiczeństwo & Hasła muszą być przechowywane w biezpicznej formie & Hasła nie przchowyją się w pierwotnej formie, tylko w formie zaszyfrowanej \\ 
     \hline
     2 & Bezpiczeństwo & Małe ryzyka przechwytywania hasła przez trzecich osób podczas komunikacji interfejsu użytkownika i części serwerowej & Autentykacja użytkownika na serwerze powinna zachodzić za pomocą tokenów \\ 
     \hline
     3 & Przenoszlność & wdrożenie systemu powinno być szybkie i łatwe & \\ 
     \hline
-    4 & Konfigurowalność & Zmiana ustaleń bez konieczosści rekompilacji części serwerowej & zarządzaniem portu na którym działa część serwerowa, wymiana adresu oraz nazwy kolekcji bazy danuch, musi być możliwa za pomocą pliku konfiguracyjnego \\ 
+    4 & Konfigurowalność & Zmiana ustaleń bez konieczosści rekompilacji części serwerowej & Zarządzaniem portu na którym działa część serwerowa, wymiana adresu oraz nazwy kolekcji bazy danuch, musi być możliwa za pomocą pliku konfiguracyjnego \\ 
     \hline
     5 & Estetyczne & Przyjazny interfajs użytkownika & Intuicyjny i zrozumiały interfejs \\ 
     \hline
     6 & Ergonomia & Interfejs w języku angielskim & Możliwość kożystania z aplikacji przez dużą libzi \\
     \hline
-    7 & Przenoszlność & Aplikacja mobilna musi działać na 90\% telefonów pracujących na systemie Android & Możliwość kożystania z aplikacji przez dużą ilość libzi \\
+    7 & Przenoszlność & Aplikacja mobilna musi działać na 90\% lub więcej telefonów pracujących na systemie Android & Możliwość kożystania z aplikacji przez dużą ilość ludzi \\
     \hline
     8 & Estetyczne & kolory muszą być odpowiednio dopasowane & Wykorzystanie małej dopasowanych do sobie ilośći kolorów  \\
     \hline
@@ -125,7 +126,7 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     12 & Estetyczne & Wszystkie elementy muszą być w jednym stylu & Niedopuszczalne jest użycie różnych czcionek oraz ciągłej zmiany kolorów \\
     \hline
-    13 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang. \textit{Representational State Transfer}) API (ang. \textit{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}) \\
+    13 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang. \textit{Representational State Transfer}) API (ang. \textit{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}] \\
     \hline
     14 & Ergonomia & Dla realizacji mapy wykorzystuję się Google Maps[index] & Ułatwia rozumienie interfejsu dla użytkowników \\
     \hline
@@ -158,7 +159,7 @@ Lista podtrzymywanych języków i możliwości jest dość wielka i może być r
 Język jest przeznaczony do budowania serwisów z wysokim obciążeniem i efektywnością, które pracują na systemach rozproszonych z wielowątkowymi procesorami.
 
 \paragraph{REST API} (ang. \textit{REpresentational State Transfer}) (ang. \textit{Application Programming Interface}) \cite{rest_api,rest_api_best} Jest to popularne podejście w architekturze tworzenia interfejsów programistycznych.
-Podstawowe zasady to: architektura klient-serwer (na przykład przydzielamy klienta i magazyn danych), Brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z żądaniem),
+Podstawowe zasady to: architektura klient-serwer (na przykład przydzielamy klienta i magazyn danych), brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z żądaniem),
 buforowalność (buforowanie danych jest dozwolone, jeśli w odpowiedzi jest na to zgoda), jednorodność interfejsu (ograniczenia stylu pisania), wielopoziomowość systemu (komponenty systemu mają bezpośredni dostęp tylko do sąsiednich warstw), łatwość rozszerzenia funkcjonalności (opcjonalnie).
 
 \paragraph{JWT} (ang. \textit{JSON Web Token}) \cite{jwt} jest standardem, który jest przeznaczony do tworzenia tokenów dostępu. Za pomocą JWT sprawdza się, czy wchodzące dane zostały wysłane przez autoryzowane źródło.
@@ -167,24 +168,24 @@ Składa się z trzech części: nagłówek (informacja o tym, w jaki sposób ods
 \paragraph{MongoDB} \cite{mongoDB,mongoDB_doc,mongodb_habr} jest NoSQL (ang. \textit{Not only Structured Query Language}) rozwiązaniem do przechowywania danych. Dane przehowywane w formacie BSON (ang. \textit{Binary JavaScript Object Notation}).
 Format licencji SSPL (ang. \textit{Server Side Public License}). Wykorzystuje technikę segmentacji obiektów bazy danych, co pozwala na bilansowanie obciążenia.
 
-\paragraph{Redis} \cite{redis} system zarządzania bazami danych klasy NoSQL, który współpracuje ze strukturami danych typu ,,klucz-wartość''. Najczęściej używa sie do implementacji baz dabych, pamięci podręcznej. brokerów wiadowmości.
+\paragraph{Redis} \cite{redis} system zarządzania bazami danych klasy NoSQL, który współpracuje ze strukturami danych typu ,,klucz-wartość''. Najczęściej używa sie do implementacji baz dabych, pamięci podręcznej, brokerów wiadowmości.
 
-\paragraph{Android Studio} \cite{android_doc,android_studio} zintegrowane środowisko programistyczne, które zostało wyprodukowane przez JetBrains na podstawie IelliJ IDEA, do budowania aplikacji na platformie Android. Jest dostępna do system<ow Windows, Linux, macOS. Jest udostępniona za pomocą bezpłatnej licencji Apache 2.0.
+\paragraph{Android Studio} \cite{android_doc,android_studio} zintegrowane środowisko programistyczne, które zostało wyprodukowane przez JetBrains na podstawie IelliJ IDEA, do budowania aplikacji na platformie Android. Jest dostępna do systemów Windows, Linux, macOS. Jest udostępniona za pomocą bezpłatnej licencji Apache 2.0.
 
-\paragraph{Gradle} \cite{gradle,gradle_android_doc} jest systemem automatycznego budowania aplikacji oraz zarządzania zależnościami, który służy do uproszczenia pracy z Javą.
+\paragraph{Gradle} \cite{gradle,gradle_android_doc} jest systemem automatycznego budowania aplikacji oraz zarządzania zależnościami, który służy do uproszczenia pracy z językiem Java.
 
-\paragraph{Android SDK} \cite{android_studio} (ang. \textit{Software development kit}) jest narzędziem do tworzenia aplikacji mobilnych dla systemów na bazie Android, które został wyprodukowane prze Google.
+\paragraph{Android SDK} \cite{android_studio} (ang. \textit{Software development kit}) jest narzędziem do tworzenia aplikacji mobilnych dla systemów na bazie Android, które został wyprodukowane przez Google.
 Ten zestaw SKD zawiera nażędzia programistyczne: zestaw bibliotek Android i Java, emulator telefonu, debugger, dokunentację, szablony prostych aplikacji.
 
 \paragraph{Java JDK 8} (and. \textit{Java Development Kit}) \cite{java_doc} jest zestawem programisty do programowania w języku Java. Zawiera: kompilator języka Java, przykłady, dokumentację, system uruchomiania koda Java (JDK (ang. \textit{Java Runtime Environment})).
-Java jest językiem ogólnego zastosowania, obiektowym, krosplatformowym, dzięki uruchomianiu się kodu na maszynie wirtualnej, został wyprodukowany przez Sun Microsystems.
+Java jest językiem ogólnego zastosowania, obiektowym, krosplatformowym, dzięki uruchomianiu się kodu na maszynie wirtualnej. Został wyprodukowany przez Sun Microsystems.
 Przy tworzeniu aplikacji został użyty język wersji 8, ponieważ kompatybilność tej wersji jest bardzo wysoka.
 
-\paragraph{RxJava 2} jest to biblioteka pozwalająca na stosowanie reaktywnego programowania w języku Java. Programowanie reaktywne jest paradygmatem programowania pozwalający na programowanie z asynchronicznymi strumieniami (sekwencja stałych zderzeń, które posortowane według czasu) danych.
-Ta biblioteka jest bardzo przydatna na przykład, żeby interfejs użytkownika ciągle był dostępny do użycia nawet w podczas obliczania jakiejś logiki, na przykład oczekiwanie odpowiedzi od serwera.
+\paragraph{RxJava 2} jest to biblioteka pozwalająca na stosowanie reaktywnego programowania w języku Java. Programowanie reaktywne jest paradygmatem programowania pozwalającym na programowanie z asynchronicznymi strumieniami (sekwencja stałych zderzeń, które posortowane według czasu) danych.
+Ta biblioteka jest bardzo przydatna na przykład, żeby interfejs użytkownika ciągle był dostępny do użycia, nawet w podczas obliczania jakiejś logiki, na przykład oczekiwanie odpowiedzi od serwera.
 
 \paragraph{Google Cloud} \cite{google_cloud} jest pakietem Google usług w chmurze. Ten serwis pozwala na wykorzystanie serwisów Google Search, Gmail, przechowywanie plików, Youtube, obliczenie i przechowywanie danych, uczenie maszynowe i inne usługi, z których korzysta Google w swoich projektach.
-Usługa ta jest płatna. Różne części mają różne koszty w zależności od ilości zapytań do serwisów Google. Jeśli koszty użycia tych serwisów mniej niż 200 dolarów, Google nie pobiera opłaty. W tej pracy inżynierskiej został wykorzystany serwis Static Maps \cite{google_cloud_pricing}.
+Usługa ta jest płatna. Różne części mają różne koszty w zależności od ilości zapytań do serwisów Google. Jeśli koszty użycia tych serwisów mniej niż 200 dolarów miesięcznie, Google nie pobiera opłaty. W tej pracy inżynierskiej został wykorzystany serwis Static Maps \cite{google_cloud_pricing}.
 Ten serwis jest darmowy przy tworzeniu oprogramowania do telefonów (Android Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}).
 
 \paragraph{GMS}  (and. \textit{Google Mobile Services}) jest to zestaw aplikacji dostarczonych przez Google: Goole Maps, Google Paly Store, Gmail Google Drive Google Duo, Google Chrome, Google Photos, Google TV, YOutube, Youtube Music.

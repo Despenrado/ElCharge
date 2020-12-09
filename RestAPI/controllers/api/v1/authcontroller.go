@@ -111,7 +111,7 @@ func (c *AuthController) Logout() http.HandlerFunc {
 			utils.Error(w, r, http.StatusUnauthorized, err)
 			return
 		}
-		_, err = c.rClient.Get(tokenString[37:]).Result()
+		_, err = c.rClient.Get(tokenString[37:]).Result() // find in Redis db
 		if err != redis.Nil {
 			utils.Error(w, r, http.StatusUnauthorized, errors.New("Invalid token"))
 			return
@@ -126,7 +126,7 @@ func (c *AuthController) Logout() http.HandlerFunc {
 			utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
 			return
 		}
-		c.rClient.Set(tokenString[37:], tokenString, 168*time.Hour)
+		c.rClient.Set(tokenString[37:], tokenString, 168*time.Hour) // save to Redis db
 		utils.Respond(w, r, http.StatusOK, nil)
 	})
 }
@@ -134,9 +134,9 @@ func (c *AuthController) Logout() http.HandlerFunc {
 func (c *AuthController) createTokenString(uid string) (string, error) {
 	expirationTime := time.Now().Add(168 * time.Hour)
 	claims := &Claims{
-		UID: uid,
+		UID: uid, // user id
 		StandardClaims: jwt.StandardClaims{
-			ExpiresAt: expirationTime.Unix(),
+			ExpiresAt: expirationTime.Unix(), //lifetime
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
@@ -177,7 +177,7 @@ func (c *AuthController) CheckToken(next http.Handler) http.Handler {
 			utils.Error(w, r, http.StatusUnauthorized, err)
 			return
 		}
-		_, err = c.rClient.Get(tokenString[37:]).Result()
+		_, err = c.rClient.Get(tokenString[37:]).Result() // find tocken in Redis
 		if err != redis.Nil {
 			utils.Error(w, r, http.StatusUnauthorized, errors.New("Invalid token"))
 			return
