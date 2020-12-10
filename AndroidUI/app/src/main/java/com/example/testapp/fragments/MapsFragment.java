@@ -69,8 +69,8 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         if (mapFragment != null) {
             mapFragment.getMapAsync(this::onMapReady);
         }
-        FloatingActionButton btnPlace = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonPlace);
-        btnPlace.setOnClickListener(this::onButtonPlaceClick);
+//        FloatingActionButton btnPlace = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonPlace);
+//        btnPlace.setOnClickListener(this::onButtonPlaceClick);
         FloatingActionButton btnInfo = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonInfo);
         btnInfo.setOnClickListener(this::onButtonInfoClick);
         FloatingActionButton btnMyLocation = (FloatingActionButton) view.findViewById(R.id.floatingActionButtonMyLocation);
@@ -129,18 +129,20 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
         }, app.getMainLooper());
     }
 
-    private void onButtonPlaceClick(View v) {
-        FloatingActionButton btnPlace = (FloatingActionButton) v.findViewById(R.id.floatingActionButtonPlace);
-        btnPlace.hide();
-        this.selectedMarker = googleMap.addMarker(new MarkerOptions()
-                .position(googleMap.getCameraPosition().target)
-                .draggable(true)
-                .title("marker"));
-    }
+//    private void onButtonPlaceClick(View v) {
+//        FloatingActionButton btnPlace = (FloatingActionButton) v.findViewById(R.id.floatingActionButtonPlace);
+//        btnPlace.hide();
+//        this.selectedMarker = googleMap.addMarker(new MarkerOptions()
+//                .position(googleMap.getCameraPosition().target)
+//                .draggable(true)
+//                .title("marker"));
+//    }
 
     private void onButtonInfoClick(View v) {
-        LatLng latLng = selectedMarker.getPosition();
-        getFragmentManager().beginTransaction().add(R.id.container, new InfoFragment(latLng.latitude, latLng.longitude), "station_info").commit();
+        if (selectedMarker != null) {
+            LatLng latLng = selectedMarker.getPosition();
+            getFragmentManager().beginTransaction().add(R.id.container, new InfoFragment(latLng.latitude, latLng.longitude), "station_info").commit();
+        }
     }
 
     private void onButtonMyLocationClick(View v) {

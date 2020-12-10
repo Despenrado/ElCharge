@@ -64,7 +64,7 @@ public class InfoFragment extends Fragment {
         disposable.add(app.getElchargeService().getStationApi().readStationsByLatAndLng(0, 0, currentStation.getLatitude(), currentStation.getLongitude())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new StationDisposableSingleObserver()));
+                .subscribeWith(new StationDisposableSingleObserver(this)));
     }
 
     private void updateInfoOnView(){
@@ -95,6 +95,12 @@ public class InfoFragment extends Fragment {
     }
 
     private class StationDisposableSingleObserver extends DisposableSingleObserver<Response<Station>> {
+        private InfoFragment parent;
+
+        public StationDisposableSingleObserver(InfoFragment parent) {
+            this.parent = parent;
+        }
+
         @Override
         public void onSuccess(Response<Station> response) {
             try {
@@ -109,6 +115,8 @@ public class InfoFragment extends Fragment {
                         LoginFragment lf = new LoginFragment();
                         getFragmentManager().beginTransaction().add(R.id.container, lf).commit();
                         getFragmentManager().beginTransaction().show(lf).commit();
+                    }else{
+                        getFragmentManager().beginTransaction().remove(parent).commit();
                     }
                 }
 

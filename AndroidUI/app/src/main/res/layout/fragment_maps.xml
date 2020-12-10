@@ -48,19 +48,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/floatingActionButtonPlace"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:backgroundTint="#2ED573"
-        android:alpha="0.9"
-        android:clickable="true"
-        app:borderWidth="0dp"
-        android:src="@drawable/ic_baseline_place_24"
-        app:layout_constraintBottom_toBottomOf="@+id/floatingActionButtonInfo"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/floatingActionButtonInfo" />
+<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+<!--        android:id="@+id/floatingActionButtonPlace"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:backgroundTint="#2ED573"-->
+<!--        android:alpha="0.9"-->
+<!--        android:clickable="true"-->
+<!--        -->
+<!--        app:borderWidth="0dp"-->
+<!--        android:src="@drawable/ic_baseline_place_24"-->
+<!--        app:layout_constraintBottom_toBottomOf="@+id/floatingActionButtonInfo"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/floatingActionButtonInfo" />-->
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
