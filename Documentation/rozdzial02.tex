@@ -34,15 +34,35 @@ Jednak aby ten cel osiągnąć w pełni, potrzebne byłoby uzyskanie wsparcia od
 \section{Zarys architektury systemu}
 % TO DO: tutaj powinno być parę słów o architekturze - czyli komponentach, z jakich zbudowane ma być rozwiązania, jego otoczeniu, przepływie informacji
 % Opis funkcji systemu powinien znaleźć się w analizie wymagań. Proszę odpowiednio przeredagować ten podrozdział
-Interfejs użytkownika, którym jest aplikacja mobilna, musi mieć zintegrowaną mapę, aby ułatwić wyszukiwanie i tworzenie miejsc.
-Należy wdrożyć system rejestracji i logowania. Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników.
-A także baza danych do przechowywania stacji i komentarzy. Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
-\begin{figure}[ht]
+Aplikacja mobilna powinna oferować możliwość korzystania z serwisu mapowego ułatwiającego wyszukiwanie oraz golokalizowanie wskazanych miejsc.
+Należy wdrożyć system rejestracji i logowania. Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników. A także baza danych do przechowywania stacji i komentarzy. 
+
+Przedstawioną koncepcję można zrealizować w architekturze składającej się z następujących elementów (rys.~\ref{fig:systemarchitecturediagram}):
+% TO DO: proszę opisać przepływy między elementami oraz ich role (w ogólny sposób)
+\begin{itemize}
+\item MongoDB -- baza danych;
+\item Redis - przechowywanie JWT tokenów po wylogowaniu;
+\item Go - część serwerowa napisana w języku Go;
+\item Android -- aplikacja mobilna;
+\item Docker -- kontener dla wdrożenia aplikacji webowej,
+\end{itemize}
+    \begin{figure}[ht]
     \centering
-        \includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
-        \caption{Zarys architektury budowanego rozwiązania \cite{diagrams_net}}
-    \label{fig:zarysuskladuserwisu}
-\end{figure}\newline
+        \includegraphics[width=0.7\linewidth]{rys03/system_architecture_diagram.png}
+    \caption{Zarys architektury systemu} % TO DO: jeśli korzystał Pan z diagrams.net do narysowania diagramu, to nie trzeba tego cytować. Cytowanie może pojawić się przy opisie wykorzystanych narzędzi. \cite{diagrams_net}
+		% TO DO: Diagram jest brzydki, wielkość liter jest różna - ciężko się je czyta (litery powinny być mniej więcej tej samej wielkości)
+    \label{fig:systemarchitecturediagram}
+\end{figure}
+
+ 
+
+%Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
+%%\begin{figure}[ht]
+    %%\centering
+        %%\includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
+        %%\caption{Zarys architektury budowanego rozwiązania \cite{diagrams_net}}
+    %%\label{fig:zarysuskladuserwisu}
+%%\end{figure}\newline
 
 \section{Analiza wymagań}
 \subsection{Wymagania funkcjonalne}
