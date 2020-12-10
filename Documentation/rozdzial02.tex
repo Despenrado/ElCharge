@@ -1,7 +1,5 @@
 \chapter{Założenia projektowe}
-W tym rozdziale został opisany problem i jego możliwe rozwiązanie.
-Została przeprowadzona analiza wymagań: wymagania funkcjonalne i niefunkcjonalne.
-W niniejszym rozdziale został przedstawiony początkowy makiet interfejsu użytkownika oraz narzędzia i technologie.
+W rozdziale opisano główny problem oraz potencjalne ścieżki prowadzące do jego rozwiązania. Zamieszczono w nim również wynik przeprowadzonej analizy wymagań funkcjonalnych i niefunkcjonalnych dla mającej powstać aplikacji. Zaproponowano ponadto makiety interfejsu użytkownika oraz przedstawiono narzędzia i technologie wybrane do realizacji celu pracy.
 
 \section{Zarys architektury systemu}
 % Описание проблемы:
@@ -27,7 +25,7 @@ W niniejszym rozdziale został przedstawiony początkowy makiet interfejsu użyt
 \paragraph{Opis problemu:}
 Istnieje problem ze znalezieniem dobrej stacji ładującej pojazdy elektryczne.
 Stacja może nie działać, źle ładować, może być zainstalowana tak, że nie można jej używać.
-Większość istniejących aplikacji najczęściej mają dostęp tylko do stacji konkretnych firm i mogą nie mieć najbardziej aktualnych informacji o pojawieniu się stacji innych producentów oraz ocen rzeczewistych użytkowników.
+Większość istniejących aplikacji najczęściej ma dostęp tylko do stacji konkretnych firm i mogą nie mieć najbardziej aktualnych informacji o pojawieniu się stacji innych producentów oraz ocen rzeczywistych użytkowników.
 Istnieje chęć po prostu wziąć telefon i zobaczyć bezpośrednio na mapie, gdzie są stacje i zobaczyć recenzje prawdziwych ludzi na ten temat.
 
 \paragraph{W wyniku pracy ma powstać aplikacja mobilna w której:}
@@ -49,7 +47,7 @@ A także baza danych do przechowywania stacji i komentarzy. Ten układ widać na
         \caption{zarys uskladu serwisu \cite{diagrams_net}}
     \label{fig:zarysuskladuserwisu}
 \end{figure}\newline
-\newpage
+
 \section{Analiza wymagań}
 \subsection{Wymagania funkcjonalne}
 W tabeli \ref{tab:wymaganiafunkcjonalne} przedstawione wymagania funkc do aplikacji mobilnej razem z celem ich wdrożenia.
@@ -82,17 +80,16 @@ W tabeli \ref{tab:wymaganiafunkcjonalne} przedstawione wymagania funkc do aplika
     \hline
 \end{tabular}
 \end{table}
-\newpage
-\paragraph{Diagram Przypadków użycia}
-\newline
-Diagram przypadków użycia (rys. \ref{fig:usecasediagram}) graficznie pokazuje użytkowników oraz funkcje aplikacji dostępne do różnych rodzajów użytkowników (w tym przypadku jeden rodzaj).
+
+\paragraph{Diagram Przypadków użycia\newline}
+Diagram przypadków użycia (rys.~\ref{fig:usecasediagram}) graficznie pokazuje użytkowników oraz funkcje aplikacji dostępne do różnych rodzajów użytkowników (w tym przypadku jeden rodzaj).
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.7\linewidth]{rys02/use_case_diagram.png}
         \caption{dagram przypadków uzycia \cite{diagrams_net}}
     \label{fig:usecasediagram}
 \end{figure}
-\newpage
+
 \subsection{Wymagania niefunkcjonalne}
 W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonalne: krótki opis wymagania, typ (jakiej dziedziny to dotyczy) oraz uwagi do tego wymagania.
 \begin{table}[htb] \small
@@ -135,6 +132,7 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
 \newpage
 \subsection{Nażędzia i technologie}
 Do sworzenia aplikacji mobilnej, części serwerowej oraz bazy daych zostały wybrane następujące narzędzia i technologie:
+\begin{multicols}{3}
 \begin{itemize}
     \item Visual Studio Code;
     \item Go;
@@ -151,7 +149,7 @@ Do sworzenia aplikacji mobilnej, części serwerowej oraz bazy daych zostały wy
     \item GMS;
     \item Docker;
 \end{itemize}
-
+\end{multicols}
 \paragraph{Visual Studio Code} \cite{vscode} to darmowy edytor kodu źródłowego, który został wyprodukowany przez Microsoft. Działa na systemach Windows, Linux, macOS. Jest rozszerzalny za pomocą plug-inów.
 Lista podtrzymywanych języków i możliwości jest dość wielka i może być rozszerzona za pomocą plug-inów. Kilka funkcji: podświetlanie składni, IntelliSense, refaktoryzacja, debugowanie i inne.
 
@@ -202,26 +200,22 @@ Ten serwis jest darmowy przy tworzeniu oprogramowania do telefonów (Android Map
 Po analizie wymagań zostały stworzone możliwe makiety aplikacji, która ma powstać.
 
 Na dole ekranu aplikacji znajduje się główne menu zawierające 4 pozycje: mapę, wyszukiwanie stacji, tworzenie stacji i parametry.
-Na rysunku \ref{fig:search_makiet} przedstawiony pierwszy etap wyszukiwania stacji ładowania.
+Na rysunku \ref{fig:search_makiet}a przedstawiono pierwszy etap wyszukiwania stacji ładowania.
 Pod polem wyszukiwania znajduje się rozwijane menu, które pozwala wybierać typ wyszukiwania, w tym wyszukiwanie na podstawie pozycji użytkownika oraz nazwy i opisu stacji.
 Poniżej znajduje się możliwość do zmiany dystansu wyszukiwania oraz przycisk wyszukiwania.
 \begin{figure}[ht]
-    \centering
-        \includegraphics[width=0.4\linewidth]{rys02/search_makiet.jpg}
-        \caption{makiet strony wyszukiwania stacji ładowania}
+	\centering
+  \begin{tabular}{@{}rl@{\hspace{10mm}}rl@{}}
+  a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.30\linewidth]{rys02/search_makiet.jpg}}} &
+	b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.45\linewidth]{rys02/main_makiet.jpg}}} 
+		\end{tabular}
+        \caption{Makiety interfejsów aplikacji mobilnej: a) strona wyszukiwania stacji ładowania, b) strona główna.}
     \label{fig:search_makiet}
 \end{figure}
-\newpage
-Na tym makiecie (rys. \ref{fig:main_makiet}) został przedstawiony przykładowy sposób wyboru stacji ładowania. Stacje poznaczone markierami na mapie. Dla otrzymania informacji o wybranej stacji (wybierany jest markier na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
-\begin{figure}[ht]
-    \centering
-        \includegraphics[width=0.5\linewidth]{rys02/main_makiet.jpg}
-        \caption{makiet strony igłównej}
-    \label{fig:main_makiet}
-\end{figure}
-% \newpage
 
-Podczs tworzenia stacji ładowania (rys. \ref{fig:create_makiet}) dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk.
+Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokonać wyboru stacji ładowania. Stacje poznaczone znacznikami na mapie. Dla otrzymania informacji o wybranej stacji (wybierany jest markier na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
+
+Podczas tworzenia stacji ładowania (rys. \ref{fig:create_makiet}) dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk.
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.3\linewidth]{rys02/create_makiet.jpg}
@@ -230,6 +224,7 @@ Podczs tworzenia stacji ładowania (rys. \ref{fig:create_makiet}) dla wygody uż
 \end{figure}
 \newpage
 Na stronie informacji o stacji (rys.\ref{fig:station_makiet}) oprócz nazwy stacji, opisu oraz oceny, wyliczonej na podstawie komentarzy oceny, znajdują się komentarzy uzytkowników w porządku: najpierw najnowsze.
+% TO DO: proszę ułożyć dwie makiety obok siebie, jak w przykładzie powyżej
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.3\linewidth]{rys02/station_makiet.jpg}

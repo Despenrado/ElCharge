@@ -1,37 +1,25 @@
 \chapter{Wstęp}
 
 \section{Wprowadzenie}
-Tematem pracy inżynierskiej jest aplikacja mobilna pomagająca w wyszukiwaniu miejsca ładowania samochodów elektrycznych.
-Aplikacja pozwala tworzyć i wyszukiwać stacje ładownicze.
+Ochrona Ziemi przed zgubnymi skutkami zanieczyszczeń, właściwa gospodarka odpadami, racjonalne zużycie wody -- to wyzwania, którym ludzka cywilizacja musi czym prędzej stawić czoło. Od wielu już lat podkreślają to różne organizacje oraz społeczności. Za tymi wyzwaniami ukryte są jednak liczne problemy, które spowalniają czy też utrudniają podejmowanie pro-ekologicznych działań. Dotyczą one technologii, kultury, polityki i innych obszarów. Wśród nich szczególne miejsce zajmują problemy motoryzacji. Od dawna podkreśla się negatywny wpływ emisji gazów cieplarnianych oraz wyników spalania paliw na ekologię Ziemi. Zahamowanie trwającej od kilku dziesięcioleci tendencji powinno nastąpić w wyniku zastosowania w samochodach napędów hybrydowych lub czysto elektrycznych. Według różnych źródeł liczba samochodów elektrycznych rośnie z każdym rokiem i ten wzrost powinien utrzymać się przez długi czas \cite{iea1,mam1}. Wraz z nimi rośnie potrzeba rozbudowy infrastruktury pozwalającej na szybkie uzupełnianie w tych samochodach energii. 
+% TO DO: można byłoby wstawić tu przerysowany wykres, wtedy Cel i zakres pracy wylądowałyby na nowej stronie
 
-\subsubsection{Motywacja}
-Dziś ludzkość coraz częściej myśli o wpływie emisji do atmosfery na ekologię Ziemi. Dotyczy to również motoryzacji.
-Według różnych źródeł liczba samochodów elektrycznych rośnie z każdym rokiem i planuje tylko rosnąć \cite{iea1,mam1}.
+W krajach WNP (Wspólnoty Niepodległych Państw), i być może nie tylko w nich, sporym problemem okazuje się znalezienie stacji do ładowania samochodów elektrycznych. Zdarzają się sytuacje, w których po przybyciu do stacji ładowania stacja ta okazuje się nieczynna lub położona w niedostępnym miejscu (na przykład na prywatnym terenie), a przewody umożliwiające podłączenie się są za krótkie. Dlatego nasuwa się pytanie, czy nie dałoby się jakoś poinformować właścicieli elektrycznych samochodów o tym gdzie i na jakich warunkach będą oni mogli doładować swoje pojazdy. 
 
-W krajach WNP (Wspólnota Niepodległych Państw), i być może nie tylko w nich, problemem jest znalezienie stacji do ładowania samochodów elektrycznych. Od znajomych usłyszano taką informację, że zdarzają się sytuacje,
-że po przybyciu do stacji ładowania samochodu, okazuje się, że stacja jest nieczynna lub znajduje się w niedostępnym miejscu, na przykład na prywatnym terytorium lub kabel jest zbyt krótki.
-
-Dlatego postanowiłem stworzyć aplikację, która pomogłaby w znalezieniu działających i dostępnych stacji ładowania.
-
-Będąc w samochodzie, prawdopodobnie, że człowiek nie będzie używać ani komputera, ani laptopa. Telefon jest znacznie wygodniejszy. Dzisiaj praktycznie każdy ma telefon komórkowy.
-Dlatego postanowiono stworzyć aplikację mobilną. Ponieważ smartfony z systemem Android są bardziej popularne niż Apple, dokonano wyboru aplikacji dla urządzeń z systemem Android \cite{avi1}.
+Niniejsza praca jest próbą udzielenia odpowiedzi na takie pytanie. Jej temat zredagowano z myślą o stworzeniu aplikacji, która pomogłaby znaleźć działające i dostępne stacje ładowania uwzględniając bieżące położenie elektrycznego pojazdu. Ponieważ zwykle kierujący pojazdem człowiek najczęściej posługuje się telefonem (jest on znacznie poręczniejszy niż komputer, laptop czy tablet) skupiono się na aplikacji mobilnej. Biorąc pod uwagę rankingi popularności systemów na urządzenia mobilne zdecydowano, że aplikacja ta przeznaczona będzie dla urządzeń z systemem Android \cite{avi1}.
 
 
 \section{Cel i zakres pracy}
-\subsection{Cel}
-Celem pracy jest zaprojektowanie i zaimplementowanie aplikacji mobilnej z połączeniem internetowym,
-pozwalającej tworzyć stację ładownicze do pojazdów elektrycznych, przeglądać i wystawiać opinię o tych stacjach.
-Ta aplikacja ma na celu ułatwić wyszukiwanie miejsc do ładowania samochodów elektrycznych.
+Celem pracy jest zaprojektowanie i zaimplementowanie aplikacji mobilnej z połączeniem internetowym, pozwalającej ułatwiającą wyszukiwanie miejsc do ładowania samochodów elektrycznych. Aplikacja ta powinna umożliwiać gromadzenia danych o stacjach ładowania, wystawianie o nich opinii, jak również powinna pozwalać na przeglądanie zgromadzonych informacji. 
 
-\subsection{Zakres}
-Implementacja aplikacji webowej, która zawiera aplikację mobilną, część serwerową oraz bazę danych.
-Aplikacja mobilna służy do wizualizacji treści oraz do komunikacji serwisu z użytkownikiem.
-Część serwerowa przetwarza informację i zarządza bazą danych.
+W ramach pracy powstać ma projekt aplikacji webowej, z wyróżnionymi częściami: aplikacją mobilną, usługą sieciową oraz bazą danych.
+Aplikacja mobilna służyć ma do do komunikacji użytkownika z usługą sieciową oraz do wizualizacji treści.
+Aplikacja sieciowa zaś ma przetwarzać gromadzone informacje i zarządzać bazą danych, w której informacje te będą one składowane.
 
 \subsection{Układ pracy}
 Praca składa się z pięciu rozdziałów. W pierwszym znajduje się ogólna informacja o pracy.
-W drugim skupiono na wymaganiach aplikacji, która powinna powstać oraz wykorzystanych technologiach.
-Trzeci rozdział przeznaczony do opisu implementacji poszczególnych części aplikacji.
-W czwartym rozdziale opisano testowanie aplikacji.
+W drugim skupiono się na wymaganiach dotyczących mającej powstać aplikacji oraz na wykorzystanych technologiach.
+Trzeci rozdział przeznaczono na opis szczegółów implementacji poszczególnych części aplikacji.
+W czwartym rozdziale opisano zagadnienie testowania stworzonej aplikacji.
 % Piąty rozdział opisuję wdrożenie części serwerowej.
-Na końcu pracy znajduje się podsumowanie: wnioski oraz plany na rozwój aplikacji.
+W ostatnim, piątym rozdziale zamieszczono podsumowanie zawierające wnioski oraz plany dalszego rozwoju aplikacji.
