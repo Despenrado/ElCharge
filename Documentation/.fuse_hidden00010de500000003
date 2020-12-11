@@ -1,5 +1,20 @@
 \chapter{Implementacja aplikacji}
 %
+\section{Architektura aplikacji webowej}
+Aplikacja składa się z następujących elementów (rys. \ref{fig:systemarchitecturediagram}):
+\begin{itemize}
+\item MongoDB - baza danych;
+\item Redis - przechowywanie JWT tokenów po wylogowaniu;
+\item Go - część serwerowa napisana w języku Go;
+\item Android - aplikacja mobilna;
+\item Docker - kontener dla wdrożenia aplikacji webowej;
+\end{itemize}
+    \begin{figure}[ht]
+    \centering
+        \includegraphics[width=0.8\linewidth]{rys03/system_architecture_diagram.png}
+    \caption{architektura systemu \cite{diagrams_net}}
+    \label{fig:systemarchitecturediagram}
+\end{figure}
 \section{Model bazy danych}
 W systemie wykorzystano dwie nierelacyjne bazy danych: MongoDB i Redis.
 MongoDB jest przeznaczona do przechowywania danych aplikacji.
@@ -925,7 +940,7 @@ W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ł
 \end{lstlisting}
 
 \paragraph{Dodawanie}
-Żeby dodać nową stację do systemu należy wysłać zapytanie \texttt{POST} do części serwerowj na endpoint \texttt{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \texttt{description}, \texttt{station\_name}, \texttt{owner\_id}, \texttt{longitude}, \texttt{latitude}.
+Żeby dodać nową stację do systemu należy wysłać zapytanie \testtt{POST} do części serwerowj na endpoint \texttt{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \textt{description}, \textt{station_name}, \textt{owner_id}, \textt{longitude}, \textt{latitude}.
 Przykład ciałą zapytania:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
@@ -937,8 +952,8 @@ Przykład ciałą zapytania:
     }
 \end{lstlisting}
 
-Router przekieruje, po przechodzeniu przez funkcje medyalne, w tym sprawdzenie JWT tokenu, dane do kontrolera \texttt{CreateStation()} \ref{list:} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wchodzący JSON w obiekt struktury \texttt{station}.
-Ta metoda wywołuje serwis \texttt{CreateStation} \ref{list:}, znajdującyj się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się czy istnieje stacja w tym mijscu, tworzy stację w bazie danych (metoda \texttt{Create} \ref{list:} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera z bazy danych ten dokumenty (listing \ref{list:}) i wysyła sie jako ciało odpowiedzi.
+Router przekieruje, po przechodzeniu przez funkcje medyalne, w tym sprawdzenie JWT tokenu, dane do kontrolera \textt{CreateStation()} \ref{list:} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wchodzący JSON w obiekt struktury \texttt{station}.
+Ta metoda wywołuje serwis \texttt{CreateStation} \ref{list:}, znajdującyj się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się czy istnieje stacja w tym mijscu, tworzy stację w bazie danych (metoda \texttt{Create} \ref{list:} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera z bazy danych ten dokumenty (listing \ref) i wysyła sie jako ciało odpowiedzi.
 
 
 

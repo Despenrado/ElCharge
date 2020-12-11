@@ -31,52 +31,51 @@ Aby stworzyć jakiś ranking stacji czy też obiektywnie oceniać ich jakość n
 Wdrożenie takiego systemu mogłoby przyczynić się do poprawy jakości usług świadczonych na stacjach ładowania pojazdów elektrycznych.
 Jednak aby ten cel osiągnąć w pełni, potrzebne byłoby uzyskanie wsparcia od społeczności użytkowników.
 
+% TO VERIFY: Moim zdaniem, zarys architektury musi być po analizie, ponieważ architektura będzie wiadoma po przewodzeniu analizy wymagań. Jeśli się mylę, to po proszę wyjaśnić dlaczego.
 \section{Zarys architektury systemu}
 % TO DO: tutaj powinno być parę słów o architekturze - czyli komponentach, z jakich zbudowane ma być rozwiązania, jego otoczeniu, przepływie informacji
 % Opis funkcji systemu powinien znaleźć się w analizie wymagań. Proszę odpowiednio przeredagować ten podrozdział
-Aplikacja mobilna powinna oferować możliwość korzystania z serwisu mapowego ułatwiającego wyszukiwanie oraz golokalizowanie wskazanych miejsc.
-Należy wdrożyć system rejestracji i logowania. Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników. A także baza danych do przechowywania stacji i komentarzy. 
+% TO VERIFY:
+Aplikacja mobilna powinna oferować możliwość korzystania z serwisu mapowego ułatwiającego wyszukiwanie oraz lokalizowanie wskazanych miejsc.
+Należy wdrożyć system rejestracji i logowania. Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników. A także baza danych do przechowywania stacji i komentarzy.
+Różni użytkownicy muszą mieć dostęp do tych samych danych. Oznacza to, że powinna istnieć jedna wspólna baza danych, do którego użytkownicy będą uzyskiwać dostęp przez Internet. Użytkownicy nie mogą mieć bezpośredniego dostępu do bazy danych, jedynie poprzez część serwerową.
 
 Przedstawioną koncepcję można zrealizować w architekturze składającej się z następujących elementów (rys.~\ref{fig:systemarchitecturediagram}):
 % TO DO: proszę opisać przepływy między elementami oraz ich role (w ogólny sposób)
+% TO VERIFY:
 \begin{itemize}
-\item MongoDB -- baza danych;
-\item Redis - przechowywanie JWT tokenów po wylogowaniu;
-\item Go - część serwerowa napisana w języku Go;
-\item Android -- aplikacja mobilna;
-\item Docker -- kontener dla wdrożenia aplikacji webowej,
+    \item MongoDB -- baza danych do ciągłego przechowywania danych systemu;
+    \item Redis -- baza danych, która jest wykorzystywana w jakości pamięci podręcznej do przechowywania JWT tokenów po wylogowaniu;
+    \item Go -- część serwerowa napisana w języku Go. Umozliwia komunikację międy interfejsem uzytkownika a baza danych. Pozwala na autentykację użytkowników oraz obliczeń biznesowych;
+    \item Android -- aplikacja mobilna. Ta część przyznaczona do ułatwiana zdalnego dostępu (przez sieć Internet) uzytkownikowi do systemu. Komunikacja zachodzi przez internet do interfejsów programistychnych części serwerowej orza serwisów Google Coud Platform;
+    \item Docker -- kontenery dla wdrożenia części ukrytych od użytkownika na zdalnym użądzeniu: baz danych oraz części serwerowej. Trzy kontenery powiązane między sąbą;
+    \item Google Cloud Platform -- zdalny serwis, sworzony prze Google, który umozliwia dostęp do pracy z mapą.
 \end{itemize}
-    \begin{figure}[ht]
+
+\begin{figure}[ht]
     \centering
-        \includegraphics[width=0.7\linewidth]{rys03/system_architecture_diagram.png}
-    \caption{Zarys architektury systemu} % TO DO: jeśli korzystał Pan z diagrams.net do narysowania diagramu, to nie trzeba tego cytować. Cytowanie może pojawić się przy opisie wykorzystanych narzędzi. \cite{diagrams_net}
-		% TO DO: Diagram jest brzydki, wielkość liter jest różna - ciężko się je czyta (litery powinny być mniej więcej tej samej wielkości)
+        \includegraphics[width=0.7\linewidth]{rys02/system_architecture_diagram4.png}
+    \caption{Zarys architektury systemu} % TO DO: jeśli korzystał Pan z diagrams.net do narysowania diagramu, to nie trzeba tego cytować. Cytowanie może pojawić się przy opisie wykorzystanych narzędzi. \cite{diagrams_net} [TO VERIFY]
+        % TO DO: Diagram jest brzydki, wielkość liter jest różna - ciężko się je czyta (litery powinny być mniej więcej tej samej wielkości)
+        % TO VERIFY: są 6 dyagramów, nie wiem jaki jest lepszy bo prawie zawsze istneje problem z dopasowaniem kolorów(duża ilość kolorów wybląda bardzo brzydko) (system_architecture_diagram.png, system_architecture_diagram1.png, system_architecture_diagram2.png, ...)
     \label{fig:systemarchitecturediagram}
 \end{figure}
-
- 
-
-%Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
-%%\begin{figure}[ht]
-    %%\centering
-        %%\includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
-        %%\caption{Zarys architektury budowanego rozwiązania \cite{diagrams_net}}
-    %%\label{fig:zarysuskladuserwisu}
-%%\end{figure}\newline
 
 \section{Analiza wymagań}
 \subsection{Wymagania funkcjonalne}
 Wymagania funkcjonale definiują oczekiwany zakres funkcji dostarczanych przez tworzony system oraz jego zachowania. Wymagania te można definiować w języku naturalnym bądź też w języku formalnym. W niniejszej pracy wymagania przedstawiono na diagramie przypadków użycia (patrz rysunek~\ref{fig:usecasediagram}) oraz opisano tabelarycznie cel ich wdrożenia (patrz tabela~\ref{tab:wymaganiafunkcjonalne}).
 Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powiązaniu z dostępnymi dla nich funkcjami. W budowanej aplikacji istnieje tylko jeden typ użytkownika. 
 % TO DO: Diagram do przerysowania (jest za wysoki - można przecież ułożyć przypadki logowania i rejestracji w poziomie, nie w pionie. Podobnie można poprzesuwać pozostałe przypadki. Owale są za duże w porównaniu do zawartego w nich tekstu. Niech nazwy przypadków będą pisane dużą literą
+% To VERIFY:
 \begin{figure}[ht]
     \centering
-        \includegraphics[width=0.7\linewidth]{rys02/use_case_diagram.png}
-        \caption{dagram przypadków uzycia \cite{diagrams_net}}
+        \includegraphics[width=0.7\linewidth]{rys02/use_case_diagram1.png}
+        \caption{dagram przypadków uzycia}
     \label{fig:usecasediagram}
 \end{figure}
 
 % TO DO: Poprawić wpisy w tabeli: w pierwszej kolumnie powinny być te same nazwy przypadków do na diagramie, w drugiej - w miarę dokładny opis celu, jaki można osiągnąć (poprawione są tylko początkowe wiersze)
+% TO VERIFY:
 \begin{table}[htb] \small
     \caption{Wymagania funkcjonalne}
     \label{tab:wymaganiafunkcjonalne}
@@ -86,24 +85,29 @@ Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powią
     \hline
     1 & Logowanie & Pozwala użytkownikowi zalogować się do własnego konta \\ 
     \hline
-    2 & Rejestracja & Pozwala na stworzenie konta (w bazie danych pojawia się nowy wpis) i otwiera możliwość zalogowania się. \\ 
+    2 & Rejestracja & Pozwala na stworzenie konta (w bazie danych pojawia się nowy wpis) i otwiera możliwość zalogowania się \\ 
     \hline
-    3 & Użytkownik wyszykuje stacje ładowania obok wybranego miejsca  & Umożliwienie wyboru stacji dogodnej dla użytkownika \\
+    3 & Tworzenie stacji ładowniczej & Pozwala na dodanie nowej stacji do serwisu (pojawia się nowy wpis w bazie danych) \\
     \hline
-    4 & Użytkownik ma możliwość określenia własnej pozycji & Wyszukiwanie stacji w sposób bardziej intuicyjny dla użytkownika  \\
+    4 & Edycja stacji ładowniczej & Właściciel stacji (twórca) ma możliwość edycji wpisu w bazie danych \\
     \hline
-    5 & Użytkownik ma możliwość przyglądania mapy razem ze swoją lokalizacją oraz stacji ładowania obok wybranego miejsca & Ułatwienie wyszukiwania najwygodniejszej stacji ładowniczej \\
+    5 & Przeglądanie informacji dotyczącej stacji ładowniczej & Pozwala na wczytanie danych wybranej stacji ładowniczej z bazy danych oraz wyświetlenie ich użytkownikowi \\
     \hline
-    6 & Użytkownik ma możliwość wyszukiwania stacji ładowniczej według słów kluczowych & Wyszukiwanie dogodnej stacji z punktu widzenia typu lub nazwy stacji \\
+    6 & Określenie swojej pozycji & Pozwala użytkownikowi pobrać współrzędne swojej pozycji na mapie Ziemi dla wykorzystania podczas wyszukiwania oraz możliwość wyświetlania tej pozycji na mapie \\
     \hline
-    7 & Użytkownik ma możliwość przeglądania informacji dotyczącej stacji, w tym oceny i komentarzy innych użytkowników & Podjęcie decyzji i dobór odpowiedniej dla użytkownika stacji \\
+    7 & Wyszukiwanie stacji ładowniczej & Pozwala użytkownikowi na przeglądanie listy stacji ładowniczych (pobranej z bazy danych) znalezionych według parametrów wyszukiwania \\
     \hline
-    8 & Użytkownik ma możliwość wystawienia oceny i napisania komentarzy do wybranej stacji  & Określenie jakości stacji. Pozwala na aktualizację danuch dotyczących stacji ladowniczej \\
+    8 & Komentarze i oceny: tworzenie  & Pozwala na dodanie komentarza i oceny dotyczącej pewnej stacji do bazy danych \\
     \hline
-    9 & Użytkownik ma możliwość dowdawania (oznaczenia, tworzenie) nowej stacji  & Aktualizacja informacji o dostępnych stacjach \\
+    9 & Komentarze i oceny: przeglądanie  & Pozwala na wczytanie danych komentarzy o stacji z bazy danych oraz wyświetlenie ich użytkowników \\
     \hline
-    10 & Użytkownik, który stworzył stację, ma możliwość zmiany informacji o tej stacji ładowniczej & Aktualizacja informacji istniejącej statji \\
-    \hline
+    % Użytkownik Wyszukiwanie stacji w sposób bardziej intuicyjny dla użytkownika  \\
+    % Ułatwienie wyszukiwania najwygodniejszej stacji ładowniczej \\
+    % Użytkownik wyszykuje stacje ładowania obok wybranego miejsca Umożliwienie wyboru stacji dogodnej dla użytkownika \\
+    % Aktualizacja informacji o dostępnych stacjach \\
+    % Określenie jakości stacji. Pozwala na aktualizację danuch dotyczących stacji ladowniczej \\
+    % Podjęcie decyzji i dobór odpowiedniej dla użytkownika stacji \\
+    % Wyszukiwanie dogodnej stacji z punktu widzenia typu lub nazwy stacji \\
 \end{tabularx}
 \end{table}
 
@@ -117,9 +121,9 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     № & typ & Opis & Uwagi \\
     \hline
-    1 & Bezpiczeństwo & Hasła muszą być przechowywane w biezpicznej formie & Hasła nie przchowyją się w pierwotnej formie, tylko w formie zaszyfrowanej \\ 
+    1 & Bezpieczeństwo & Hasła muszą być przechowywane w biezpicznej formie & Hasła nie przchowyją się w pierwotnej formie, tylko w formie zaszyfrowanej \\ 
     \hline
-    2 & Bezpiczeństwo & Małe ryzyka przechwytywania hasła przez trzecich osób podczas komunikacji interfejsu użytkownika i części serwerowej & Autentykacja użytkownika na serwerze powinna zachodzić za pomocą tokenów \\ 
+    2 & Bezpieczeństwo & Małe ryzyka przechwytywania hasła przez trzecich osób podczas komunikacji interfejsu użytkownika i części serwerowej & Autentykacja użytkownika na serwerze powinna zachodzić za pomocą tokenów \\ 
     \hline
     3 & Przenoszlność & wdrożenie systemu powinno być szybkie i łatwe & \\ 
     \hline
@@ -141,9 +145,13 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     12 & Estetyczne & Wszystkie elementy muszą być w jednym stylu & Niedopuszczalne jest użycie różnych czcionek oraz ciągłej zmiany kolorów \\
     \hline
-    13 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang.~\emph{Representational State Transfer}) API (ang.~\emph{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}] \\
+    13 & Dostęp & Dane o stacjach ładowniczych oraz komentarzy przechowywane zdalnie, żeby różni użytkownicy miały do nich dostęp \\
     \hline
-    14 & Ergonomia & Dla realizacji mapy wykorzystuję się Google Maps[index] & Ułatwia rozumienie interfejsu dla użytkowników \\
+    14 & Dostęp & Użytkownicy nie mają bezpośredniego dostępu do bazy danych. Wszystkie zapytania muszą być opracowanie przez część serwerową \\
+    \hline
+    15 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang.~\emph{Representational State Transfer}) API (ang.~\emph{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}] \\
+    \hline
+    16 & Ergonomia & Dla realizacji mapy wykorzystuję się Google Maps[index] & Ułatwia rozumienie interfejsu dla użytkowników \\
     \hline
 \end{tabular}
 \end{table}
@@ -230,7 +238,7 @@ Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokona�
 
 Podczas tworzenia stacji ładowania  dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk (rys.~\ref{fig:create_makiet}a).
 % TO DO: proszę ułożyć dwie makiety obok siebie, jak w przykładzie powyżej
-% DONE:
+% TO VERIFY:
 \begin{figure}[ht]
 	\centering
     \begin{tabular}{@{}rl@{\hspace{10mm}}rl@{}}
@@ -254,6 +262,17 @@ Do rejestracji i logowania wykorzystują się dwa różne ekrany pokazane, odpow
     \label{fig:login_makiet}
 \end{figure}
 
+
+
+ 
+
+%Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
+%%\begin{figure}[ht]
+    %%\centering
+        %%\includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
+        %%\caption{Zarys architektury budowanego rozwiązania \cite{diagrams_net}}
+    %%\label{fig:zarysuskladuserwisu}
+%%\end{figure}\newline
 
 % \paragraph{Część serwerowa:}
 % \begin{itemize}
