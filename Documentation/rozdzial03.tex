@@ -1,20 +1,5 @@
 \chapter{Implementacja aplikacji}
 %
-\section{Architektura aplikacji webowej}
-Aplikacja składa się z następujących elementów (rys. \ref{fig:systemarchitecturediagram}):
-\begin{itemize}
-\item MongoDB - baza danych;
-\item Redis - przechowywanie JWT tokenów po wylogowaniu;
-\item Go - część serwerowa napisana w języku Go;
-\item Android - aplikacja mobilna;
-\item Docker - kontener dla wdrożenia aplikacji webowej;
-\end{itemize}
-    \begin{figure}[ht]
-    \centering
-        \includegraphics[width=0.8\linewidth]{rys03/system_architecture_diagram.png}
-    \caption{architektura systemu \cite{diagrams_net}}
-    \label{fig:systemarchitecturediagram}
-\end{figure}
 \section{Model bazy danych}
 W systemie wykorzystano dwie nierelacyjne bazy danych: MongoDB i Redis.
 MongoDB jest przeznaczona do przechowywania danych aplikacji.

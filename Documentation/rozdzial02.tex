@@ -1,7 +1,6 @@
 \chapter{Założenia projektowe}
 W rozdziale opisano główny problem oraz potencjalne ścieżki prowadzące do jego rozwiązania. Zamieszczono w nim również wynik przeprowadzonej analizy wymagań funkcjonalnych i niefunkcjonalnych dla mającej powstać aplikacji. Zaproponowano ponadto makiety interfejsu użytkownika oraz przedstawiono narzędzia i technologie wybrane do realizacji celu pracy.
 
-\section{Zarys architektury systemu}
 % Описание проблемы:
 % Существует проблема найти рабочую станцию зарядки, когда остается мало зарядки в автомобиле.
 % Станция может не работать, плохо заряжать, может быть установлена так, что ей невозможно пользоваться, 
@@ -22,73 +21,92 @@ W rozdziale opisano główny problem oraz potencjalne ścieżki prowadzące do j
 % А также база данных дляхранения станций и коментариев.
 
 % Предположительный макет сервиса:
-\paragraph{Opis problemu:}
-Istnieje problem ze znalezieniem dobrej stacji ładującej pojazdy elektryczne.
-Stacja może nie działać, źle ładować, może być zainstalowana tak, że nie można jej używać.
-Większość istniejących aplikacji najczęściej ma dostęp tylko do stacji konkretnych firm i mogą nie mieć najbardziej aktualnych informacji o pojawieniu się stacji innych producentów oraz ocen rzeczywistych użytkowników.
-Istnieje chęć po prostu wziąć telefon i zobaczyć bezpośrednio na mapie, gdzie są stacje i zobaczyć recenzje prawdziwych ludzi na ten temat.
+\section{Analiza biznesowa}
+Podczas podróży pojazdami elektrycznymi sporym problemem jest znalezienie stacji ładowania, w której można byłoby doładować akumulatory. Znając nawet położenie takich stacji nie ma żadnej pewności, że stacje te aktualnie działają, że zapewniony jest do nich dostęp czy też posiadają odpowiednie oprzyrządowanie. Większość istniejących aplikacji mobilnych wspierających użytkowników w takich kwestiach najczęściej gromadzi dane dotyczące stacji konkretnych firm, bez żadnych wskazówek co do lokalizacji stacji ładowania konkurentów. Co więcej, nawet te dane, które są oferowane, bywają nieaktualne, nie mówiąc już o braku ocen wystawianych przez użytkowników. Problemy te można byłoby rozwiązać za pomocą aplikacji mobilnej. Wystarczyłoby, by aplikacja ta wyświetliła bieżącą pozycję użytkownika na mapie oraz pokazała stacje znajdujące się w pobliżu wraz z możliwością podglądu opinii na ich temat wystawionych przez innych użytkowników.
 
-\paragraph{W wyniku pracy ma powstać aplikacja mobilna w której:}
-Kierowcy samochodów elektrycznych mogą łatwo i szybko znaleźć najbliższe stacje ładowania i wybrać najlepszą.
-Właściciele stacji mogą dodawać swoje stacje, co da im dodatkową reklamę.
-Aby określić jakość stacji, należy użyć systemu aktualnych komentarzy i ocen zarejestrowanych użytkowników.
-Każdy użytkownik musi posiadać własne konto, aby móc korzystać z aplikacji.
-Taki system może spowodować zwiększenie jakośi punktów ładowania pojazdów elektrycznych.
-Ta aplikacja musi być w pełni wspierana przez społeczność: tworzenie i ocena stacji odbywa się przez użytkowników.
+Aplikacja ta w szczególności mogłaby wspierać kierowców pojazdów elektrycznych w odnajdowaniu najbliższych stacji ładowania, pomagając w łatwy i przyjazny sposób wybrać stację najlepszą. Właściciele mogliby dostarczać informacji o swoich stacjach, co może robili by z chęcią z uwagi na ich dodatkową reklamę.
 
-\paragraph{Przypuszczalny układ serwisu:}
-Interfejs użytkownika, którym jest aplikacja mobilna, musi mieć zintegrowaną mapę, aby ułatwić wyszukiwanie i tworzenie miejsc.
-Należy wdrożyć system rejestracji i logowania.
-Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników.
-A także baza danych do przechowywania stacji i komentarzy. Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
-\begin{figure}[ht]
+Aby stworzyć jakiś ranking stacji czy też obiektywnie oceniać ich jakość należałoby wprowadzić możliwość tworzenia aktualnych komentarzy wraz z wystawianiem oceny przez zarejestrowanych użytkowników. Każdy zarejestrowany użytkownik musiałby wtedy posiadać konto w systemie, by można było autoryzować jego działania.
+
+Wdrożenie takiego systemu mogłoby przyczynić się do poprawy jakości usług świadczonych na stacjach ładowania pojazdów elektrycznych.
+Jednak aby ten cel osiągnąć w pełni, potrzebne byłoby uzyskanie wsparcia od społeczności użytkowników.
+
+\section{Zarys architektury systemu}
+% TO DO: tutaj powinno być parę słów o architekturze - czyli komponentach, z jakich zbudowane ma być rozwiązania, jego otoczeniu, przepływie informacji
+% Opis funkcji systemu powinien znaleźć się w analizie wymagań. Proszę odpowiednio przeredagować ten podrozdział
+Aplikacja mobilna powinna oferować możliwość korzystania z serwisu mapowego ułatwiającego wyszukiwanie oraz golokalizowanie wskazanych miejsc.
+Należy wdrożyć system rejestracji i logowania. Oprócz interfejsu użytkownika musi być zaimplementowana część serwerowa do obsługi działań użytkowników. A także baza danych do przechowywania stacji i komentarzy. 
+
+Przedstawioną koncepcję można zrealizować w architekturze składającej się z następujących elementów (rys.~\ref{fig:systemarchitecturediagram}):
+% TO DO: proszę opisać przepływy między elementami oraz ich role (w ogólny sposób)
+\begin{itemize}
+\item MongoDB -- baza danych;
+\item Redis - przechowywanie JWT tokenów po wylogowaniu;
+\item Go - część serwerowa napisana w języku Go;
+\item Android -- aplikacja mobilna;
+\item Docker -- kontener dla wdrożenia aplikacji webowej,
+\end{itemize}
+    \begin{figure}[ht]
     \centering
-        \includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
-        \caption{zarys uskladu serwisu \cite{diagrams_net}}
-    \label{fig:zarysuskladuserwisu}
-\end{figure}\newline
+        \includegraphics[width=0.7\linewidth]{rys03/system_architecture_diagram.png}
+    \caption{Zarys architektury systemu} % TO DO: jeśli korzystał Pan z diagrams.net do narysowania diagramu, to nie trzeba tego cytować. Cytowanie może pojawić się przy opisie wykorzystanych narzędzi. \cite{diagrams_net}
+		% TO DO: Diagram jest brzydki, wielkość liter jest różna - ciężko się je czyta (litery powinny być mniej więcej tej samej wielkości)
+    \label{fig:systemarchitecturediagram}
+\end{figure}
+
+ 
+
+%Ten układ widać na rysunku \ref{fig:zarysuskladuserwisu}.
+%%\begin{figure}[ht]
+    %%\centering
+        %%\includegraphics[width=0.4\linewidth]{rys02/uklad_wstepny.png}
+        %%\caption{Zarys architektury budowanego rozwiązania \cite{diagrams_net}}
+    %%\label{fig:zarysuskladuserwisu}
+%%\end{figure}\newline
 
 \section{Analiza wymagań}
 \subsection{Wymagania funkcjonalne}
-W tabeli \ref{tab:wymaganiafunkcjonalne} przedstawione wymagania funkc do aplikacji mobilnej razem z celem ich wdrożenia.
-\begin{table}[htb] \small
-    \caption{Wymagania funkcjonalne}
-    \label{tab:wymaganiafunkcjonalne}
-    \begin{tabular}{| m{0.5cm} | m{7cm} | m{7cm} |} 
-    \hline
-    № & Opis & Cel \\
-    \hline
-    1 & Użytkownik loguje się do własnego konta. & Umożliwia korzystanie z funkjalności aplikacji. \\ 
-    \hline
-    2 & Użytkownik rejestruje się. & Założenie konta tworzy nowy wpis w bazie danych pozwalający na logowanie. \\ 
-    \hline
-    3 & Użytkownik wyszkuję stacje ładownicze obok wybranego miejca  & dać użytkownikowi możliwość wyboru dogodnej dla niego stacji \\
-    \hline
-    4 & Użytkownik ma możliwość określenia własnej pozycji & Wyszukiwanie wygodniejszych stacji bardziej intuicyjne dla użytkownika  \\
-    \hline
-    5 & Użytkownik ma możliwość przęgliądania mapy razem ze swoją lokalizacją oraz stacji łaowniczych obok wybranego mijsca. & Ułatwienie wyszukiwania najwygodniejszej stacji ładowniczej. \\
-    \hline
-    6 & Użytkownik ma możliwość wyszukiwania stacji ładowniczej według słów kluczowych & Wyszukiwanie najwygoniejszej stacji z punktu widzenia typu lub nazwy stacji \\
-    \hline
-    7 & Użytkownik ma możliwość przeglądania informacji dotyczącej stacji ładowniczej, w tym liku oceny i komentarzy innych użytkowników & Podjęcie decyzji i dobór odpowiedniej dla użytkownika stacji ładowniczej \\
-    \hline
-    8 & Użytkownik ma możliwość wystawienia oceny i napisania komentarzy do wybranej stacji ładowniczej & Określenie jakości stacji. Pozwala na aktualizację danuch dotyczących stacji ladowniczej \\
-    \hline
-    9 & Użytkownik ma możliwość dowdawania (oznaczenia, tworzenie) nowej stacji ładowniczej & Aktualizacja informacji o dostępnych stacjach \\
-    \hline
-    10 & Użytkownik, który stworzył stację, ma możliwość zmiany informacji o tej stacji ładowniczej & Aktualizacja informacji istniejącej statji \\
-    \hline
-\end{tabular}
-\end{table}
-
-\paragraph{Diagram Przypadków użycia\newline}
-Diagram przypadków użycia (rys.~\ref{fig:usecasediagram}) graficznie pokazuje użytkowników oraz funkcje aplikacji dostępne do różnych rodzajów użytkowników (w tym przypadku jeden rodzaj).
+Wymagania funkcjonale definiują oczekiwany zakres funkcji dostarczanych przez tworzony system oraz jego zachowania. Wymagania te można definiować w języku naturalnym bądź też w języku formalnym. W niniejszej pracy wymagania przedstawiono na diagramie przypadków użycia (patrz rysunek~\ref{fig:usecasediagram}) oraz opisano tabelarycznie cel ich wdrożenia (patrz tabela~\ref{tab:wymaganiafunkcjonalne}).
+Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powiązaniu z dostępnymi dla nich funkcjami. W budowanej aplikacji istnieje tylko jeden typ użytkownika. 
+% TO DO: Diagram do przerysowania (jest za wysoki - można przecież ułożyć przypadki logowania i rejestracji w poziomie, nie w pionie. Podobnie można poprzesuwać pozostałe przypadki. Owale są za duże w porównaniu do zawartego w nich tekstu. Niech nazwy przypadków będą pisane dużą literą
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.7\linewidth]{rys02/use_case_diagram.png}
         \caption{dagram przypadków uzycia \cite{diagrams_net}}
     \label{fig:usecasediagram}
 \end{figure}
+
+% TO DO: Poprawić wpisy w tabeli: w pierwszej kolumnie powinny być te same nazwy przypadków do na diagramie, w drugiej - w miarę dokładny opis celu, jaki można osiągnąć (poprawione są tylko początkowe wiersze)
+\begin{table}[htb] \small
+    \caption{Wymagania funkcjonalne}
+    \label{tab:wymaganiafunkcjonalne}
+    \begin{tabularx}{\linewidth}{| r | p{6cm} | X |} 
+    \hline
+    № & Przypadek & Cel \\
+    \hline
+    1 & Logowanie & Pozwala użytkownikowi zalogować się do własnego konta \\ 
+    \hline
+    2 & Rejestracja & Pozwala na stworzenie konta (w bazie danych pojawia się nowy wpis) i otwiera możliwość zalogowania się. \\ 
+    \hline
+    3 & Użytkownik wyszykuje stacje ładowania obok wybranego miejsca  & Umożliwienie wyboru stacji dogodnej dla użytkownika \\
+    \hline
+    4 & Użytkownik ma możliwość określenia własnej pozycji & Wyszukiwanie stacji w sposób bardziej intuicyjny dla użytkownika  \\
+    \hline
+    5 & Użytkownik ma możliwość przyglądania mapy razem ze swoją lokalizacją oraz stacji ładowania obok wybranego miejsca & Ułatwienie wyszukiwania najwygodniejszej stacji ładowniczej \\
+    \hline
+    6 & Użytkownik ma możliwość wyszukiwania stacji ładowniczej według słów kluczowych & Wyszukiwanie dogodnej stacji z punktu widzenia typu lub nazwy stacji \\
+    \hline
+    7 & Użytkownik ma możliwość przeglądania informacji dotyczącej stacji, w tym oceny i komentarzy innych użytkowników & Podjęcie decyzji i dobór odpowiedniej dla użytkownika stacji \\
+    \hline
+    8 & Użytkownik ma możliwość wystawienia oceny i napisania komentarzy do wybranej stacji  & Określenie jakości stacji. Pozwala na aktualizację danuch dotyczących stacji ladowniczej \\
+    \hline
+    9 & Użytkownik ma możliwość dowdawania (oznaczenia, tworzenie) nowej stacji  & Aktualizacja informacji o dostępnych stacjach \\
+    \hline
+    10 & Użytkownik, który stworzył stację, ma możliwość zmiany informacji o tej stacji ładowniczej & Aktualizacja informacji istniejącej statji \\
+    \hline
+\end{tabularx}
+\end{table}
+
 
 \subsection{Wymagania niefunkcjonalne}
 W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonalne: krótki opis wymagania, typ (jakiej dziedziny to dotyczy) oraz uwagi do tego wymagania.
@@ -123,15 +141,15 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     12 & Estetyczne & Wszystkie elementy muszą być w jednym stylu & Niedopuszczalne jest użycie różnych czcionek oraz ciągłej zmiany kolorów \\
     \hline
-    13 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang. \textit{Representational State Transfer}) API (ang. \textit{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}] \\
+    13 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang.~\emph{Representational State Transfer}) API (ang.~\emph{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}] \\
     \hline
     14 & Ergonomia & Dla realizacji mapy wykorzystuję się Google Maps[index] & Ułatwia rozumienie interfejsu dla użytkowników \\
     \hline
 \end{tabular}
 \end{table}
 \newpage
-\subsection{Nażędzia i technologie}
-Do sworzenia aplikacji mobilnej, części serwerowej oraz bazy daych zostały wybrane następujące narzędzia i technologie:
+\subsection{Narzędzia i technologie}
+Do stworzenia aplikacji mobilnej, części serwerowej oraz bazy danych wybrano następujące narzędzia i technologie:
 \begin{multicols}{3}
 \begin{itemize}
     \item Visual Studio Code;
@@ -150,51 +168,46 @@ Do sworzenia aplikacji mobilnej, części serwerowej oraz bazy daych zostały wy
     \item Docker;
 \end{itemize}
 \end{multicols}
-\paragraph{Visual Studio Code} \cite{vscode} to darmowy edytor kodu źródłowego, który został wyprodukowany przez Microsoft. Działa na systemach Windows, Linux, macOS. Jest rozszerzalny za pomocą plug-inów.
-Lista podtrzymywanych języków i możliwości jest dość wielka i może być rozszerzona za pomocą plug-inów. Kilka funkcji: podświetlanie składni, IntelliSense, refaktoryzacja, debugowanie i inne.
 
-\paragraph{Go} (golang) \cite{golang1,golang2,golang3,godoc} jest językiem programowania. Kompilowany, wielowątkowy. Stworzony przez Google. Kod tego języku może być kompilowany do Linux, Windows, macOS, FreeBSD, Android i inne.
-Język jest przeznaczony do budowania serwisów z wysokim obciążeniem i efektywnością, które pracują na systemach rozproszonych z wielowątkowymi procesorami.
 
-\paragraph{REST API} (ang. \textit{REpresentational State Transfer}) (ang. \textit{Application Programming Interface}) \cite{rest_api,rest_api_best} Jest to popularne podejście w architekturze tworzenia interfejsów programistycznych.
-Podstawowe zasady to: architektura klient-serwer (na przykład przydzielamy klienta i magazyn danych), brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z żądaniem),
-buforowalność (buforowanie danych jest dozwolone, jeśli w odpowiedzi jest na to zgoda), jednorodność interfejsu (ograniczenia stylu pisania), wielopoziomowość systemu (komponenty systemu mają bezpośredni dostęp tylko do sąsiednich warstw), łatwość rozszerzenia funkcjonalności (opcjonalnie).
+\noindent\textbf{Visual Studio Code} -- to darmowy edytor kodu źródłowego wyprodukowany przez firmę Microsoft. Działa na systemach Windows, Linux, macOS. Wspiera on różne języki programowania oraz posiada możliwość rozszerzeń dzięki mechanizmowi plug-inów. Wśród jego funkcji można wymienić: podświetlanie składni, IntelliSense, refaktoryzacja, debugowanie i inne.~\cite{vscode} \\
 
-\paragraph{JWT} (ang. \textit{JSON Web Token}) \cite{jwt} jest standardem, który jest przeznaczony do tworzenia tokenów dostępu. Za pomocą JWT sprawdza się, czy wchodzące dane zostały wysłane przez autoryzowane źródło.
-Składa się z trzech części: nagłówek (informacja o tym, w jaki sposób odszyfrować token), dane (zaszyfrowane dane) oraz sygnatura. Każdy taki token ma czas działania. Nie może być oznaczony jako nieroboczy, dopóki nie skończy się czas jego działania.
+\noindent\textbf{Go} (golang) -- jest językiem programowania stworzonym przez firmę Google. Pozwala tworzyć aplikacje wielowątkowe kompilowane dla systemów Linux, Windows, macOS, FreeBSD, Android i innych. Język jest przeznaczony do budowania serwisów działających efektywnie pod wysokim obciążeniem w środowisku rozproszonym i z wielowątkowymi procesorami.~\cite{golang1,golang2,golang3,godoc} \\
 
-\paragraph{MongoDB} \cite{mongoDB,mongoDB_doc,mongodb_habr} jest NoSQL (ang. \textit{Not only Structured Query Language}) rozwiązaniem do przechowywania danych. Dane przehowywane w formacie BSON (ang. \textit{Binary JavaScript Object Notation}).
-Format licencji SSPL (ang. \textit{Server Side Public License}). Wykorzystuje technikę segmentacji obiektów bazy danych, co pozwala na bilansowanie obciążenia.
+\noindent\textbf{REST API} (ang.~\emph{Representational State Transfer Application Programming Interface}) -- jest podejściem stosowanym w tworzenia interfejsów programistycznych aplikacji webowych. Obowiązują w nim następujące zasady: komunikacja w architekturze klient-serwer (serwer nasłuchuje na żądania wysyłane przez klienta oraz udziela na nie odpowiedzi), brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z żądaniem), buforowanie (buforowanie danych jest dozwolone, jeśli w odpowiedzi jest na to zgoda), jednorodność interfejsu (ograniczenia stylu pisania), wielopoziomowość systemu (komponenty systemu mają bezpośredni dostęp tylko do sąsiednich warstw), łatwość rozszerzenia funkcjonalności (opcjonalnie).  \cite{rest_api,rest_api_best} \\
 
-\paragraph{Redis} \cite{redis} system zarządzania bazami danych klasy NoSQL, który współpracuje ze strukturami danych typu ,,klucz-wartość''. Najczęściej używa sie do implementacji baz dabych, pamięci podręcznej, brokerów wiadowmości.
+\noindent\textbf{JWT} (ang.~\emph{JSON Web Token}) -- jest standardem wykorzystywanym do tworzenia tokenów dostępu. Za pomocą JWT sprawdza się, czy wchodzące dane zostały wysłane przez autoryzowane źródło. Wykorzystywany model informacyjny składa się z trzech części: nagłówka (informacja o tym, w jaki sposób odszyfrować token), danych (zaszyfrowane dane) oraz sygnatury. Każdy token ma określony okres ważności. Nie może być oznaczony jako nieważny, dopóki ten okres się nie zakończy.~\cite{jwt} \\
 
-\paragraph{Android Studio} \cite{android_doc,android_studio} zintegrowane środowisko programistyczne, które zostało wyprodukowane przez JetBrains na podstawie IelliJ IDEA, do budowania aplikacji na platformie Android. Jest dostępna do systemów Windows, Linux, macOS. Jest udostępniona za pomocą bezpłatnej licencji Apache 2.0.
+\noindent\textbf{MongoDB} -- jest dokumentową bazą danych zaliczaną do rozwiązań typu NoSQL (ang.~\emph{Not only Structured Query Language}). Formatem przechowywania danych jest BSON (ang.~\emph{Binary JavaScript Object Notation}). Działa na licencji SSPL (ang.~\emph{Server Side Public License}). Wykorzystuje technikę segmentacji obiektów bazy danych, co pozwala na bilansowanie obciążenia.~\cite{mongoDB,mongoDB_doc,mongodb_habr} \\
 
-\paragraph{Gradle} \cite{gradle,gradle_android_doc} jest systemem automatycznego budowania aplikacji oraz zarządzania zależnościami, który służy do uproszczenia pracy z językiem Java.
+\noindent\textbf{Redis} -- to system zarządzania bazami danych zaliczany do rozwiązań typu NoSQL, operujący na strukturach typu ,,klucz-wartość''. 
+Najczęściej używa się go do implementacji baz danych w pamięci podręcznej, głównie brokerów wiadomości.~\cite{redis} \\
 
-\paragraph{Android SDK} \cite{android_studio} (ang. \textit{Software development kit}) jest narzędziem do tworzenia aplikacji mobilnych dla systemów na bazie Android, które został wyprodukowane przez Google.
-Ten zestaw SKD zawiera nażędzia programistyczne: zestaw bibliotek Android i Java, emulator telefonu, debugger, dokunentację, szablony prostych aplikacji.
+\noindent\textbf{Android Studio} -- to zintegrowane środowisko programistyczne stworzone przez firmę JetBrains na podstawie IntelliJ IDEA, służące do budowania aplikacji na platformie Android. Środowisko to jest dostępne do systemów Windows, Linux, macOS na bezpłatnej licencji Apache 2.0.~\cite{android_doc,android_studio} \\
 
-\paragraph{Java JDK 8} (and. \textit{Java Development Kit}) \cite{java_doc} jest zestawem programisty do programowania w języku Java. Zawiera: kompilator języka Java, przykłady, dokumentację, system uruchomiania koda Java (JDK (ang. \textit{Java Runtime Environment})).
-Java jest językiem ogólnego zastosowania, obiektowym, krosplatformowym, dzięki uruchomianiu się kodu na maszynie wirtualnej. Został wyprodukowany przez Sun Microsystems.
-Przy tworzeniu aplikacji został użyty język wersji 8, ponieważ kompatybilność tej wersji jest bardzo wysoka.
+\noindent\textbf{Gradle} -- jest systemem automatycznego budowania aplikacji oraz zarządzania zależnościami w aplikacjach rozwijanych w języku Java.~\cite{gradle,gradle_android_doc} \\
 
-\paragraph{RxJava 2} jest to biblioteka pozwalająca na stosowanie reaktywnego programowania w języku Java. Programowanie reaktywne jest paradygmatem programowania pozwalającym na programowanie z asynchronicznymi strumieniami (sekwencja stałych zderzeń, które posortowane według czasu) danych.
-Ta biblioteka jest bardzo przydatna na przykład, żeby interfejs użytkownika ciągle był dostępny do użycia, nawet w podczas obliczania jakiejś logiki, na przykład oczekiwanie odpowiedzi od serwera.
+\noindent\textbf{Android SDK} -- jest pakietem narzędzi dostarczonym przez firmę Google. Służy do tworzenia aplikacji mobilnych działających pod kontrolą systemu Android. W skład SDK (ang.~\emph{Software Development Kit}) wchodzą: zestaw bibliotek Android i Java, emulator telefonu, debugger, dokumentacja, szablony prostych aplikacji.~\cite{android_studio} \\
 
-\paragraph{Google Cloud} \cite{google_cloud} jest pakietem Google usług w chmurze. Ten serwis pozwala na wykorzystanie serwisów Google Search, Gmail, przechowywanie plików, Youtube, obliczenie i przechowywanie danych, uczenie maszynowe i inne usługi, z których korzysta Google w swoich projektach.
-Usługa ta jest płatna. Różne części mają różne koszty w zależności od ilości zapytań do serwisów Google. Jeśli koszty użycia tych serwisów mniej niż 200 dolarów miesięcznie, Google nie pobiera opłaty. W tej pracy inżynierskiej został wykorzystany serwis Static Maps \cite{google_cloud_pricing}.
-Ten serwis jest darmowy przy tworzeniu oprogramowania do telefonów (Android Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}).
+\noindent\textbf{Java JDK 8} -- jest zestawem narzędzi programistycznych stosowanym do tworzenia oprogramowania na platformie Java. JDK (ang.~\emph{Java Development Kit}) zawiera: kompilator języka Java, przykłady, dokumentację, środowisko uruchomieniowe JRE (ang.~\emph{Java Runtime Environment}).
+Java jest obiektowym językiem ogólnego zastosowania, kompilowanym do niezależnego od systemu operacyjnego kodu bajtowego uruchamianego na maszynie wirtualnej. Powstał w firmie Sun Microsystems, którą przejęła firma Oracle.~\cite{java_doc} 
+Do budowy aplikacji wykorzystano JDK w wersji 1.8 (nie jest to najnowsza wersja, ale z uwagi na duże wsparcie i liczne zastosowania pozostaje wciąż popularna). \\
 
-\paragraph{GMS}  (and. \textit{Google Mobile Services}) jest to zestaw aplikacji dostarczonych przez Google: Goole Maps, Google Paly Store, Gmail Google Drive Google Duo, Google Chrome, Google Photos, Google TV, YOutube, Youtube Music.
+\noindent\textbf{RxJava 2} -- jest biblioteką pozwalającą na stosowanie reaktywnego programowania w języku Java. Programowanie reaktywne jest paradygmatem programowania pozwalającym na posługiwanie się asynchronicznymi strumieniami danych (sekwencjami zdarzeń uporządkowanymi według czasu).
+Biblioteka ta przydaje się do zapewnienia ciągłości funkcjonowania interfejsu użytkownika nawet w podczas realizacji złożonej logiki obliczeniowej, na przykład podczas oczekiwania na odpowiedzi serwera. \\
 
-\paragraph{Docker} \cite{docker,docker_doc} jest to oprogramowanie przeznaczone do automatyzacji wdrażania i zarządzania aplikacjami. Aplikacje uruchamiają się w kontenerach. Docker pozwala na upakowanie aplikacji oraz wszystkich zależności w niezależny od podstawowego systemu kontener, który może być łatwo przeniesiony na dowolny *nix system.
+\noindent\textbf{Google Cloud} -- jest pakietem usług udostępnianych w chmurze Google. Do tego pakietu należą znane usługi, jak: Google Search, Gmail, Google Drive, Youtube. Ponadto w ramach tego pakietu możliwe są obliczenie i przechowywanie danych, uczenie maszynowe i inne usługi, które Google wykorzystuje w swoich projektach. \cite{google_cloud} 
+Usługa ta jest odpłatna, a wysokość opłat zależy od wybranego planu biznesowego oraz stopnia wykorzystania chmury. Jeśli koszty użycia serwisów kształtują się na poziomie niższym niż 200 dolarów miesięcznie, wtedy opłaty nie są egzekwowane przez Google. W tej pracy inżynierskiej wykorzystano serwis Static Maps \cite{google_cloud_pricing}. Jest on darmowy przy tworzeniu oprogramowania do telefonów z wykorzystaniem Android Maps SDK for Android \cite{maps_sdk}. \\
 
-% Jako Baza danych wykorzystuje się NoSQL (ang. (ang. \textit{Not only Structured Query Language}) baza danych MongoDB \cite{mongoDB,mongoDB_doc}.
+\noindent\textbf{GMS} (ang.~\emph{Google Mobile Services}) -- to zestaw najpopularniejszych aplikacji i API, jak  Goole Maps, Google Paly Store, Gmail Google Drive Google Duo, Google Chrome, Google Photos, Google TV, Youtube, Youtube Music adresowanych przez Google na urządzenia mobilne. \\
+
+\noindent\textbf{Docker} -- jest oprogramowaniem przeznaczonym do automatyzacji wdrażania i zarządzania aplikacjami. Aplikacje uruchamiają się w kontenerach. Docker pozwala na upakowanie aplikacji oraz wszystkich zależności w niezależny od podstawowego systemu kontener, który może być łatwo przeniesiony na dowolny *nix system.~\cite{docker,docker_doc} \\
+
+% Jako Baza danych wykorzystuje się NoSQL (ang. (ang.~\emph{Not only Structured Query Language}) baza danych MongoDB \cite{mongoDB,mongoDB_doc}.
 % Część serwerowa napisana w języku Go \cite{golang1,golang2,golang3,godoc} w architekturze Rest API \cite{rest_api_best}.
 % Część serwerowa i Baza Danych muszą uruchamiać się w Docker kontenerze \cite{docker,docker_doc}.
 % Aplikacja mobilna działa w systemie Android za pomocą Android Studio \cite{android_doc,android_studio,gradle,gradle_android_doc} w języku Java \cite{java_doc}.
-% Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google Cloud \cite{google_cloud} Maps SDK for Android (ang. \textit{Maps Software development kit for Android}) \cite{maps_sdk}.
+% Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google Cloud \cite{google_cloud} Maps SDK for Android (ang.~\emph{Maps Software development kit for Android}) \cite{maps_sdk}.
 % 
 \subsection{Makiety interfejsu użytkownika}
 Po analizie wymagań zostały stworzone możliwe makiety aplikacji, która ma powstać.
@@ -215,7 +228,7 @@ Poniżej znajduje się możliwość do zmiany dystansu wyszukiwania oraz przycis
 
 Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokonać wyboru stacji ładowania. Stacje poznaczone znacznikami na mapie. Dla otrzymania informacji o wybranej stacji (wybierany jest markier na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
 
-Podczas tworzenia stacji ładowania (rys. \ref{fig:create_makiet}a) dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk.
+Podczas tworzenia stacji ładowania  dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk (rys.~\ref{fig:create_makiet}a).
 % TO DO: proszę ułożyć dwie makiety obok siebie, jak w przykładzie powyżej
 % DONE:
 \begin{figure}[ht]
@@ -228,9 +241,9 @@ Podczas tworzenia stacji ładowania (rys. \ref{fig:create_makiet}a) dla wygody u
     \label{fig:create_makiet}
 \end{figure}
 
-Na stronie informacji o stacji (rys.\ref{fig:create_makiet}b) oprócz nazwy stacji, opisu oraz oceny, wyliczonej na podstawie komentarzy oceny, znajdują się komentarzy uzytkowników w porządku: najpierw najnowsze.
+Na stronie informacji o stacji oprócz nazwy stacji, opisu oraz oceny, wyliczonej na podstawie komentarzy oceny, znajdują się komentarzy użytkowników uporządkowane od najnowszego (rys.\ref{fig:create_makiet}b) .
 
-Dla rejestracji i logowania wykorzystują się dwa różne ekrany (rys.\ref{fig:login_makiet}a oraz \ref{fig:login_makiet}b)
+Do rejestracji i logowania wykorzystują się dwa różne ekrany pokazane, odpowiednio, na rysunku~\ref{fig:login_makiet}a oraz rysunku~\ref{fig:login_makiet}b)
 \begin{figure}[ht]
 	\centering
   \begin{tabular}{@{}rl@{\hspace{10mm}}rl@{}}
