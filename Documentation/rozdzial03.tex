@@ -922,7 +922,42 @@ Po wysłaniu zapytania GET na adres \texttt{api/v1/logout}, zostanie wywoływana
 \end{lstlisting}
 
 \subsubsection{Stacja}
+Głównym przedmiotem w aplikacji jest stacja ładująca pojazy elektryczne. Aplikacja została stworzona, aby uzyskać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może je modyfikować.
+
+W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowniczej, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user}.
+\begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    type Station struct {
+        ID          string    `bson:"_id,omitempty" json:"_id,omitempty"`
+        StationName string    `bson:"station_name,omitempty" json:"station_name,omitempty"`
+        OwnerID     string    `bson:"owner_id,omitempty" json:"owner_id,omitempty"`
+        Rating      float32   `bson:"rating,truncate" json:"rating,truncate"`
+        Description string    `bson:"description,omitempty" json:"description,omitempty"`
+        Comments    []Comment `bson:"comments,omitempty" json:"comments,omitempty"`
+        Latitude    float64   `bson:"latitude" json:"latitude"`
+        Longitude   float64   `bson:"longitude" json:"longitude"`
+        Model
+    }
+\end{lstlisting}
+
 \paragraph{Dodawanie}
+Żeby dodać nową stację do systemu należy wysłać zapytanie \testtt{POST} do części serwerowj na endpoint \texttt{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \textt{description}, \textt{station_name}, \textt{owner_id}, \textt{longitude}, \textt{latitude}.
+Przykład ciałą zapytania:
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+    {
+		"description": "testText",
+		"station_name": "station name",
+		"owner_id": "5fbe4b1a187e72c56a5e4f70",
+		"longitude":    15.162,
+		"latitude": 12.46
+    }
+\end{lstlisting}
+
+Router przekieruje, po przechodzeniu przez funkcje medyalne, w tym sprawdzenie JWT tokenu, dane do kontrolera \textt{CreateStation()} \ref{list:} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wchodzący JSON w obiekt struktury \texttt{station}.
+Ta metoda wywołuje serwis \texttt{CreateStation} \ref{list:}, znajdującyj się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się czy istnieje stacja w tym mijscu, tworzy stację w bazie danych (metoda \texttt{Create} \ref{list:} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera z bazy danych ten dokumenty (listing \ref) i wysyła sie jako ciało odpowiedzi.
+
+
+
+
 \paragraph{Wczytywanie}
 \paragraph{Edycja}
 \paragraph{Usunięcie}
