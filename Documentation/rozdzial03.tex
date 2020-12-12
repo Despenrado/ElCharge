@@ -208,6 +208,46 @@ Współpraca z bazą danych zachdzi w katalogu \texttt{storage} (rys. \ref{fig:b
 
 W katalogu \texttt{utils} (rys. \ref{fig:backend_file_structure_2}c) znajdują się rzeczy wspomagające, naprykład lista błedów lub rejestracja działania serwera.
 
+
+\subsubsection{KOnfiguracja serwera}
+Do zapobiegania ponowniej kompilacji w przypadku zmiany portu, na którym działa serwer lub adresów baz danych, została utworzona struktura \texttt{Config} \ref{list:config_restapi} (plikutils/config.go), która przy uruchomienui aplikacji pobiera dane z pliku, który zostanie podany jako parametr wejściowy.
+Plik musi być typu \texttt{yaml}. Za pomocą biblioteki \texttt{yaml.v2} ten plik jest parsowany do obiektu struktury \texttt{Config} \ref{list:config_restapi_new}. Przykład pliku:
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+    bind_addr: :8081
+    database_url: mongodb://127.0.0.1:27017
+    db_name: elCharge
+    db_user_collection: user
+    db_station_collection: station
+    db_redis: 127.0.0.1:6379
+    jwtKey: 21d5680b6a
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:config_restapi,caption=Klasa konfiguracyjna części serwerowej,basicstyle=\tiny\ttfamily]
+    type Config struct {
+        BindAddr            string `yaml:"bind_addr"`
+        DatabaseURL         string `yaml:"database_url"`
+        DbName              string `yaml:"db_name"`
+        DbUserCollection    string `yaml:"db_user_collection"`
+        DbStationCollection string `yaml:"db_station_collection"`
+        RedisDB             string `yaml:"db_redis"`
+        JWTKey              string `yaml:"jwtKey"`
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:config_restapi_new,caption=Wczytanie pliku konfiguracyjnego części serwerowej,basicstyle=\tiny\ttfamily]
+    func NewConfig(path string) (*Config, error) {
+        configFile, err := ioutil.ReadFile(path)
+        if err != nil {
+            return nil, err
+        }
+        config := &Config{}
+        err = yaml.Unmarshal(configFile, config)
+        if err != nil {
+            return nil, err
+        }
+        return config, nil
+    }
+\end{lstlisting}
 % 
 \subsubsection{Przepływ danych}
 Na rysunku \ref{fig:backend_data_flow} został przedstawiony schemat przetwarzania i przepływu danych przy wysyłaniu zapytania do części serwerowej niniejszej aplikacji.
@@ -237,7 +277,7 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
     \hline
     3 & GET & /api/v1/logout & Wylogowanie się użytkownika. \\
     \hline
-    4 & POST & /api/v1/users & Tworzenie użytkownika. \\
+    4 & POST & /api/v1/users & Tworzenie użytkownika / rejestracja \\
     \hline
     5 & GET & /api/v1/users/{id} & Wczytywanie danych jednego użytkownika. \\
     \hline
@@ -907,7 +947,7 @@ Po wysłaniu zapytania GET na adres \texttt{api/v1/logout}, zostanie wywoływana
 \end{lstlisting}
 
 \subsubsection{Stacja}
-Głównym przedmiotem w aplikacji jest stacja ładująca pojazy elektryczne. Aplikacja została stworzona, aby uzyskać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może je modyfikować.
+Głównym przedmiotem w aplikacji jest stacja ładująca pojazdy elektryczne. Aplikacja została stworzona, aby uzyskać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może je modyfikować.
 
 W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowniczej, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user}.
 \begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowniczej,basicstyle=\tiny\ttfamily]
@@ -925,8 +965,8 @@ W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ł
 \end{lstlisting}
 
 \paragraph{Dodawanie}
-Żeby dodać nową stację do systemu należy wysłać zapytanie \texttt{POST} do części serwerowj na endpoint \texttt{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \texttt{description}, \texttt{station\_name}, \texttt{owner\_id}, \texttt{longitude}, \texttt{latitude}.
-Przykład ciałą zapytania:
+Żeby dodać nową stację do systemu, należy wysłać zapytanie \texttt{POST} do części serwerów na endpoint \texttt{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \texttt{description}, \texttt{station\_name}, \texttt{owner\_id}, \texttt{longitude}, \texttt{latitude}.
+Przykład ciała zapytania:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
 		"description": "testText",
@@ -937,17 +977,640 @@ Przykład ciałą zapytania:
     }
 \end{lstlisting}
 
-Router przekieruje, po przechodzeniu przez funkcje medyalne, w tym sprawdzenie JWT tokenu, dane do kontrolera \texttt{CreateStation()} \ref{list:} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wchodzący JSON w obiekt struktury \texttt{station}.
-Ta metoda wywołuje serwis \texttt{CreateStation} \ref{list:}, znajdującyj się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się czy istnieje stacja w tym mijscu, tworzy stację w bazie danych (metoda \texttt{Create} \ref{list:} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera z bazy danych ten dokumenty (listing \ref{list:}) i wysyła sie jako ciało odpowiedzi.
+Router przekieruje, po przechodzeniu przez funkcje medialne, w tym sprawdzenie JWT tokena, dane do kontrolera \texttt{CreateStation()} \ref{list:controller_create_station} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wchodzący JSON w obiekt struktury \texttt{station}.
+Ta metoda wywołuje serwis \texttt{CreateStation} \ref{list:service_create_station}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create} \ref{list:repo_create_station} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z bazy danych ten dokumenty (listing \ref{list:}) i wysyła się jako ciało odpowiedzi.
+Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych oraz uzupełnienie pól niektórych niezbędnych, na przykład czasu tworzenia i ostatniej modyfikacji.
+\begin{lstlisting}[label=list:controller_create_station,caption=Kontroler tworzenia stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (c *StationController) CreateStation() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            s := &models.Station{}
+            err := json.NewDecoder(r.Body).Decode(s)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            s, err = c.service.Station().CreateStation(s)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusCreated, s)
+        })
+    }
+\end{lstlisting}
 
+\begin{lstlisting}[label=list:service_create_station,caption=Serwis tworzenia stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (s *StationService) CreateStation(st *models.Station) (*models.Station, error) {
+        if err := st.Validate(); err != nil {
+            return st, err
+        }
+        _, err := s.storage.Station().FindByLocation(st.Latitude, st.Longitude)
+        if err != utils.ErrRecordNotFound {
+            if err != nil {
+                return nil, err
+            }
+            return st, utils.ErrRecordAlreadyExists
+        }
+        if err := st.BeforeCreate(); err != nil {
+            return st, err
+        }
+        id, err := s.storage.Station().Create(st)
+        if err != nil {
+            return nil, err
+        }
+        st, err = s.storage.Station().FindByID(id)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
 
+\begin{lstlisting}[label=list:repo_create_station,caption=Dodanie wpisu stacji ładowniczej do bazy danych,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) Create(s *models.Station) (string, error) {
+        res, err := r.col.InsertOne(context.TODO(), s)
+        if err != nil {
+            return "", err
+        }
+        id := res.InsertedID.(primitive.ObjectID).Hex()
+        return id, nil
+    }
+\end{lstlisting}
 
+\begin{lstlisting}[label=list:before_create_station,caption=Walidacja danych stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (s *Station) Validate() error {
+        return validation.ValidateStruct(
+            s,
+            validation.Field(&s.StationName, validation.Required, validation.Length(2, 100)),
+            validation.Field(&s.Description, validation.Required, validation.Length(5, 512)),
+            validation.Field(&s.OwnerID, validation.Required, validation.Length(20, 30)),
+            validation.Field(&s.Latitude, validation.Required, validation.Max(float64(90))),
+            validation.Field(&s.Latitude, validation.Required, validation.Min(float64(-90))),
+            validation.Field(&s.Longitude, validation.Required, validation.Max(float64(180))),
+            validation.Field(&s.Longitude, validation.Required, validation.Min(float64(-180))),
+        )
+    }
+\end{lstlisting}Walidacja danych stacji ładowniczej
+
+\begin{lstlisting}[label=list:validation_station,caption=Uzupełnienie danych systemowych dotyczących,basicstyle=\tiny\ttfamily]
+    func (s *Station) BeforeCreate() error {
+        s.Model.BeforeCreate()
+        s.Rating = 0
+        return nil
+    }
+\end{lstlisting}
 
 \paragraph{Wczytywanie}
+Do otrzymania danych konkretnej stacji należy wysłać zapytanie \texttt{GET} na URL \texttt{api/v1/stations/{id}}. Na podstawie \texttt{id} podanego w adresie będzie znaleziony odpowiedni wpis w bazie danych lub, jeśli takiego nie istnieje, zwrócony pusty komunikat z nagówkiem \texttt{204 Status No Content}.
+
+Po przekierowaniu przez router z URL do metody kontrolera \texttt{FindByID()} \ref{list:controller_read_station} (plik \texttt{controllers/api/v1/stationcontroller.go}), jest wycięty z URL adresu \texttt{id} stacji ładowniczej orza wywołana metoda \texttt{FindByID()} \ref{list:service_read_station} (plik \texttt{services/api/v1/stationservice.go}).
+Tesn serwis tylko wywołuje metodę (\texttt{FindByID} \ref{list:repo_read_station}, która znajduje się w \texttt{/storage/mongostore/stationrepository.go}) która już bezpośrednio zwraca się do sterownika bazą danych MongoDB w języku Go.
+% 
+\begin{lstlisting}[label=list:controller_read_station,caption=Kontroler wczytywania danych stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (c *StationController) FindByID() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            id, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            s, err := c.service.Station().FindByID(id)
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusFound, s)
+        })
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:service_read_station,caption=Serwis wczytywania danych stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (s *StationService) FindByID(id string) (*models.Station, error) {
+        st, err := s.storage.Station().FindByID(id)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+
+\begin{lstlisting}[label=list:repo_read_station,caption=Wyszukiwanie dokumentu w bazie danych,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) FindByID(id string) (*models.Station, error) {
+        idi, err := primitive.ObjectIDFromHex(id)
+        if err != nil {
+            return nil, err
+        }
+        filter := bson.M{"_id": idi}
+        res := r.col.FindOne(context.TODO(), filter)
+        s := &models.Station{}
+        err = res.Decode(s)
+        if err != nil {
+            return nil, utils.ErrRecordNotFound
+        }
+        return s, nil
+    }
+\end{lstlisting}
+
+\paragraph{Wyszukiwanie}
+W zależności od parametrów w adresie URL przy wysłaniu zapytania metodą \texttt{GET} na adres \texttt{api/v1/stations/read} będzie zrobione wyszukiwanie według różnych parametrów.
+Dostęp mają tylko zalogowani użytkownicy.
+
+Lista parametrów (kolejność nie ma znaczenia):
+\begin{itemize}
+    \item \texttt{skip} -- pominięcie jakiejś ilości elementów (niezbędny parametr);
+    \item \texttt{limit} -- ograniczenie ilości zwracanych elementów (niezbędny parametr);
+    \item \texttt{name} -- wyszukiwanie według nazwy.
+    \item \texttt{descr} (ang. ~\emph{description}) -- wyszukiwanie według opisu.
+    \item \texttt{lat} (ang. ~\emph{latitude}) -- szerokość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem \texttt{lng}.
+    \item \texttt{lng}(ang. ~\emph{longitude}) -- długość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem \texttt{lat}.
+    \item \texttt{dist} (ang. ~\emph{distance}) -- promień wyszukiwania wokół współrzędnych geograficznych ustalonych za pomocą \texttt{lat}, \texttt{lng}. Wyszukiwanie zachodzi nie w promieniu od współrzędnych, lecz w kwadracie (odmierzamy dystans na wschód, na zachód, na północ oraz na południe).Jest opcjonalny przy użyciu \texttt{lat} oraz \texttt{lng}. Nie używa się osobno.
+\end{itemize}
+
+Przykład użycia: wyszukiwanie dwustu stacji ładowniczych w promieniu 100 kilometrów wokół pewnych współrzędnych geograficznych \texttt{http://127.0.0.1:8081/api/v1/stations/read?lat=57\&lng=15\&skip=0\&limit=200\&dist=100}.
+
+Router przekieruje do metody kontrolera \texttt{Read()} \ref{list:controller_read_station} (plik \texttt{controllers/api/v1/stationcontroller.go}) dalej w zależności od wprowadzonych parametrów będzie wywołana ta czy inna metoda serwisu.
+Przy wprowadzaniu dwóch parametrów, na przykład \texttt{name} razem z \texttt{desc} będzie zrobione wyszukiwanie tylko według jednego parametru, w tym przypadku \texttt{name}. Jeśli wyszukiwanie zachodzi według nazwy lub opisu, zostały wykorzystane wyrażenia regularne, co pozwala wyszukiwać wiedząc tylko część nazwy lub opisu.
+Dla selekcji wyników w kilku etapów wykorzystana agregacja (metoda \texttt{Aggregare}), która po kolej prowadzi różne przekształcenia danych według sekwencji przenośnika (metoda \texttt{Pipeline}).
+
+Lista przypadków w zależności od parametru (Wszystkie te metody znajdują się w pliku \texttt{services/api/v1/stationservice.go}):
+\begin{itemize}
+    \item \texttt{name} -- wykonuje się metoda \texttt{FindByName()} \ref{list:service_read_station_FindByName}, która wywołuje się metoda współpracy z bazą danych \texttt{FinDByName()} \ref{list:repo_read_station_FindByName};
+    \item \texttt{descr} -- wykonuje się metoda \texttt{FindByDescription()} \ref{list:service_read_station_FindByDescription}, która wywołuje się metoda współpracy z bazą danych \texttt{FindByDescription()} \ref{list:repo_read_station_FindByDescription};
+    \item \texttt{dist} razem z \texttt{lat} oraz \texttt{lng} -- wykonuje się metoda \texttt{FindInRadius()} \ref{list:service_read_station_FindInRadius}, która wywołuje się metoda współpracy z bazą danych \texttt{FindInRadius()} \ref{list:repo_read_station_FindInRadius};
+    \item \texttt{lat} oraz \texttt{lng} -- wykonuje się metoda \texttt{FindByLocation()} \ref{list:service_read_station_FindByLocation}, która wywołuje się metoda współpracy z bazą danych \texttt{FindByLocation()} \ref{list:repo_read_station_FindByLocation};
+    \item \texttt{skip} razem z \texttt{limit} -- bedzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()} \ref{list:service_read_station_Read}), która wywołuje się metoda współpracy z bazą danych \texttt{Read()} \ref{list:repo_read_station_Read}.
+\end{itemize}
+
+\begin{lstlisting}[label=list:controller_read_station,caption=Kontroler wyszukiwania stacji ładowniczych,basicstyle=\tiny\ttfamily]
+    func (c *StationController) Read() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := r.URL.Query()
+            skipINT, err := strconv.Atoi(params.Get("skip"))
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            limitINT, err := strconv.Atoi(params.Get("limit"))
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            name := params.Get("name")
+            if name != "" {
+                stations, err := c.service.Station().FindByName(name)
+                if err != nil {
+                    utils.Error(w, r, http.StatusNoContent, err)
+                    return
+                }
+                utils.Respond(w, r, http.StatusOK, stations)
+                return
+            }
+            descr := params.Get("descr")
+            if name != "" {
+                stations, err := c.service.Station().FindByDescription(descr)
+                if err != nil {
+                    utils.Error(w, r, http.StatusNoContent, err)
+                    return
+                }
+                utils.Respond(w, r, http.StatusOK, stations)
+                return
+            }
+            latitude, err := strconv.ParseFloat(params.Get("lat"), 64)
+            if err == nil {
+                longitude, err := strconv.ParseFloat(params.Get("lng"), 64)
+                if err == nil {
+                    // if we want to find station in radius around the coordinates
+                    distance, err := strconv.Atoi(params.Get("dist"))
+                    if err == nil && distance != 0 {
+                        stations, err := c.service.Station().FindInRadius(latitude, longitude, distance, skipINT, limitINT)
+                        if err != nil {
+                            utils.Error(w, r, http.StatusNoContent, err)
+                            return
+                        }
+                        utils.Respond(w, r, http.StatusOK, stations)
+                        return
+                    }
+                    // if we want get station in coordinates
+                    station, err := c.service.Station().FindByLocation(latitude, longitude)
+                    if err != nil {
+                        utils.Error(w, r, http.StatusNoContent, err)
+                        return
+                    }
+                    utils.Respond(w, r, http.StatusOK, station)
+                    return
+                }
+            }
+            stations, err := c.service.Station().Read(skipINT, limitINT)
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusOK, stations)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:service_read_station_FindByName,caption=Serwis wyszukiwania stacji ładowniczych według nazwy,basicstyle=\tiny\ttfamily]
+    func (s *StationService) FindByName(name string) ([]models.Station, error) {
+        st, err := s.storage.Station().FindByName(name)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_read_station_FindByName,caption=Wyszukiwanie stacji ładowniczych w bazie danych według nazwy,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) FindByName(name string) ([]models.Station, error) {
+        filter := bson.D{{"station_name", primitive.Regex{Pattern: name, Options: "i"}}}
+        cursor, err := r.col.Aggregate(
+            context.TODO(),
+            mongo.Pipeline{
+                bson.D{{"$match",
+                    filter}},
+            })
+        if err != nil {
+            return nil, err
+        }
+        s := []models.Station{}
+        err = cursor.All(context.TODO(), &s)
+        if err != nil {
+            return nil, err
+        }
+        return s, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:service_read_station_FindByDescription,caption=Serwis wyszukiwania stacji ładowniczych według opisu,basicstyle=\tiny\ttfamily]
+    func (s *StationService) FindByDescription(text string) ([]models.Station, error) {
+        st, err := s.storage.Station().FindByName(text)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_read_station_FindByDescription,caption=Wyszukiwanie stacji ładowniczych w bazie danych według opisu,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) FindByDescription(text string) ([]models.Station, error) {
+        filter := bson.D{{"description", primitive.Regex{Pattern: text, Options: "i"}}}
+        log.Println(filter)
+        cursor, err := r.col.Aggregate(
+            context.TODO(),
+            mongo.Pipeline{
+                bson.D{{"$match",
+                    filter}},
+            })
+        if err != nil {
+            return nil, err
+        }
+        s := []models.Station{}
+        err = cursor.All(context.TODO(), &s)
+        if err != nil {
+            return nil, err
+        }
+        return s, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:service_read_station_FindInRadius,caption=Serwis wyszukiwania stacji ładowniczych w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    func (s *StationService) FindInRadius(latitude float64, longitude float64, radius int, skip int, limit int) ([]models.Station, error) {
+        st, err := s.storage.Station().FindInRadius(getLatitude(latitude), getLongitude(longitude), getRadius(radius), skip, limit)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_read_station_FindInRadius,caption=Wyszukiwanie stacji ładowniczych w bazie danych w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) FindInRadius(latitude float64, longitude float64, radius float64, skip int, limit int) ([]models.Station, error) {
+        matchInRadius := bson.D{{"$match", bson.M{
+            "$and": []interface{}{
+                bson.M{"latitude": bson.M{
+                    "$gte": latitude - radius}},
+                bson.M{"latitude": bson.M{
+                    "$lte": latitude + radius}},
+                bson.M{"longitude": bson.M{
+                    "$gte": longitude - radius}},
+                bson.M{"longitude": bson.M{
+                    "$lte": longitude + radius}},
+            }},
+        }}
+        cursor, err := r.col.Aggregate(
+            context.TODO(),
+            mongo.Pipeline{
+                matchInRadius,
+                bson.D{{"$skip", skip}},
+                bson.D{{"$limit", limit}},
+            })
+        if err != nil {
+            return nil, err
+        }
+        stations := []models.Station{}
+        err = cursor.All(context.TODO(), &stations)
+        if err != nil {
+            return nil, err
+        }
+        return stations, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:service_read_station_FindByLocation,caption=Serwis wyszukiwania stacji ładowniczych według współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    func (s *StationService) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
+        st, err := s.storage.Station().FindByLocation(getLatitude(latitude), getLongitude(longitude))
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_read_station_FindByLocation,caption=Wyszukiwanie stacji ładowniczych w bazie danych współrzędnych pozycji na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
+        filter := bson.M{"latitude": latitude, "longitude": longitude}
+        res := r.col.FindOne(context.TODO(), filter)
+        s := &models.Station{}
+        err := res.Decode(s)
+        if err != nil {
+            return nil, utils.ErrRecordNotFound
+        }
+        return s, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:service_read_station_Read,caption=Serwis wczytania listy kolejnych stacji ładowniczych,basicstyle=\tiny\ttfamily]
+    func (s *StationService) Read(skip int, limit int) ([]models.Station, error) {
+        st, err := s.storage.Station().Read(skip, limit)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_read_station_Read,caption=Wczytanie listy kolejnych stacji ładowniczych z bazy danych,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) Read(skip int, limit int) ([]models.Station, error) {
+        cursor, err := r.col.Aggregate(
+            context.TODO(),
+            mongo.Pipeline{
+                bson.D{{"$skip", skip}},
+                bson.D{{"$limit", limit}},
+            })
+        if err != nil {
+            return nil, err
+        }
+        stations := []models.Station{}
+        err = cursor.All(context.TODO(), &stations)
+        if err != nil {
+            return nil, err
+        }
+        return stations, nil
+    }
+\end{lstlisting}
+
+Dla wyszukiwania listy stacji ładowniczych w pobliżu podanych współrzędnych na mapie Ziemi należy wykorzystać wzór obliczający długość łuku (${L = \alpha R}$, gdzie L - długość łuku w kilometrach, ${\alpha}$ - kąt, R - radius Ziemi (6378 km.)) do przekształcenia kilometrów do stopień kąta (${\alpha = L/R*180/\pi}$). To przekształcenie zachodzi w metodzie \texttt{getRadius()} \ref{list:get_radius.}.
+\begin{lstlisting}[label=list:get_radius,caption=Obliczenie dystansu przeszukiwania,basicstyle=\tiny\ttfamily]
+    func getRadius(rad int) float64 {
+        if rad > 40074 {
+            rad = 40074
+        }
+        radius := float64(float64(float64(rad)/float64(6378)) * float64(180) / math.Pi)
+        return radius
+    }
+\end{lstlisting}
+
 \paragraph{Edycja}
+
+Do edycji stacji ładowniczej został zaimplementowany endpoint \texttt{/api/v1/stations/{id}?ownid=""}.
+Metoda zapytania \texttt{PUT}.
+W adresie URL musi być podany id użytkownika. Oraz jako parametr id użytkownika, który probuje edytować. Edytować może tylko właściciel stacji oraz dla zapobiegania jednoczesnej edycji musi zgadzać się pole \texttt{update\_at}, które przechowuje datę ostatniej modyfikacji.
+Dostęp mają tylko zalogowani użytkownicy.
+Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Do edycji dozwolone następujące pola: \texttt{description}, \texttt{station\_name}.
+Przykład ciała zapytania:
+\begin{lstlisting}[,basicstyle=\tiny\ttfamily]
+    {
+		"description": "testText",
+		"station_name": "station name"
+    }
+\end{lstlisting}
+
+Router przekieruje z adresu URL do metody kontrolera \texttt{UpdateByID()} \ref{list:controller_station_UpdateByID} z pliku \texttt{controllers/api/v1}. W tej metodzie zostaje pobrany \texttt(id) stacji oraz \texttt(ownid), dla sprawdzenia właściciela.
+Dalej jest wywoływania metoda serwisu \texttt{UpdateByID()} \ref{list:service_station_UpdateByID}, w której wywołują się metody współpracy z bazą danych \texttt{UpdateByID()} \ref{list:repo_station_UpdateByID} oraz \texttt{FidByID()} \ref{list:repo_read_station} do zmiany dokumentu we wpisie oraz pobraniu wynikowego dokumentu.
+\begin{lstlisting}[label=list:controller_station_UpdateByID,caption=Kontroler edycji stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (c *StationController) UpdateByID() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            query := r.URL.Query()
+            id, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusNoContent, utils.ErrWrongRequest)
+                return
+            }
+            ownid := query.Get("ownid")
+            s := &models.Station{}
+            err := json.NewDecoder(r.Body).Decode(s)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            s, err = c.service.Station().UpdateByID(id, s, ownid)
+            if err != nil {
+                utils.Error(w, r, http.StatusNotFound, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusOK, s)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:service_station_UpdateByID,caption=Serwis edycji stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (s *StationService) UpdateByID(id string, st *models.Station, ownerID string) (*models.Station, error) {
+        err := s.storage.Station().UpdateByID(id, st, ownerID)
+        if err != nil {
+            return nil, err
+        }
+        st, err = s.storage.Station().FindByID(id)
+        if err != nil {
+            return nil, err
+        }
+        return st, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_station_UpdateByID,caption=Edycja stacji ładowniczej w bazie danych,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) UpdateByID(id string, s *models.Station, ownerID string) error {
+        idi, err := primitive.ObjectIDFromHex(id)
+        if err != nil {
+            return err
+        }
+        filter := bson.M{
+            "_id":             idi,
+            "model.update_at": s.UpdateAt,
+            "owner_id":        ownerID,
+        }
+        update := bson.M{
+            "model.update_at": models.GetTimeNow(),
+        }
+        if s.Description != "" {
+            update["description"] = s.Description
+        }
+        if s.StationName != "" {
+            update["station_name"] = s.StationName
+        }
+        _, err = r.col.UpdateOne(context.TODO(), filter, bson.M{
+            "$set": update})
+        if err != nil {
+            return err
+        }
+        return nil
+    }
+\end{lstlisting}
+
 \paragraph{Usunięcie}
 \subsubsection{Komentarz}
+Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst napisany przez użytkownika, który go stworzył, oraz oceny, na podstawie której jest oceniana cała stacja.
+Struktura komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON znajduje się w listingu \ref{list:comment_struct}.
+\begin{lstlisting}[label=list:comment_struct,caption=Struktura komentarza,basicstyle=\tiny\ttfamily]
+    type Comment struct {
+        ID       string  `bson:"_id,omitempty" json:"_id,omitempty"`
+        UserID   string  `bson:"user_id,omitempty" json:"user_id,omitempty"`
+        UserName string  `bson:"user_name,omitempty" json:"user_name,omitempty"`
+        Text     string  `bson:"text,omitempty" json:"text,omitempty"`
+        Rating   float32 `bson:"rating,omitempty,truncate" json:"rating,omitempty,truncate"`
+        Model
+    }
+\end{lstlisting}
+
 \paragraph{Dodawanie}
+W celu umożliwiana tworzenia komentarza został zaimplementowany endpotint \texttt{/api/v1/stations/{sid}/comments}.
+Zapytanie wysyła się metodą \texttt{POST}, ciało zawiera następujące pola: \texttt{user\_id}, \texttt{rating}, \texttt{text}, \texttt{user\_name}.
+Dla tworzenia komentarza do stacji ładowniczej zapytanie musi posiadać działający token JWT oraz w adresie URL musi być podany \texttt{id} (\texttt{sid} -to \texttt{id} stacji) tej stacji.
+Przykład ciała zapytania:
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
+    {
+		"user_id":   "5fb828babe10c57ba70d49cd",
+		"rating":  3,
+		"text":     "some text",
+		"user_name": "test username"
+    }
+\end{lstlisting}
+
+Router przekieruje zapytanie, po przechodzeniu autentykacji, do metody kontrolera \texttt{CreateComment()} \ref{list:controller_comment_create} (plik \texttt{controllers/api/v1/commentcontroller.go}), w której zachodzi otrzymanie niezbędnych danych z adresu URL oraz zaczyna się część biznesowa w metodzie \texttt{CreateComment()} \ref{list:service_comment_create} (plik \texttt{services/api/v1/commentservice.go}).
+W tym serwisie zachodzi walidacja (\texttt{Validation()} \ref{list:validate_comment}), dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowniczej (jest to edycja dokumenta stacji ładowniczej w bazie danych o podanym numerze \texttt{id} (\texttt{Create} \ref{list:repo_comment_create})) oraz obliczenie oceny wynikowej stacji ładowniczej z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} z pliku (storage/mongostore/stationrepository.go) \ref{list:update_rating}.
+Do aktualizaji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszytkich komentzry, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametra \texttt{\$set}\ref{list:update_rating}.
+\begin{lstlisting}[label=list:controller_comment_create,caption=Struktura komentarza,basicstyle=\tiny\ttfamily]
+    func (c *CommentController) CreateComment() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            sid, ok := params["sid"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            comm := &models.Comment{}
+            err := json.NewDecoder(r.Body).Decode(comm)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            comm, err = c.service.Comment().CreateComment(sid, comm)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusCreated, comm)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}label=list:service_comment_create,caption=Kontroler tworzenia komentarza,[basicstyle=\tiny\ttfamily]
+    func (s *CommentService) CreateComment(sid string, c *models.Comment) (*models.Comment, error) {
+        if err := c.Validate(); err != nil {
+            return c, err
+        }
+        if err := c.BeforeCreate(); err != nil {
+            return c, err
+        }
+        id, err := s.storage.Comment().Create(sid, c)
+        if err != nil {
+            return nil, err
+        }
+        go func() {
+            err := s.storage.Station().UpdateRaitingByID(sid)
+            if err != nil {
+                log.Println(err.Error())
+            }
+        }()
+        c, err = s.storage.Comment().FindByID(sid, id)
+        if err != nil {
+            return nil, err
+        }
+        return c, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:repo_comment_create,caption=Serwis tworzenia komentarza,basicstyle=\tiny\ttfamily]
+    func (r *CommentRepository) Create(sid string, c *models.Comment) (string, error) {
+        sidi, err := primitive.ObjectIDFromHex(sid)
+        if err != nil {
+            return "", err
+        }
+        filter := bson.M{
+            "_id": sidi,
+        }
+        update1 := bson.M{
+            "comments": bson.M{
+                "$each":     bson.A{c},
+                "$position": 0,
+            }}
+        update2 := bson.M{"model.update_at": models.GetTimeNow()}
+        _, err = r.stationRepository.col.UpdateOne(
+            context.TODO(),
+            filter,
+            bson.M{
+                "$push": update1,
+                "$set":  update2,
+            })
+        if err != nil {
+            return "", err
+        }
+    
+        return c.ID, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:update_rating,caption=Aktualizacja oceny stacji,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) UpdateRaitingByID(id string) error {
+        idi, err := primitive.ObjectIDFromHex(id)
+        filter := bson.M{"_id": idi}
+        avg := bson.D{{
+            "$set", bson.M{
+                "rating": bson.M{
+                    "$divide": []interface{}{
+                        bson.M{
+                            "$reduce": bson.M{
+                                "input":        "$comments",
+                                "initialValue": 0,
+                                "in":           bson.M{"$add": []interface{}{"$$value", "$$this.rating"}},
+                            },
+                        },
+                        bson.M{
+                            "$cond": []interface{}{
+                                bson.M{"$ne": []interface{}{bson.M{"$size": "$comments"}, 0}},
+                                bson.M{"$size": "$comments"},
+                                1,
+                            },
+                        },
+                    },
+                },
+            },
+        }}
+        _, err = r.col.UpdateOne(
+            context.TODO(),
+            filter,
+            mongo.Pipeline{avg})
+        return err
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:validate_comment,caption=Tworzenie komentarza w bazie danych,basicstyle=\tiny\ttfamily]
+    func (c *Comment) Validate() error {
+        return validation.ValidateStruct(
+            c,
+            validation.Field(&c.UserName, validation.Required, validation.Length(2, 100)),
+            validation.Field(&c.UserID, validation.Required, validation.Length(20, 30)),
+            validation.Field(&c.Text, validation.Required, validation.Length(8, 256)),
+        )
+    }
+\end{lstlisting}
+
+
 \paragraph{Wczytywanie}
 \paragraph{Edycja}
 \paragraph{Usunięcie}

@@ -49,13 +49,13 @@ Przedstawioną koncepcję można zrealizować w architekturze składającej się
     \item Go -- część serwerowa napisana w języku Go. Umozliwia komunikację międy interfejsem uzytkownika a baza danych. Pozwala na autentykację użytkowników oraz obliczeń biznesowych;
     \item Android -- aplikacja mobilna. Ta część przyznaczona do ułatwiana zdalnego dostępu (przez sieć Internet) uzytkownikowi do systemu. Komunikacja zachodzi przez internet do interfejsów programistychnych części serwerowej orza serwisów Google Coud Platform;
     \item Docker -- kontenery dla wdrożenia części ukrytych od użytkownika na zdalnym użądzeniu: baz danych oraz części serwerowej. Trzy kontenery powiązane między sąbą;
-    \item Google Cloud Platform -- zdalny serwis, sworzony prze Google, który umozliwia dostęp do pracy z mapą.
+    \item Google Cloud Platform -- zdalna platforam serwisów, sworzony prze Google, który umozliwi dostęp do pracy z mapą.
 \end{itemize}
 
 \begin{figure}[ht]
     \centering
         \includegraphics[width=0.7\linewidth]{rys02/system_architecture_diagram4.png}
-    \caption{Zarys architektury systemu} % TO DO: jeśli korzystał Pan z diagrams.net do narysowania diagramu, to nie trzeba tego cytować. Cytowanie może pojawić się przy opisie wykorzystanych narzędzi. \cite{diagrams_net} [TO VERIFY]
+    \caption{Zarys architektury systemu} % TO DO: jeśli korzystał Pan z diagrams.net do narysowaniaserwis diagramu, to nie trzeba tego cytować. Cytowanie może pojawić się przy opisie wykorzystanych narzędzi. \cite{diagrams_net} [TO VERIFY]
         % TO DO: Diagram jest brzydki, wielkość liter jest różna - ciężko się je czyta (litery powinny być mniej więcej tej samej wielkości)
         % TO VERIFY: są 6 dyagramów, nie wiem jaki jest lepszy bo prawie zawsze istneje problem z dopasowaniem kolorów(duża ilość kolorów wybląda bardzo brzydko) (system_architecture_diagram.png, system_architecture_diagram1.png, system_architecture_diagram2.png, ...)
     \label{fig:systemarchitecturediagram}
@@ -145,9 +145,9 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     12 & Estetyczne & Wszystkie elementy muszą być w jednym stylu & Niedopuszczalne jest użycie różnych czcionek oraz ciągłej zmiany kolorów \\
     \hline
-    13 & Dostęp & Dane o stacjach ładowniczych oraz komentarzy przechowywane zdalnie, żeby różni użytkownicy miały do nich dostęp \\
+    13 & Dostęp & Dane o stacjach ładowniczych oraz komentarzy przechowywane zdalnie & Różni użytkownicy miały do nich dostęp do tej samej bazy danych \\
     \hline
-    14 & Dostęp & Użytkownicy nie mają bezpośredniego dostępu do bazy danych. Wszystkie zapytania muszą być opracowanie przez część serwerową \\
+    14 & Dostęp & Użytkownicy nie mają bezpośredniego dostępu do bazy danych & Wszystkie zapytania muszą być opracowanie przez część serwerową \\
     \hline
     15 & Dostęp & Część serwerowa zrobiona zgodnie z regułami Rest (ang.~\emph{Representational State Transfer}) API (ang.~\emph{Application Programming Interface}) & Przestrzeganie się Best Prakties Rest API \cite{rest_api_best}] \\
     \hline
@@ -210,6 +210,8 @@ Usługa ta jest odpłatna, a wysokość opłat zależy od wybranego planu biznes
 \noindent\textbf{GMS} (ang.~\emph{Google Mobile Services}) -- to zestaw najpopularniejszych aplikacji i API, jak  Goole Maps, Google Paly Store, Gmail Google Drive Google Duo, Google Chrome, Google Photos, Google TV, Youtube, Youtube Music adresowanych przez Google na urządzenia mobilne. \\
 
 \noindent\textbf{Docker} -- jest oprogramowaniem przeznaczonym do automatyzacji wdrażania i zarządzania aplikacjami. Aplikacje uruchamiają się w kontenerach. Docker pozwala na upakowanie aplikacji oraz wszystkich zależności w niezależny od podstawowego systemu kontener, który może być łatwo przeniesiony na dowolny *nix system.~\cite{docker,docker_doc} \\
+
+\noindent\textbf{diagrams.net} -- Jest owartą platformą do tworzenia diagramów do różnego rodzaju aplikacji~\cite{diagrams_net}. Została wykorzystana dla tworzenia dyagramów w tej pracy. \\
 
 % Jako Baza danych wykorzystuje się NoSQL (ang. (ang.~\emph{Not only Structured Query Language}) baza danych MongoDB \cite{mongoDB,mongoDB_doc}.
 % Część serwerowa napisana w języku Go \cite{golang1,golang2,golang3,godoc} w architekturze Rest API \cite{rest_api_best}.
