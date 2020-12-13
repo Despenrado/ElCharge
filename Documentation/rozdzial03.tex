@@ -946,7 +946,7 @@ Po wysłaniu zapytania GET na adres \texttt{api/v1/logout}, zostanie wywoływana
     }
 \end{lstlisting}
 
-\subsubsection{Stacja}
+\subsubsection{Stacja\newline}
 Głównym przedmiotem w aplikacji jest stacja ładująca pojazdy elektryczne. Aplikacja została stworzona, aby uzyskać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może je modyfikować.
 
 W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowniczej, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user}.
@@ -964,7 +964,7 @@ W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ł
     }
 \end{lstlisting}
 
-\paragraph{Dodawanie}
+\paragraph{Dodawanie\newline}
 Żeby dodać nową stację do systemu, należy wysłać zapytanie \texttt{POST} do części serwerów na endpoint \texttt{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \texttt{description}, \texttt{station\_name}, \texttt{owner\_id}, \texttt{longitude}, \texttt{latitude}.
 Przykład ciała zapytania:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
@@ -1060,7 +1060,7 @@ Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych oraz uzupełnien
     }
 \end{lstlisting}
 
-\paragraph{Wczytywanie}
+\paragraph{Wczytywanie\newline}
 Do otrzymania danych konkretnej stacji należy wysłać zapytanie \texttt{GET} na URL \texttt{api/v1/stations/{id}}. Na podstawie \texttt{id} podanego w adresie będzie znaleziony odpowiedni wpis w bazie danych lub, jeśli takiego nie istnieje, zwrócony pusty komunikat z nagówkiem \texttt{204 Status No Content}.
 
 Po przekierowaniu przez router z URL do metody kontrolera \texttt{FindByID()} \ref{list:controller_read_station} (plik \texttt{controllers/api/v1/stationcontroller.go}), jest wycięty z URL adresu \texttt{id} stacji ładowniczej orza wywołana metoda \texttt{FindByID()} \ref{list:service_read_station} (plik \texttt{services/api/v1/stationservice.go}).
@@ -1112,7 +1112,7 @@ Tesn serwis tylko wywołuje metodę (\texttt{FindByID} \ref{list:repo_read_stati
     }
 \end{lstlisting}
 
-\paragraph{Wyszukiwanie}
+\paragraph{Wyszukiwanie\newline}
 W zależności od parametrów w adresie URL przy wysłaniu zapytania metodą \texttt{GET} na adres \texttt{api/v1/stations/read} będzie zrobione wyszukiwanie według różnych parametrów.
 Dostęp mają tylko zalogowani użytkownicy.
 
@@ -1371,8 +1371,7 @@ Dla wyszukiwania listy stacji ładowniczych w pobliżu podanych współrzędnych
     }
 \end{lstlisting}
 
-\paragraph{Edycja}
-
+\paragraph{Edycja\newline}
 Do edycji stacji ładowniczej został zaimplementowany endpoint \texttt{/api/v1/stations/{id}?ownid=""}.
 Metoda zapytania \texttt{PUT}.
 W adresie URL musi być podany id użytkownika. Oraz jako parametr id użytkownika, który probuje edytować. Edytować może tylko właściciel stacji oraz dla zapobiegania jednoczesnej edycji musi zgadzać się pole \texttt{update\_at}, które przechowuje datę ostatniej modyfikacji.
@@ -1457,7 +1456,7 @@ Dalej jest wywoływania metoda serwisu \texttt{UpdateByID()} \ref{list:service_s
 \end{lstlisting}
 
 \paragraph{Usunięcie}
-\subsubsection{Komentarz}
+\subsubsection{Komentarz\newline}
 Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst napisany przez użytkownika, który go stworzył, oraz oceny, na podstawie której jest oceniana cała stacja.
 Struktura komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON znajduje się w listingu \ref{list:comment_struct}.
 \begin{lstlisting}[label=list:comment_struct,caption=Struktura komentarza,basicstyle=\tiny\ttfamily]
@@ -1471,7 +1470,7 @@ Struktura komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON
     }
 \end{lstlisting}
 
-\paragraph{Dodawanie}
+\paragraph{Dodawanie\newline}
 W celu umożliwiana tworzenia komentarza został zaimplementowany endpotint \texttt{/api/v1/stations/{sid}/comments}.
 Zapytanie wysyła się metodą \texttt{POST}, ciało zawiera następujące pola: \texttt{user\_id}, \texttt{rating}, \texttt{text}, \texttt{user\_name}.
 Dla tworzenia komentarza do stacji ładowniczej zapytanie musi posiadać działający token JWT oraz w adresie URL musi być podany \texttt{id} (\texttt{sid} -to \texttt{id} stacji) tej stacji.
@@ -1871,19 +1870,506 @@ Adnotacja \texttt{Body} umieszcza dane do ciała zapytania. Adnotacje \texttt{Pa
 \end{lstlisting}
 
 \subsubsection{?? Działanie interfejsu graficznego ??}
+\subsubsection{Kounikacja z częścią serwerową}
+Sposób komunikacji z częścią serwerową oraz etapy pośrednicze (metoda \texttt{createOkHttpClient()}), w których zachodzi dodawanie nagłówka oraz pisanie logów zapytań i odpowiedzi, został opisany w klasie \texttt{ElchargeService} (listing \ref{list:android_elchargeservice}). Został użyty HTTP klient \texttt{OkHttp3} oraz jego opakowanie \texttt{Retrofit2}.
+\begin{lstlisting}[label=list:android_elchargeservice,caption=obsługa komunikacji z częścią serwerową,basicstyle=\tiny\ttfamily]
+    public class ElchargeService {
+    String apiAddr;
+    String token;
+    UserApi userApi;
+    StationApi stationApi;
+    CommentApi commentApi;
+    User user;
+
+    public ElchargeService(){
+        apiAddr = Helper.getConfigValue(App.getAppContext(),"apiserver_addr");
+        token = Helper.getConfigValue(App.getAppContext(),"apiserver_token");
+        Retrofit retrofit = createRetrofit();
+        userApi = retrofit.create(UserApi.class);
+        stationApi = retrofit.create(StationApi.class);
+        commentApi = retrofit.create(CommentApi.class);
+    }
+
+    private OkHttpClient createOkHttpClient() {
+        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
+        httpClient.addInterceptor(new Interceptor() {
+            @Override
+            public Response intercept( Chain chain) throws IOException {
+                Request request = chain.request().newBuilder()
+                        .addHeader("Authorization", token)
+                        .build();
+                return chain.proceed(request);
+            }
+        });
+        HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
+        logging.setLevel(HttpLoggingInterceptor.Level.BODY);
+        httpClient.addInterceptor(logging);
+        return httpClient.build();
+    }
+
+    private Retrofit createRetrofit() {
+        return new Retrofit.Builder()
+                .baseUrl(apiAddr)
+                .client(createOkHttpClient())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+    }
+
+    public String getApiAddr() {
+        return apiAddr;
+    }
+
+    public void setApiAddr(String apiAddr) {
+        this.apiAddr = apiAddr;
+    }
+
+    public UserApi getUserApi() {
+        return userApi;
+    }
+
+    public void setUserApi(UserApi userApi) {
+        this.userApi = userApi;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        Helper.setConfigValue(App.getAppContext(),"apiserver_token", token);
+        this.token = token;
+    }
+
+    public CommentApi getCommentApi() {
+        return commentApi;
+    }
+
+    public void setCommentApi(CommentApi commentApi) {
+        this.commentApi = commentApi;
+    }
+    
+    public StationApi getStationApi() {
+        return stationApi;
+    }
+
+    public void setStationApi(StationApi stationApi) {
+        this.stationApi = stationApi;
+    }
+}
+\end{lstlisting}
+
+\label{text:android_api_service}
+Komunikacja z serwerem w celu zwiększenia pozytywnego doświadczenia pracy użytkownika z aplikacją zrobiona w sposób asynchroniczny za pomocą biblioteki \texttt{RXJava2}.
+Do serwera wysyła się zapytanie na adres URL za pomocą odpowiedniego interfejsów API, indujących się w katalogu \texttt{main/java/com/example/testapp/api/api} (klasy: \ref{list:android_api_user,list:android_api_station,list:android_api_comment}).
+Całej zachodzi oczekiwanie na odpowiedź (\texttt{subscribeOn(Shedulers.io())}), po otrzymaniu odpowiedzi w głównym wątku aplikacji (\texttt{observeON(AndroidShedulers.mainThread)}) wykonuje się kod opisany poprzez realizację klasy abstrakcyjnej \texttt{DisposableSingleObserver<T>}. Podczas realizacji tej klasy należy przedefiniować metodę \texttt{onSucces(Object)} (opis działań przy otrzymaniu odpowiedzi od serwera) oraz \texttt{onError(Throwable)} (opis dizłań przy braku odpowiedzi od serwera).
+Przykład kody na podstawie logowania \ref{list:android_login_async}. Przy zamykaniu fragmentu lub aplikacji przez użytkownika, kanał oczekujący na odpowiedź z serwera będzie również zamknięty.
 
 \subsection{Funkcje aplikacji mobilnej}
 W tej sekcji opisano współdziałanie użytkownika i systemu oraz implementacja tych części.
 
 \subsubsection{Autentykacja / Logowanie i rejestracja}
-Dla otwarcia strony logowania lub rejestracji można nacisnąć przycisk w prawym dolnym rogu (koło zębate). Otworzą się ustalenia, jak na rysunku \ref{fig:}, oraz kliknąć \texttt{Log in} (na tej stronie można też wylogować się za pomocą przycisku \texttt{Log out}).
-Przy próbie wykorzystania elementów, które potrzebują autentykacji, natomiast użytkownik nie będzie zalogowany do systemu, logowanie \ref{fig:} oraz rejestracja \ref{fig:} będą proponowane automatycznie. Jeśli logowanie zostało proponowane automatycznie, dane poprzedniego ekranu nie będą usuwane, więc po zalogowaniu się można kontynuować pracę.
+Dla otwarcia strony logowania lub rejestracji można nacisnąć przycisk w prawym dolnym rogu (koło zębate), otworzą się ustalenia, jak na rysunku \ref{fig:frontend_settings}a. Na tym fragmencie można zalogować się (przycisk \texttt{Log in}) lub wylogować się (przycisk )\texttt{Log out}).
+Przy próbie wykorzystania elementów, które potrzebują autentykacji, jednak użytkownik jeszcze nie będzie zalogowany do systemu, logowanie (rys. \ref{fig:frontend_settings}b) będzie proponowane automatycznie. Jeśli logowanie zostało proponowane automatycznie, dane poprzedniego ekranu nie będą usuwane, więc po zalogowaniu się można kontynuować pracę.
+Ze strony logowania można trafić do strony rejestracji (rys. \ref{fig:frontend_settings}c) za pomocą odpowiedniego przycisku.
 
+\begin{figure}[ht]
+	\centering
+    \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{\hspace{3mm}}rl@{}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.2\linewidth]{rys03/front_settings.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.2\linewidth]{rys03/front_login.png}}} &
+        c) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.2\linewidth]{rys03/front_register.png}}}
+    \end{tabular}
+    \caption{Interfejs użytkownika: a) ustawienia, b) logowanie, c) rejestracja.}
+    \label{fig:frontend_settings}
+\end{figure}
+
+Po \label{text:login} wprowadzeniu danych i wciśnięciu przycisku \texttt{Log in} przez użytkownika na stronie logowania, wszystkie pola muszą być niepuste \ref{list:android_login_check}, wysyła się zapytanie do serwera \ref{text:android_api_service} z dany mymi do logowania \ref{list:android_login_async}.
+Przy pomyślnym zalogowaniu JTW token zachowuje się w pliku konfiguracyjnym w celu automatycznego logowania przy następnym wykorzystaniu aplikacji oraz zamyka się fragment logowania. Przy otwarciu fragmentu logowania lub rejestracji wcześniejszy fragment pozostaje pracować na dolnej warstwie fragmentów, co pozwala zachowywać wprowadzone dane.
+Cała klasa obsługująca znajduje się w pliku \texttt{main/java/com/example/testapp/fragments/LoginFragment.java}.
+\begin{lstlisting}[label=list:android_login_check,caption=Obsługa przycisku login,basicstyle=\tiny\ttfamily]
+    public void onButtonLoginClick(View v) {
+        EditText email = (EditText) getView().findViewById(R.id.editTextEmail);
+        EditText pass2 = (EditText) getView().findViewById(R.id.editTextPassword);
+        if (email.getText().toString().equals("") || pass2.getText().toString().equals("")) {
+            Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "login", "Login or Password is incorrect");
+        } else {
+            User u = new User();
+            u.setEmail(email.getText().toString());
+            u.setPassword(pass2.getText().toString());
+            login(u);
+        }
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:android_login_async,caption=Logowanie: wysłanie zapytania i obsługa odpowiedzi,basicstyle=\tiny\ttfamily]
+    private void login(User user) {
+        final LoginFragment tmpcls = this;
+        disposable.add(app.getElchargeService().getUserApi().login(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Response<User>>() {
+                    @Override
+                    public void onSuccess(Response<User> response) {
+                        try {
+                            if (response.code() == 200) {
+                                User tmp = response.body();
+                                String token = response.headers().get("Authorization");
+                                app.getElchargeService().setToken(token);
+                                app.getElchargeService().setUser(tmp);
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "login", "LOGGED IN");
+                                getFragmentManager().beginTransaction().remove(tmpcls).commit();
+                            } else {
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "login", response.message());
+                            }
+
+                        } catch (Exception e) {
+                            Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "login", e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "login", e.getMessage());
+                    }
+                }));
+    }
+\end{lstlisting}
+
+Rejestracja działa w podobny sposób do logowania (opis: \ref{text:login}). Sprawdzanie wprowadzonych przez użytkownika danych oraz komunikacja z serwerem przedstawione w listingach \ref{list:android_register_check,list:android_register_async}. Cała klasa obsługująca znajduje się w pliku \texttt{main/java/com/example/testapp/fragments/RegisterFragment.java}.
+\begin{lstlisting}[label=list:android_register_check,caption=Obsługa przycisku register,basicstyle=\tiny\ttfamily]
+    public void onButtonRegisterClick(View v) {
+        EditText pass1 = (EditText) getView().findViewById(R.id.editTextPassword);
+        EditText pass2 = (EditText) getView().findViewById(R.id.editTextPassword2);
+        EditText email = (EditText) getView().findViewById(R.id.editTextEmail);
+        EditText uname = (EditText) getView().findViewById(R.id.editTextUserName);
+        if (pass1.getText().toString().equals(pass2.getText().toString()) && !email.getText().toString().equals("") && !uname.getText().toString().equals("")) {
+                User u = new User();
+                u.setEmail(email.getText().toString());
+                u.setPassword(pass2.getText().toString());
+                u.setUserName(uname.getText().toString());
+                register(u);
+        } else {
+            Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "register", "passwords are not equal");
+        }
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:android_register_async,caption=Rejestracja: wysłanie zapytania i obsługa odpowiedzi,basicstyle=\tiny\ttfamily]
+    private void register(User user) {
+        final RegisterFragment tmpcls = this;
+        disposable.add(app.getElchargeService().getUserApi().createUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Response<User>>() {
+                    @Override
+                    public void onSuccess(Response<User> response) {
+                        try {
+                            if (response.code() == 201) {
+                                User tmp = response.body();
+                                String token = response.headers().get("Authorization");
+                                app.getElchargeService().setToken(token);
+                                app.getElchargeService().setUser(tmp);
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "register", "account created successfully\n\nLOGGED IN");
+                                getFragmentManager().beginTransaction().remove(tmpcls).commit();
+                            }else{
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "register", response.message());
+                            }
+
+                        } catch (Exception e) {
+                            Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "register", e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "register", e.getMessage());
+                    }
+                }));
+    }
+\end{lstlisting}
 
 \subsubsection{Stacja}
-\paragraph{Dodawanie}
-\paragraph{Wczytywanie}
-\paragraph{Edycja}
+\paragraph{Dodawanie\newline}
+Jednym z najważniejszych funkcji jest tworzenie stacji ładowniczej. Dla tworzenia stacji ładowniczej stworzony fragment aplikacji dostępny pod przyciskiem kółka (trzeci znaczek w menu pod spodem) (rys. \ref{fig:frontend_station_create}a). Za pomocą przycisku \texttt{MAP} można nie wprowadzać współrzędne ręcznie, a ustalić miejsce na za pomocą mapy (rys. \ref{fig:frontend_station_create}b).
+\begin{figure}[ht]
+	\centering
+    \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_station_create.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_map_fing.png}}}
+    \end{tabular}
+    \caption{Interfejs użytkownika: a) tworzenie stacji, b) ustalenie markera na mapie.}
+    \label{fig:frontend_station_create}
+\end{figure}
+
+Naciśnięcie przycisku \texttt{SAVE} powoduje sprawdzenie wprowadzonych danych (listing: \ref{list:android_station_create_validate}) oraz wysłanie odpowiedniego zapytania do części serwerowej w celu tworzenia nowego wpisu w bazie danych (listing: \ref{list:android_station_create_request}). Jeśli użytkownik nie został zalogowany lub zarejestrowany, wyświetla się okno logowania lub rejestracji (rys. \ref{fig:frontend_settings}b, \ref{fig:frontend_settings}c).
+Cała klasa obsługująca znajduje się w pliku \texttt{main/java/com/example/testapp/fragments/CreateStationFragment.java}.
+\begin{lstlisting}[label=list:android_station_create_validate,caption=Obsługa przycisku SAVE,basicstyle=\tiny\ttfamily]
+    public void onButtonSaveStationClick(View v) {
+        String stationName = ((EditText) getView().findViewById(R.id.editTextStationName)).getText().toString();
+        String stationLocation = this.stationLocation.getText().toString();
+        String stationDescription = ((EditText) getView().findViewById(R.id.editTextDescription)).getText().toString();
+        if (stationName.length() > 1 && stationLocation.length() > 2 && stationDescription.length() > 4) {
+            String coordinates[] = stationLocation.split("[, |]");
+            if (coordinates.length < 2) {
+                Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "station", "wrong location");
+                return;
+            }
+            try {
+                double lat = Double.parseDouble(coordinates[0]);
+                double lng = Double.parseDouble(coordinates[1]);
+                Station station = new Station();
+                station.setStationName(stationName);
+                station.setDescription(stationDescription);
+                station.setLatitude(lat);
+                station.setLongitude(lng);
+                if (app.getElchargeService().getUser() != null) {
+                    station.setOwnerID(app.getElchargeService().getUser().getId());
+                }
+                createStation(station);
+            } catch (NumberFormatException e) {
+                Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
+            }
+        } else {
+            Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "station", "One of fields so short");
+        }
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:android_station_create_request,caption=Tworzenie stacji: wysłanie zapytania i obsługa odpowiedzi,basicstyle=\tiny\ttfamily]
+    public void createStation(Station station) {
+        final CreateStationFragment tmp = this;
+        disposable.add(app.getElchargeService().getStationApi().createStation(station)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Response<Station>>() {
+                    @Override
+                    public void onSuccess(Response<Station> response) {
+                        try {
+                            if (response.code() == 201) {
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", "Created successfully!");
+                                getFragmentManager().beginTransaction().replace(R.id.container, new MapsFragment()).commit();
+                            } else {
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", response.message());
+                                if (response.code() == 401) {
+                                    LoginFragment lf = new LoginFragment();
+                                    getFragmentManager().beginTransaction().add(R.id.container, lf).commit();
+                                    getFragmentManager().beginTransaction().show(lf).commit();
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
+                    }
+                }));
+    }
+\end{lstlisting}
+
+\paragraph{Wyszukiwanie\newline}
+Najważniejszą funkcją aplikacji jest wyszukiwanie stacji ładowniczych do pojazdów elektrycznych. W tym celu został stworzony przycisk w dolnym menu, który wygląda jak lupa (rys. \ref{fig:frontend_station_find}a). Na tym ekranie można wyszukać na podstawie wprowadzony współrzędnych, ustaleniu miejsca na mapie (rys. \ref{fig:frontend_station_create}b), niniejszej pozycji użytkownika (przy uruchomionym GPS), według części nazwy lub opisu stacji ładowniczej. Przy wyszukiwaniu według różnego rodzaju ordynat, istnieje możliwość ustalenia dystansu wyszukiwania za pomocą suwaka.
+Naciskając na przycisk \texttt{GO} zalogowany użytkownik trafi na stronę z mapą, gdzie będą oznaczone wyszukane stacje (rys. \ref{fig:frontend_station_find}b).
+\begin{figure}[ht]
+	\centering
+    \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_find.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_map_arkers.png}}}
+    \end{tabular}
+    \caption{Interfejs użytkownika: a) wyszukiwanie stacji, b) lista znalezionych stacji.}
+    \label{fig:frontend_station_find}
+\end{figure}
+
+W zależności od wybranego, za pomocą spadającego menu, trybu wyszukiwania, będzie wykorzystany odpowiedni API \ref{list:android_api_station}. W przypadku wybory automatycznego wprowadzenia pozycji użytkownika sprawdza się czy aplikacja ma odpowiednie uprawnienia (\texttt{ACCESS\_FINE\_LOCATION, ACCESS\_COARSE\_LOCATION}). Jeśli brak tych uprawnień odpytuj e użytkownika o nich.
+Użytkownik też może ustalić miejsce na mapie, wtedy jest wywołany fragment do rysowania mapy (rys. \ref{fig:frontend_station_create}b)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\paragraph{Wczytywanie\newline}
+Otrzymanie informacji dotyczącej stacji ładowniczej jest dostępne po wyborze markera na mapie i naciśnięciu przycisku \texttt{info} na tym ekranie (rys. \ref{figfrontend_station_find}b). Zostanie wysłano zapytanie do serwera z prośbą o zwróceniu informacji dotyczącej wybranej stacji ładowniczej (listing \ref{list:}). Po otrzymaniu odpowiedzi zostanie wyświetlony fragment z nazwą stacji, jej \texttt{id}, opisem, datą ostatniej modyfikacji, oceną, wyliczoną na podstawie komentarzy, i lista komentarzy napisanych do tej stacji w kolejności najpierw najnowsze.
+Komentarze zawierają \texttt{user\_name}, tekst, ocenę oraz datę. Ten fragment jest pokazany na rysunku \ref{fig:frontend_station_info}a.
+\begin{figure}[ht]
+	\centering
+    \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_info.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_station_edit.png}}}
+    \end{tabular}
+    \caption{Interfejs użytkownika: a) wyszukiwanie stacji, b) lista znalezionych stacji.}
+    \label{fig:frontend_station_info}
+\end{figure}
+
+Do otrzymania aktualnej informacji została zrealizowana metoda \texttt{updateInfo()} w której wysyła się  zapytanie do części serwerowej i po otrzymaniu odpowiedzi ()
+
+Klasa wewnętrzna \texttt{StationDisposableSingleObserver} (listing \ref{list:StationDisposableSingleObserver}), która dziedziczy po klasie abstrakcyjnej \texttt{DisposableSingleObserver}, służy do opracowania i wyświetlania informacji (metoda \texttt{updateInfoOnView()}) na ekranie (listing \ref{list:updateInfoOnView}).
+\begin{lstlisting}[label=list:StationDisposableSingleObserver,caption=Wczytanie danych stacji z części serwerowej,basicstyle=\tiny\ttfamily]
+    public void updateInfo(){
+        disposable.add(app.getElchargeService().getStationApi().readStationsByLatAndLng(0, 0, currentStation.getLatitude(), currentStation.getLongitude())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new StationDisposableSingleObserver(this)));
+    }
+
+    private class StationDisposableSingleObserver extends DisposableSingleObserver<Response<Station>> {
+        private InfoFragment parent;
+
+        public StationDisposableSingleObserver(InfoFragment parent) {
+            this.parent = parent;
+        }
+
+        @Override
+        public void onSuccess(Response<Station> response) {
+            try {
+                if (response.code() == 200) {
+                    Station station = response.body();
+                    Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", Integer.toString(response.code()));
+                    currentStation = station;
+                    updateInfoOnView();
+                } else {
+                    Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", Integer.toString(response.code()));
+                    if (response.code() == 401) {
+                        LoginFragment lf = new LoginFragment();
+                        getFragmentManager().beginTransaction().add(R.id.container, lf).commit();
+                        getFragmentManager().beginTransaction().show(lf).commit();
+                    }else{
+                        getFragmentManager().beginTransaction().remove(parent).commit();
+                    }
+                }
+
+            } catch (Exception e) {
+                Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
+            }
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
+        }
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:updateInfoOnView,caption=Odnowienie informacji o stacji na ekranie,basicstyle=\tiny\ttfamily]
+    private void updateInfoOnView(){
+        if (app.getElchargeService().getUser().getId().equals(currentStation.getOwnerID())){
+            buttonEditStation.show();
+        }else {
+            buttonEditStation.hide();
+        }
+        recyclerView = getView().findViewById(R.id.recyclerViewComments);
+        recyclerView.setLayoutManager((new LinearLayoutManager(App.getAppContext())));
+
+        commentsAdapter = new CommentsAdapter(currentStation.getComments());
+        recyclerView.setAdapter(commentsAdapter);
+
+        ((TextView) getView().findViewById(R.id.stationId)).setText(currentStation.getId());
+        ((TextView)getView().findViewById(R.id.stationName)).setText(currentStation.getStationName());
+        ((TextView)getView().findViewById(R.id.rating)).setText(String.format("%.2f", currentStation.getRating()) + " / 5");
+        ((TextView)getView().findViewById(R.id.description)).setText(currentStation.getDescription());
+        ((TextView)getView().findViewById(R.id.date)).setText(Helper.getDateFromISO8601(currentStation.getUpdateAt()));
+    }
+\end{lstlisting}
+
+\paragraph{Edycja\newline}
+Tylko użytkownik, który stworzył stację ładowniczą do pojazdów elektryczny, ma możliwość modyfikacji stacji ładowniczej. Jeśli twórca przegląda swoją stację, obok opisu tej stacji istnieje przycisk (rys. \ref{gif:frontend_station_info}a), za pomocą którego można wejść do strony modyfikacji (rys. \ref{gif:frontend_station_info}b).
+Modyfikacji podlegają tylko nazwa i opis. Przycisk \texttt{CANCEL} przewróci na stronę informacji o stacji ładowniczej. Komunikacja z serwerem zachodzi na tej samej zasadzie, co już opisana wyżej \ref{text:android_api_service}. Kod źródłowy tych funkcji dostępny w listingach \ref{list:android_station_edit_save,list:android_station_edit_request}.
+\begin{lstlisting}[label=list:android_station_edit_save,caption=Przycisk SAVE,basicstyle=\tiny\ttfamily]
+    public void onButtonRegisterClick(View v) {
+        EditText pass1 = (EditText) getView().findViewById(R.id.editTextPassword);
+        EditText pass2 = (EditText) getView().findViewById(R.id.editTextPassword2);
+        EditText email = (EditText) getView().findViewById(R.id.editTextEmail);
+        EditText uname = (EditText) getView().findViewById(R.id.editTextUserName);
+        if (pass1.getText().toString().equals(pass2.getText().toString()) && !email.getText().toString().equals("") && !uname.getText().toString().equals("")) {
+                User u = new User();
+                u.setEmail(email.getText().toString());
+                u.setPassword(pass2.getText().toString());
+                u.setUserName(uname.getText().toString());
+                register(u);
+        } else {
+            Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "register", "passwords are not equal");
+        }
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:android_station_edit_request,caption=Edycja stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    public void onButtonRegisterClick(View v) {
+        EditText pass1 = (EditText) getView().findViewById(R.id.editTextPassword);
+        EditText pass2 = (EditText) getView().findViewById(R.id.editTextPassword2);
+        EditText email = (EditText) getView().findViewById(R.id.editTextEmail);
+        EditText uname = (EditText) getView().findViewById(R.id.editTextUserName);
+        if (pass1.getText().toString().equals(pass2.getText().toString()) && !email.getText().toString().equals("") && !uname.getText().toString().equals("")) {
+                User u = new User();
+                u.setEmail(email.getText().toString());
+                u.setPassword(pass2.getText().toString());
+                u.setUserName(uname.getText().toString());
+                register(u);
+        } else {
+            Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "register", "passwords are not equal");
+        }
+    }
+\end{lstlisting}
+
 \subsubsection{Komentarz}
-\paragraph{Dodawanie}
-\paragraph{Wczytywanie}
+Komentarzy mogą pisać i przeglądać zalogowane użytkowniki podczas przeglądania informacji o stacji ładowniczej. Oni są niezbędne do wystawiania oceny stacji.
+\paragraph{Dodawanie\newline}
+Dodać komentarż można na stronie informacyjnej stacji ładowniczej (rys. \ref{gif:frontend_station_info}a) za pomocą odpowiedniego przycisku (plus w kółkie). Na rysunku \ref{fig:front_comment_create} przedstawiony ekran tworzenia nkomentarza.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.25\linewidth]{rys03/front_comment_create.png}
+    \caption{Struktura plików}
+    \label{fig:front_comment_create}
+\end{figure}
+
+Tworzenie komentarza zachodzi w podobny sposób, jak już opisano wyżej \ref{text:android_api_service}. Kod źródłowy najistotniejszych metod można znaleźć w następujących listingach: \ref{list:createComment,list:onButtonSave_comment}.
+\begin{lstlisting}[label=list:onButtonSave_comment,caption=Edycja stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    private void onButtonSave(View v){
+        Comment comment = new Comment();
+        comment.setRating(((RatingBar)getView().findViewById(R.id.ratingBar)).getRating());
+        comment.setText(((EditText)getView().findViewById(R.id.editTextText)).getText().toString());
+        comment.setUserID(app.getElchargeService().getUser().getId());
+        comment.setUserName(app.getElchargeService().getUser().getUserName());
+        createComment(comment);
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:createComment,caption=Edycja stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    private void createComment(Comment comment){
+        final CreateCommentFragment tmpcls = this;
+        disposable.add(app.getElchargeService().getCommentApi().createComment(stationID,comment)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<Response<Comment>>() {
+                    @Override
+                    public void onSuccess(Response<Comment> response) {
+                        try {
+                            if (response.code() == 201) {
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "comment", response.message());
+                                InfoFragment inf = (InfoFragment)getFragmentManager().findFragmentByTag("station_info");
+                                if(inf != null){
+                                    inf.updateInfo();
+                                }
+                                getFragmentManager().beginTransaction().remove(tmpcls).commit();
+                            } else {
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "comment", response.message());
+                                if (response.code() == 401) {
+                                    LoginFragment lf = new LoginFragment();
+                                    getFragmentManager().beginTransaction().add(R.id.container, lf).commit();
+                                    getFragmentManager().beginTransaction().show(lf).commit();
+                                }
+                            }
+
+                        } catch (Exception e) {
+                            Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "comment", e.getMessage());
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "comment", e.getMessage());
+                    }
+                }));
+    }
+\end{lstlisting}

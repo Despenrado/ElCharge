@@ -6,23 +6,16 @@ import android.widget.Toast;
 
 import com.example.testapp.App;
 import com.example.testapp.Helper;
-import com.example.testapp.R;
 import com.example.testapp.api.api.CommentApi;
 import com.example.testapp.api.api.StationApi;
 import com.example.testapp.api.api.UserApi;
 import com.example.testapp.api.models.User;
-import com.example.testapp.fragments.MapsFragment;
 
 import java.io.IOException;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
