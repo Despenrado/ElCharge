@@ -71,27 +71,29 @@ public class SettingsFragment extends ListFragment {
 
     // send request to backend: logout
     private void logout(){
-        disposable.add(app.getElchargeService().getUserApi().logout(app.getElchargeService().getUser().getId())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
-                    @Override
-                    public void onSuccess(ResponseBody responseBody) {
-                        try {
-                            if (responseBody != null) {
-                                app.getElchargeService().setToken(""); //remove token
-                                getFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).commit();
+        if (app.getElchargeService().getUser() != null) {
+            disposable.add(app.getElchargeService().getUserApi().logout(app.getElchargeService().getUser().getId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                        @Override
+                        public void onSuccess(ResponseBody responseBody) {
+                            try {
+                                if (responseBody != null) {
+                                    app.getElchargeService().setToken(""); //remove token
+                                    getFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).commit();
+                                }
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "logout", responseBody.string());
+                            } catch (Exception e) {
+                                Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "logout", e.getMessage());
                             }
-                            Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "logout", responseBody.string());
-                        } catch (Exception e) {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
                             Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "logout", e.getMessage());
                         }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "logout", e.getMessage());
-                    }
-                }));
+                    }));
+        }
     }
 }

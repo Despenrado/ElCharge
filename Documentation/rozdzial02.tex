@@ -46,10 +46,10 @@ Przedstawioną koncepcję można zrealizować w architekturze składającej się
 \begin{itemize}
     \item MongoDB -- baza danych do ciągłego przechowywania danych systemu;
     \item Redis -- baza danych, która jest wykorzystywana w jakości pamięci podręcznej do przechowywania JWT tokenów po wylogowaniu;
-    \item Go -- część serwerowa napisana w języku Go. Umozliwia komunikację międy interfejsem uzytkownika a baza danych. Pozwala na autentykację użytkowników oraz obliczeń biznesowych;
-    \item Android -- aplikacja mobilna. Ta część przyznaczona do ułatwiana zdalnego dostępu (przez sieć Internet) uzytkownikowi do systemu. Komunikacja zachodzi przez internet do interfejsów programistychnych części serwerowej orza serwisów Google Coud Platform;
-    \item Docker -- kontenery dla wdrożenia części ukrytych od użytkownika na zdalnym użądzeniu: baz danych oraz części serwerowej. Trzy kontenery powiązane między sąbą;
-    \item Google Cloud Platform -- zdalna platforam serwisów, sworzony prze Google, który umozliwi dostęp do pracy z mapą.
+    \item Go -- część serwerowa napisana w języku Go. Umożliwia komunikację między interfejsem użytkownika a baza danych. Pozwala na autentykację użytkowników oraz obliczeń biznesowych;
+    \item Android -- aplikacja mobilna. Ta część przeznaczona do ułatwiana zdalnego dostępu (przez sieć Internet do endpointów Rest API serwera) użytkownikowi do systemu. Komunikacja zachodzi przez internet do interfejsów programistycznych części serwerowej oraz serwisów Google Cloud Platform;
+    \item Docker -- kontenery dla wdrożenia części ukrytych od użytkownika na zdalnym urządzeniu: baz danych oraz części serwerowej. Trzy kontenery powiązane między sobą;
+    \item Google Cloud Platform -- zdalna platforma serwisów, stworzona przez Google, która umożliwi dostęp do pracy z mapą za pomocą wbudowanego API.
 \end{itemize}
 
 \begin{figure}[ht]
