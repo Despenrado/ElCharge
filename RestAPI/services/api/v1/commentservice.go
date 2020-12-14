@@ -66,6 +66,12 @@ func (s *CommentService) UpdateByID(sid string, id string, c *models.Comment) (*
 	if err != nil {
 		return nil, err
 	}
+	go func() {
+		err := s.storage.Station().UpdateRaitingByID(sid)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}()
 	c, err = s.storage.Comment().FindByID(sid, id)
 	if err != nil {
 		return nil, err
@@ -75,7 +81,17 @@ func (s *CommentService) UpdateByID(sid string, id string, c *models.Comment) (*
 
 // DeleteByID delete storage
 func (s *CommentService) DeleteByID(sid string, id string) error {
-	return s.storage.Comment().DeleteByID(sid, id)
+	err := s.storage.Comment().DeleteByID(sid, id)
+	if err != nil {
+		return err
+	}
+	go func() {
+		err := s.storage.Station().UpdateRaitingByID(sid)
+		if err != nil {
+			log.Println(err.Error())
+		}
+	}()
+	return err
 }
 
 func (s *CommentService) Read(sid string, skip int, limit int) ([]models.Comment, error) {

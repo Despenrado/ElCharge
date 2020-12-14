@@ -197,17 +197,19 @@ Na rysunku \ref{fig:backend_file_structure} została przedstawiona struktura pli
     \label{fig:backend_file_structure_2}
 \end{figure}
 
-Katalog \texttt{config} zawiera pliki konfiguracyjne. W katalogu \texttt{controllers} (rys.~\ref{fig:backend_file_structure_1}a) znajdują się kontrolery, które są wykorzystywanie do połączenia poziomu serwisów z punktami końcowymi serwera (ang.~\emph{endpoints}).
+Katalog \texttt{config} zawiera pliki konfiguracyjne.
+
+W katalogu \texttt{controllers} (rys.~\ref{fig:backend_file_structure_1}a) znajdują się kontrolery, które służą do kontrolowania zapytanai, opracowania i zwrótu danych. Warstwa Kontrolerów komunikuje z warstwą serwisów,
 
 Do katalogu \texttt{deploy} jest kompilowana aplikacja przy uruchomieniu \texttt{Makefile}.
 
-Katalog \texttt{models}(rys. \ref{fig:backend_file_structure_1}b) zawiera modeli danych do przechowywania w bazie danych oraz do przekazania do interfejsu użytkownika.
+Katalog \texttt{models}(rys. \ref{fig:backend_file_structure_1}b) zawiera modeli danych.
 
-Katalog \texttt{routers} (rys. \ref{fig:backend_file_structure_1}c) zawiera plik, w którym zachodzi mapowanie punktów końcowych z kontrolerami.
+Katalog \texttt{routers} (rys. \ref{fig:backend_file_structure_1}c) zawiera plik, w którym są definiowane punkty końcowe (ang.~\emph{endpoints}) części serwerowej oraz zachodzi ich mapowanie na kontrolery.
 
-Funkcje lub metody przechowywane w katalogu \texttt{services} (rys. \ref{fig:backend_file_structure_2}a) prowadzą obróbkę danych i podejmują decyzję co z nimi trzeba zrobić (jakaś biznes logika).
+Funkcje lub metody przechowywane w katalogu \texttt{services} (rys. \ref{fig:backend_file_structure_2}a) prowadzą biznes logikę (obróbkę danych i podejmują decyzję co z nimi trzeba zrobić). Warstwa serwisów komunikuje z warstwą \texttt{DAL} (ang. \textit{data access layer}).
 
-Współpraca z bazą danych zachdzi w katalogu \texttt{storage} (rys. \ref{fig:backend_file_structure_2}b). Katalog \texttt{mongostore} wspódziałuje z MongoDB, notomiast \texttt{teststore} wykorzystuje się do testowania, które będzie omówione w rozdiale \ref{ch:Testy}.
+Współpraca z bazą danych zachdzi w katalogu \texttt{storage} (rys. \ref{fig:backend_file_structure_2}b). Jest to warstwa \texttt{DAL} która przyznaczona do komunikacji z bazą danych. Katalog \texttt{mongostore} wspódziałuje z MongoDB, notomiast \texttt{teststore} wykorzystuje się do testowania, które będzie omówione w rozdiale \ref{ch:Testy}.
 
 W katalogu \texttt{utils} (rys. \ref{fig:backend_file_structure_2}c) znajdują się rzeczy wspomagające, naprykład lista błedów lub rejestracja działania serwera.
 
@@ -296,7 +298,7 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
     \hline
     11 & PUT & /api/v1/stations/{id}?ownid="" & Edycja stacji. \\
     \hline
-    12 & DELETE & /api/v1/stations/{id} & Usuwanie stacji ładowniczej. \\
+    12 & DELETE & /api/v1/stations/{id}?ownid="" & Usuwanie stacji ładowniczej. \\
     \hline
     13 & GET & /api/v1/stations/read?skip=""\&limit=""\&lat=""\&lng=""\&dist=""\&descr=""\&nam="" & Wyszukiwnaie stacji ładowniczej w zależności od parametrów. \\
     \hline
@@ -1119,18 +1121,18 @@ Dostęp mają tylko zalogowani użytkownicy.
 
 Lista parametrów w adresie URL (kolejność nie ma znaczenia):
 \begin{itemize}
-    \item \texttt{skip} -- pominięcie jakiejś ilości elementów (niezbędny parametr);
-    \item \texttt{limit} -- ograniczenie ilości zwracanych elementów (niezbędny parametr);
+    \item \texttt{skip} -- pominięcie jakiejś liczby elementów (niezbędny parametr);
+    \item \texttt{limit} -- ograniczenie liczby zwracanych elementów (niezbędny parametr);
     \item \texttt{name} -- wyszukiwanie według nazwy;
     \item \texttt{descr} (ang. ~\emph{description}) -- wyszukiwanie według opisu;
-    \item \texttt{lat} (ang. ~\emph{latitude}) -- szerokość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem \texttt{lng};
-    \item \texttt{lng}(ang. ~\emph{longitude}) -- długość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem \texttt{lat};
+    \item \texttt{lat} (ang. ~\emph{latitude}) -- szerokość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem z \texttt{lng};
+    \item \texttt{lng}(ang. ~\emph{longitude}) -- długość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem z \texttt{lat};
     \item \texttt{dist} (ang. ~\emph{distance}) -- promień wyszukiwania wokół współrzędnych geograficznych ustalonych za pomocą \texttt{lat}, \texttt{lng}. Wyszukiwanie zachodzi nie w promieniu od współrzędnych, lecz w kwadracie (dystans obliczany na wschód, na zachód, na północ oraz na południe).Jest opcjonalny przy użyciu \texttt{lat} oraz \texttt{lng}. Nie używa się osobno.
 \end{itemize}
 
 Przykład użycia: wyszukiwanie dwustu stacji ładowniczych w promieniu 100 kilometrów wokół pewnych współrzędnych geograficznych \texttt{http://127.0.0.1:8081/api/v1/stations/read?lat=57\&lng=15\&skip=0\&limit=200\&dist=100}.
 
-Router przekieruje do metody \texttt{Read()} (listing \ref{list:controller_read_station}) (plik \texttt{controllers/api/v1/stationcontroller.go}) dalej w zależności od wprowadzonych parametrów będzie wywołana ta czy inna metoda serwisu.
+Router przekieruje do metody \texttt{Read()} (listing \ref{list:controller_find_station}) (plik \texttt{controllers/api/v1/stationcontroller.go}) dalej w zależności od wprowadzonych parametrów będzie wywołana ta czy inna metoda serwisu.
 Przy wprowadzaniu dwóch parametrów, na przykład \texttt{name} razem z \texttt{desc} będzie zrobione wyszukiwanie tylko według jednego parametru, w tym przypadku \texttt{name}. Jeśli wyszukiwanie zachodzi według nazwy lub opisu, zostaną wykorzystane wyrażenia regularne, co pozwala wyszukiwać wiedząc tylko część nazwy lub opisu.
 Dla selekcji wyników na poziomie bazy danych wykorzystana agregacja (metoda \texttt{Aggregare}), która po kolej prowadzi różne przekształcenia danych według sekwencji przenośnika (metoda \texttt{Pipeline}).
 
@@ -1143,7 +1145,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie
     \item \texttt{skip} razem z \texttt{limit} -- bedzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()} (listing \ref{list:service_read_station_Read})), która wywołuje metodę współpracy z bazą danych \texttt{Read()} (listing \ref{list:repo_read_station_Read}).
 \end{itemize}
 
-\begin{lstlisting}[label=list:controller_read_station,caption=Kontroler wyszukiwania stacji ładowniczych,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:controller_find_station,caption=Kontroler wyszukiwania stacji ładowniczych,basicstyle=\tiny\ttfamily]
     func (c *StationController) Read() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             params := r.URL.Query()
@@ -1361,7 +1363,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie
     }
 \end{lstlisting}
 
-Dla wyszukiwania listy stacji ładowniczych w pobliżu podanych współrzędnych na mapie Ziemi należy wykorzystać wzór obliczający długość łuku (${L = \alpha R}$, gdzie L - długość łuku w kilometrach, ${\alpha}$ - kąt, R - radius Ziemi (6378 km.)) do przekształcenia kilometrów do stopień kąta (${\alpha = L/R*180/\pi}$). To przekształcenie zachodzi w metodzie \texttt{getRadius()} \ref{list:get_radius.}.
+Dla wyszukiwania listy stacji ładowniczych w pobliżu podanych współrzędnych na mapie Ziemi należy wykorzystać wzór obliczający długość łuku (${L = \alpha R}$, gdzie L - długość łuku w kilometrach, ${\alpha}$ - kąt, R - radius Ziemi (6378 km.)) do przekształcenia kilometrów do stopień kąta (${\alpha = L/R*180/\pi}$). To przekształcenie zachodzi w metodzie \texttt{getRadius()} (listing \ref{list:get_radius}).
 \begin{lstlisting}[label=list:get_radius,caption=Obliczenie dystansu przeszukiwania,basicstyle=\tiny\ttfamily]
     func getRadius(rad int) float64 {
         if rad > 40074 {
@@ -1386,8 +1388,8 @@ Przykład ciała zapytania:
     }
 \end{lstlisting}
 
-Router przekieruje z adresu URL do metody kontrolera \texttt{UpdateByID()} (listing \ref{list:controller_station_UpdateByID}) z pliku \texttt{controllers/api/v1}. W tej metodzie zostaje pobrany \texttt{id} stacji oraz \texttt{ownid} (id Użytkownika), dla sprawdzenia właściciela.
-Dalej jest wywoływania metoda serwisu \texttt{UpdateByID()} (listing \ref{list:service_station_UpdateByID}), w której wywołują się metody współpracy z bazą danych \texttt{UpdateByID()} (listing \ref{list:repo_station_UpdateByID}(listing  oraz \texttt{FidByID()} (listing \ref{list:repo_read_station}) do zmiany dokumentu we wpisie oraz pobraniu wynikowego dokumentu, odpowiednio.
+Router przekieruje z adresu URL do metody kontrolera \texttt{UpdateByID()} (listing \ref{list:controller_station_UpdateByID}) z pliku \texttt{controllers/api/v1/stationcontroller.go}. W tej metodzie zostaje pobrany \texttt{id} stacji oraz \texttt{ownid} (id Użytkownika), dla sprawdzenia właściciela.
+Dalej jest wywoływania metoda serwisu \texttt{UpdateByID()} (listing \ref{list:service_station_UpdateByID}) (plik \texttt{services/api/v1/stationservice.go}), w której wywołują się metody współpracy z bazą danych \texttt{UpdateByID()} (listing \ref{list:repo_station_UpdateByID}) oraz \texttt{FidByID()} (listing \ref{list:repo_read_station}) (plik \texttt{storage/mongostore/stationrepository.go}) do zmiany dokumentu we wpisie oraz pobraniu wynikowego dokumentu, odpowiednio.
 \begin{lstlisting}[label=list:controller_station_UpdateByID,caption=Kontroler edycji stacji ładowniczej,basicstyle=\tiny\ttfamily]
     func (c *StationController) UpdateByID() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1456,7 +1458,54 @@ Dalej jest wywoływania metoda serwisu \texttt{UpdateByID()} (listing \ref{list:
     }
 \end{lstlisting}
 
-\paragraph{Usunięcie}
+\paragraph{Usunięcie\newline}
+W celu usunięcia stacji ładowniczej z systemu został stworzony endpoint \texttt{api/v1/stations/{id}?ownid=""}, metoda do wysyłania \texttt{DELETE}, \texttt{{id}} jest id stacji która podlega usunięciu. Jako parametr \texttt{ownid} należy podać \texttt{id} użytkowniak, tróry stworzył tą stację.
+
+Router przekieruje dane do metody \texttt{DeleteByID()} \ref{list:station_delete_controller} kontrolera z pliku \texttt{controllers/api/v1/stationcontroller.go}, gdzie są wczytywane dane z adresu URL oraz dekodowane ciało zapytania. Dalej dane przekierowane do metody serwisu (\texttt{DeleteByID()} \ref{list:station_delete_repo} znajdująca się w pliku \texttt{services/api/v1/stationservice.go}).
+W serwisie po prostu jest wywołana metoda współpracy z bazą danych \texttt(DeleteByID) \ref{list:station_delete_service} z pliku \texttt{stoarage/mongostore/tationrepository.go}, gdzie zachodzi sterowanie bazą danych do usunięcia wpisu.
+\begin{lstlisting}[label=list:station_delete_controller,caption=Kontroler usunięcia stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (c *StationController) DeleteByID() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            query := r.URL.Query()
+            id, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            ownid := query.Get("ownid")
+            err := c.service.Station().DeleteByID(id, ownid)
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusOK, nil)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:station_delete_service,caption=Serwis usunięcia stacji ładowniczej,basicstyle=\tiny\ttfamily]
+    func (s *StationService) DeleteByID(id string, ownerID string) error {
+        return s.storage.Station().DeleteByID(id, ownerID)
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:station_delete_repo,caption=usunięcie stacji z bazy danych,basicstyle=\tiny\ttfamily]
+    func (r *StationRepository) DeleteByID(id string, ownerID string) error {
+        idi, err := primitive.ObjectIDFromHex(id)
+        if err != nil {
+            return err
+        }
+        filter := bson.M{"_id": idi, "owner_id": ownerID}
+        res, err := r.col.DeleteOne(context.TODO(), filter)
+        if err != nil {
+            return err
+        }
+        if res.DeletedCount == 0 {
+            return utils.ErrRecordNotFound
+        }
+        return nil
+    }
+\end{lstlisting}
+
 \subsubsection{Komentarz}
 Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst id, nazwę użytkownika, który go stworzył, oraz oceny, na podstawie której jest oceniana cała stacja.
 Struktura komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON znajduje się w listingu (listing \ref{list:comment_struct}).
@@ -1487,7 +1536,7 @@ Przykład ciała zapytania:
 
 Router przekieruje zapytanie, po przechodzeniu autentykacji, do metody kontrolera \texttt{CreateComment()} (listing \ref{list:controller_comment_create}) (plik \texttt{controllers/api/v1/commentcontroller.go}), w której zachodzi otrzymanie niezbędnych danych z adresu URL oraz zaczyna się część biznesowa w metodzie \texttt{CreateComment()} (listing \ref{list:service_comment_create}) (plik \texttt{services/api/v1/commentservice.go}).
 W tym serwisie zachodzi walidacja (\texttt{Validation()} (listing \ref{list:validate_comment})), dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowniczej (jest to edycja dokumenta stacji ładowniczej w bazie danych o podanym numerze \texttt{id} (\texttt{Create} (listing \ref{list:repo_comment_create}))) oraz obliczenie oceny wynikowej stacji ładowniczej z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
-Do aktualizaji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszytkich komentzry, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametra \texttt{\$set} (listing \ref{list:update_rating}).
+Do aktualizaji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszytkich komentzry, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametra \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb)) żeby zmiejszyć czas oczekiwania użytkownika.
 \begin{lstlisting}[label=list:controller_comment_create,caption=Kontroler tworzenia komentarza,basicstyle=\tiny\ttfamily]
     func (c *CommentController) CreateComment() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -1599,7 +1648,7 @@ Do aktualizaji oceny została wykorzystana agregacja postępów: za pomocą para
         return err
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:validate_comment,caption=Tworzenie komentarza w bazie danych,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:validate_comment,caption=Walidacja danych stacji przed tworzeniam,basicstyle=\tiny\ttfamily]
     func (c *Comment) Validate() error {
         return validation.ValidateStruct(
             c,
@@ -1610,10 +1659,235 @@ Do aktualizaji oceny została wykorzystana agregacja postępów: za pomocą para
     }
 \end{lstlisting}
 
+\paragraph{Wczytywanie\newline}
+Do wczytywania danych konkretnego komentarza został zaimplementowany endpoint \texttt{api/v1/stations/{sid}/comments/{id}}. Jako \texttt{sid} używa się \texttt{id} stacji, do której należy komentarz, jako \texttt{id} używa się \texttt{id} komentarza.
+Zapytanie mysi być wysłano za pomocą metody \texttt{GET}. Użytkownik musi być uwierzytelniony.
 
-\paragraph{Wczytywanie}
-\paragraph{Edycja}
-\paragraph{Usunięcie}
+Router przekazuje zapytanie dane do warstwy kontrolerów, do metody \texttt{DeleteByID()} (listing \ref{list:comment_read_controller}). Kontroler pobiera dane z URL adresu i wywołuje metodę warstwy serwisów (\texttt{DeleteByID()} (listing \ref{list:comment_read_service}))która wywoła metodę do współpracy z bazą danych \texttt{DeleteByID()} (listing \ref{list:comment_read_repository}) (z pliku \texttt{storage/mongostore/commentrepository.go}). W bazie danych zachodzi znalezienie dokumentu stacji ładowniczej o podanym \texttt{id} w cztery kroki: znalezienie stacji z podanym \texttt{id} (\texttt{\$match}), dekonstrukcja dokumentu stacji tak, aby wyświetlić dokument ko każdego elementu listy komentarzy (\texttt{\$uwnind}), wymiana wejściowego dokumentu zadanym (\texttt{\$replaceRoot}), znalezienie komentarza z pewnym \texttt{id} (\texttt{\$match}).
+\begin{lstlisting}[label=list:comment_read_controller,caption=Kontroler wczytywania komentarza,basicstyle=\tiny\ttfamily]
+    func (c *CommentController) FindByID() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            id, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            sid, ok := params["sid"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            s, err := c.service.Comment().FindByID(sid, id)
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusFound, s)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:comment_read_service,caption=Serwis wczytywania komentarza,basicstyle=\tiny\ttfamily]
+    func (s *CommentService) FindByID(sid string, id string) (*models.Comment, error) {
+        c, err := s.storage.Comment().FindByID(sid, id)
+        if err != nil {
+            return nil, err
+        }
+        return c, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:comment_read_repository,caption=Wczytywanie komentarza z bazy danych,basicstyle=\tiny\ttfamily]
+    func (r *CommentRepository) FindByID(sid string, id string) (*models.Comment, error) {
+        sido, err := primitive.ObjectIDFromHex(sid)
+        if err != nil {
+            return nil, err
+        }
+        matchSID := bson.D{{
+            "$match", bson.M{
+                "_id": sido,
+            }}}
+        unwindComments := bson.D{{"$unwind", "$comments"}}
+        raplaceRootComm := bson.D{{
+            "$replaceRoot", bson.M{
+                "newRoot": "$comments",
+            }}}
+        machID := bson.D{{
+            "$match", bson.M{
+                "_id": id,
+            }}}
+        cursor, err := r.stationRepository.col.Aggregate(
+            context.TODO(),
+            mongo.Pipeline{
+                matchSID,
+                unwindComments,
+                raplaceRootComm,
+                machID,
+            })
+        if err != nil {
+            return nil, err
+        }
+        comms := []models.Comment{}
+        err = cursor.All(context.TODO(), &comms)
+        if err != nil {
+            return nil, err
+        }
+        if len(comms) <= 0 {
+            return nil, utils.ErrRecordNotFound
+        }
+        return &comms[0], nil
+    }
+\end{lstlisting}
+
+\paragraph{Edycja\newline}
+W celu edycji komentarza został zaimplementowany endpoint \texttt{api/v1/stations/{sid}/comments/{id}}. Jako \texttt{sid} używa się \texttt{{id}} stacji, do której należy komentarz, jako \texttt{{id}} używa się \texttt{id} komentarza.
+Zapytanie mysi być wysłano za pomocą metody \texttt{PUT}. Użytkownik musi być uwierzytelniony.
+
+Router przekieruje adres URL do metody \texttt{UpdateByID()} (listing \ref{list:comment_edit_controller}) warstwy kontrolerów. W tej metodzie zachodzi otrzymanie danych (parametrów oraz zmiennych) z adresu URL oraz dekodowanie ciała z formatu JSON do obiektu \texttt{Comment} (listing \ref{list:comment_edit_service}). Dalej te dane przekazują się do metody \texttt{UpdateByID()} (listing \ref{list:comment_read_repository}) warstwy serwisów, gzie zachodzi edycja listy komentarzy należących do stacji ładowniczej, oraz jednocześnie z wyszukiwaniem (listing \ref{list:comment_edit_repo}) i wysyłaniem użytkownikowi edytowanego komentarza, zachodzi aktualizacja oceny stacji ładowniczej (listing \ref{list:update_rating}).
+\begin{lstlisting}[label=list:comment_edit_controller,caption=Kontroler edycji komentarza,basicstyle=\tiny\ttfamily]
+    func (c *CommentController) UpdateByID() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            id, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusNoContent, utils.ErrWrongRequest)
+                return
+            }
+            sid, ok := params["sid"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            comm := &models.Comment{}
+            err := json.NewDecoder(r.Body).Decode(comm)
+            if err != nil {
+                utils.Error(w, r, http.StatusBadRequest, err)
+                return
+            }
+            comm, err = c.service.Comment().UpdateByID(sid, id, comm)
+            if err != nil {
+                utils.Error(w, r, http.StatusNotFound, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusOK, comm)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:comment_edit_service,caption=Serwis edycji komentarza,basicstyle=\tiny\ttfamily]
+    func (s *CommentService) UpdateByID(sid string, id string, c *models.Comment) (*models.Comment, error) {
+        err := s.storage.Comment().UpdateByID(sid, id, c)
+        if err != nil {
+            return nil, err
+        }
+        go func() {
+            err := s.storage.Station().UpdateRaitingByID(sid)
+            if err != nil {
+                log.Println(err.Error())
+            }
+        }()
+        c, err = s.storage.Comment().FindByID(sid, id)
+        if err != nil {
+            return nil, err
+        }
+        return c, nil
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:comment_edit_repo,caption=Edycja komentarza w bazie danych,basicstyle=\tiny\ttfamily]
+    func (r *CommentRepository) UpdateByID(sid string, id string, c *models.Comment) error {
+        sido, err := primitive.ObjectIDFromHex(sid)
+        if err != nil {
+            return err
+        }
+        filter := bson.M{
+            "_id": sido,
+            "comments": bson.M{
+                "$elemMatch": bson.M{
+                    "_id":             id,
+                    "model.update_at": c.UpdateAt,
+                }}}
+        update := bson.M{"comments.$.update_at": models.GetTimeNow()}
+        if c.Text != "" {
+            update["comments.$.text"] = c.Text
+        }
+        if c.Rating != 0 {
+            update["comments.$.rating"] = c.Rating
+        }
+        _, err = r.stationRepository.col.UpdateOne(
+            context.TODO(),
+            filter, bson.M{
+                "$set": update,
+            })
+        if err != nil {
+            return err
+        }
+        return nil
+    }
+\end{lstlisting}
+
+\paragraph{Usunięcie\newline}
+\texttt{api/v1/stations/{sid}/comments/{id}}. Jako \texttt{sid} używa się \texttt{{id}} stacji, do której należy komentarz, jako \texttt{{id}} używa się \texttt{id} komentarza.
+Zapytanie mysi być wysłano za pomocą metody \texttt{DELETE}. Użytkownik musi być uwierzytelniony.
+
+Router przekazuje zapytanie dane do warstwy kontrolerów, do metody \texttt{DeleteByID()} (listing \ref{list:comment_delete_controller}). Kontroler pobiera dane z URL adresu i wywołuje metodę warstwy serwisów (\texttt{DeleteByID()} (listing \ref{list:comment_delete_service}))która wywoła metodę do współpracy z bazą danych \texttt{DeleteByID()} (listing \ref{list:comment_delete_repository}) (z pliku \texttt{storage/mongostore/commentrepository.go}). W bazie danych zachodzi modyfikacja dokumentu stacji ładowniczej o podanym \texttt{id}: usunięcie komentarza z listy. Następnym krokiem jednocześnie zachodzi wysłanie potwierdzenie usunięcia oraz aktualizacja oceny (listing \ref{list:update_rating}).
+\begin{lstlisting}[label=list:comment_delete_controller,caption=Kontroler usunięcia komentarza,basicstyle=\tiny\ttfamily]
+    func (c *CommentController) DeleteByID() http.HandlerFunc {
+        return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+            params := mux.Vars(r)
+            id, ok := params["id"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            sid, ok := params["sid"]
+            if !ok {
+                utils.Error(w, r, http.StatusBadRequest, utils.ErrWrongRequest)
+                return
+            }
+            err := c.service.Comment().DeleteByID(sid, id)
+            if err != nil {
+                utils.Error(w, r, http.StatusNoContent, err)
+                return
+            }
+            utils.Respond(w, r, http.StatusOK, nil)
+        })
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:comment_delete_service,caption=Serwis usuniecia komentarza,basicstyle=\tiny\ttfamily]
+    func (s *CommentService) DeleteByID(sid string, id string) error {
+        err := s.storage.Comment().DeleteByID(sid, id)
+        if err != nil {
+            return err
+        }
+        go func() {
+            err := s.storage.Station().UpdateRaitingByID(sid)
+            if err != nil {
+                log.Println(err.Error())
+            }
+        }()
+        return err
+    }
+\end{lstlisting}
+\begin{lstlisting}[label=list:comment_delete_repository,caption=Usunięcie komentarza z bazy danych,basicstyle=\tiny\ttfamily]
+    func (r *CommentRepository) DeleteByID(sid string, id string) error {
+        sido, err := primitive.ObjectIDFromHex(sid)
+        if err != nil {
+            return err
+        }
+        filter := bson.M{"_id": sido}
+        update := bson.M{
+            "comments": bson.M{
+                "_id": id,
+            }}
+        _, err = r.stationRepository.col.UpdateOne(
+            context.TODO(),
+            filter, bson.M{
+                "$pull": update,
+            })
+        if err != nil {
+            return err
+        }
+        return nil
+    }
+\end{lstlisting}
 %
 \section{Implementacja Interfejsu użytkownika}
 Interfejs użytkownika jest aplikacją mobilną dla telefonów z systemem operacyjnym Android.
