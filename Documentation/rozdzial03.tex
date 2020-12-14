@@ -1130,7 +1130,8 @@ Lista parametrów w adresie URL (kolejność nie ma znaczenia):
     \item \texttt{dist} (ang. ~\emph{distance}) -- promień wyszukiwania wokół współrzędnych geograficznych ustalonych za pomocą \texttt{lat}, \texttt{lng}. Wyszukiwanie zachodzi nie w promieniu od współrzędnych, lecz w kwadracie (dystans obliczany na wschód, na zachód, na północ oraz na południe).Jest opcjonalny przy użyciu \texttt{lat} oraz \texttt{lng}. Nie używa się osobno.
 \end{itemize}
 
-Przykład użycia: wyszukiwanie dwustu stacji ładowniczych w promieniu 100 kilometrów wokół pewnych współrzędnych geograficznych \texttt{http://127.0.0.1:8081/api/v1/stations/read?lat=57\&lng=15\&skip=0\&limit=200\&dist=100}.
+% TO DO: urle proszę wrzucać w otoczenie url, wtedy lepiej będą się łamać
+Przykład użycia: wyszukiwanie dwustu stacji ładowniczych w promieniu 100 kilometrów wokół pewnych współrzędnych geograficznych \url{http://127.0.0.1:8081/api/v1/stations/read?lat=57&lng=15&skip=0&limit=200&dist=100}.
 
 Router przekieruje do metody \texttt{Read()} (listing \ref{list:controller_find_station}) (plik \texttt{controllers/api/v1/stationcontroller.go}) dalej w zależności od wprowadzonych parametrów będzie wywołana ta czy inna metoda serwisu.
 Przy wprowadzaniu dwóch parametrów, na przykład \texttt{name} razem z \texttt{desc} będzie zrobione wyszukiwanie tylko według jednego parametru, w tym przypadku \texttt{name}. Jeśli wyszukiwanie zachodzi według nazwy lub opisu, zostaną wykorzystane wyrażenia regularne, co pozwala wyszukiwać wiedząc tylko część nazwy lub opisu.
@@ -1281,6 +1282,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie
         return st, nil
     }
 \end{lstlisting}
+% TO DO: po polsku są "stacje ładowania", a nie "stacje ładownicze" Proszę poprawić
 \begin{lstlisting}[label=list:repo_read_station_FindInRadius,caption=Wyszukiwanie stacji ładowniczych w bazie danych w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
     func (r *StationRepository) FindInRadius(latitude float64, longitude float64, radius float64, skip int, limit int) ([]models.Station, error) {
         matchInRadius := bson.D{{"$match", bson.M{
@@ -1416,6 +1418,10 @@ Dalej jest wywoływania metoda serwisu \texttt{UpdateByID()} (listing \ref{list:
         })
     }
 \end{lstlisting}
+
+% TO DO: za dużo listingów w pracy. Proszę pokazać tylko istotne rzeczy, wykropkowują nieistotny kod.
+% Poda tym mamy tu dwa razy  UpdateByID - raz zwraca serwis, raz repozytorium. Może należałoby wyjaśnić, dlaczego????
+
 \begin{lstlisting}[label=list:service_station_UpdateByID,caption=Serwis edycji stacji ładowniczej,basicstyle=\tiny\ttfamily]
     func (s *StationService) UpdateByID(id string, st *models.Station, ownerID string) (*models.Station, error) {
         err := s.storage.Station().UpdateByID(id, st, ownerID)
@@ -1975,7 +1981,9 @@ Zawartość znaczących katalogów i plików:
 \end{lstlisting}
 
 \paragraph{Modeli danych:} \texttt{User} \ref{list:user_class}, \texttt{Station} \ref{list:station_class}, \texttt{Comment} \ref{list:comment_class}. W listingach komentarz \texttt{// GETTERS and SETTERS} pokazuje, że w kodzie programu tym miejscu znajdują się proste metody do zapisu i wczytania pól klasy.
-Adnotacja \texttt{@SerializedName} ustala nazwę do dekodowania do formatu JSON i naodwrót.
+Adnotacja \texttt{@SerializedName} ustala nazwę do dekodowania do formatu JSON i na odwrót.
+
+% TO DO: za dużo listingów !!!!! Wystarczy pokazać przykład mapowania na jednym modelu, a potem powiedzieć, że dla pozostałych jest podobnie.
 
 \begin{lstlisting}[label=list:user_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java},basicstyle=\tiny\ttfamily]
     public class User {
@@ -2259,9 +2267,9 @@ Ze strony logowania można trafić do strony rejestracji (rys. \ref{fig:frontend
 \begin{figure}[ht]
 	\centering
     \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{\hspace{3mm}}rl@{}}
-        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.2\linewidth]{rys03/front_settings.png}}} &
-        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.2\linewidth]{rys03/front_login.png}}} &
-        c) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.2\linewidth]{rys03/front_register.png}}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_settings.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_login.png}}} &
+        c) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_register.png}}}
     \end{tabular}
     \caption{Interfejs użytkownika: a) ustawienia, b) logowanie, c) rejestracja.}
     \label{fig:frontend_settings}
@@ -2385,6 +2393,7 @@ Jednym z najważniejszych funkcji jest tworzenie stacji ładowniczej. Dla tworze
 
 Naciśnięcie przycisku \texttt{SAVE} powoduje sprawdzenie wprowadzonych danych (listing: \ref{list:android_station_create_validate}) oraz wysłanie odpowiedniego zapytania do części serwerowej w celu tworzenia nowego wpisu w bazie danych (listing: \ref{list:android_station_create_request}). Jeśli użytkownik nie został zalogowany lub zarejestrowany, wyświetla się okno logowania lub rejestracji (rys. \ref{fig:frontend_settings}b, \ref{fig:frontend_settings}c).
 Cała klasa obsługująca znajduje się w pliku \texttt{main/java/com/example/testapp/fragments/CreateStationFragment.java}.
+% TO DO: za dużo listingów kodu !!!!!!
 \begin{lstlisting}[label=list:android_station_create_validate,caption=Obsługa przycisku SAVE,basicstyle=\tiny\ttfamily]
     public void onButtonSaveStationClick(View v) {
         String stationName = ((EditText) getView().findViewById(R.id.editTextStationName)).getText().toString();

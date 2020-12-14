@@ -260,13 +260,13 @@ Listing \thelstlisting: #1\hfill%\hfill%
 %%  Pakiety i komendy zastosowane tylko do zamieszczenia informacji o użytych komendach i fontach
 %%  Normalnie nie są potrzebne, można je zamarkować podczas redakcji pracy
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\usepackage{memlays}     % extra layout diagrams, zastosowane w szblonie do 'debuggowania', używa pakietu layouts
-%\usepackage{layouts}
-\usepackage{printlen} % pakiet do wyświetlania wartości zdefiniowanych długości, stosowany do 'debuggowania'
-\uselengthunit{pt}
-\makeatletter
-\newcommand{\showFontSize}{\f@size pt} % makro wypisujące wielkość bieżącej czcionki
-\makeatother
+%%%\usepackage{memlays}     % extra layout diagrams, zastosowane w szblonie do 'debuggowania', używa pakietu layouts
+%%%%\usepackage{layouts}
+%%%\usepackage{printlen} % pakiet do wyświetlania wartości zdefiniowanych długości, stosowany do 'debuggowania'
+%%%\uselengthunit{pt}
+%%%\makeatletter
+%%%\newcommand{\showFontSize}{\f@size pt} % makro wypisujące wielkość bieżącej czcionki
+%%%\makeatother
 % do pokazania ramek można byłoby użyć:
 %\usepackage{showframe} 
 
@@ -388,6 +388,8 @@ Listing \thelstlisting: #1\hfill%\hfill%
 \DeclareGraphicsExtensions{.eps,.ps,.jpg,.mps,.png}
 \fi
 \sloppy
+
+\def\UrlBreaks{\do\/\do-\do_} % dodane by lepiej łamać urle 
 
 %\graphicspath{{rys01/}{rys02/}}
 
@@ -622,7 +624,7 @@ SPECJALNOŚĆ: & \@specjalnosc\\
 \wydzial{WYDZIAŁ ELEKTRONIKI}
 \kierunek{INFORMATYKA}
 \specjalnosc{INŻYNIERIA SYSTEMÓW INFORMATYCZNYCH}
-\promotor{dr inż. Tomasz Kubik, Wydział Elektroniki, Katedra Informatyki}
+\promotor{dr inż.\ Tomasz Kubik, K30W04D03}
 \date{WROCŁAW, 2020}
 
 % Ustawienie odstępu od góry w nienumerowanych rozdziałach oraz wykazach:
@@ -706,9 +708,9 @@ SPECJALNOŚĆ: & \@specjalnosc\\
 \include{dodatekB}
 % \include{dodatekC}
 
-\chapterstyle{noNumbered}
-\phantomsection % sets an anchor
-\addcontentsline{toc}{chapter}{Indeks rzeczowy}
-\printindex
+%%%\chapterstyle{noNumbered}
+%%%\phantomsection % sets an anchor
+%%%\addcontentsline{toc}{chapter}{Indeks rzeczowy}
+%%%\printindex
 
 \end{document}

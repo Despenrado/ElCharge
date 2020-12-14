@@ -77,9 +77,10 @@ Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powią
 % TO DO: Poprawić wpisy w tabeli: w pierwszej kolumnie powinny być te same nazwy przypadków do na diagramie, w drugiej - w miarę dokładny opis celu, jaki można osiągnąć (poprawione są tylko początkowe wiersze)
 % TO VERIFY:
 \begin{table}[htb] \small
+\centering
     \caption{Wymagania funkcjonalne}
     \label{tab:wymaganiafunkcjonalne}
-    \begin{tabularx}{\linewidth}{| r | p{6cm} | X |} 
+    \begin{tabularx}{\linewidth}{| r | p{4.5cm} | X |} 
     \hline
     № & Przypadek & Cel \\
     \hline
@@ -87,22 +88,22 @@ Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powią
     \hline
     2 & Rejestracja & Pozwala na stworzenie konta (w bazie danych pojawia się nowy wpis) i otwiera możliwość zalogowania się \\ 
     \hline
-    3 & Tworzenie stacji ładowniczej & Pozwala na dodanie nowej stacji do serwisu (pojawia się nowy wpis w bazie danych) \\
+    3 & Tworzenie stacji ładowania & Pozwala na dodanie nowej stacji do serwisu (pojawia się nowy wpis w bazie danych) \\
     \hline
-    4 & Edycja stacji ładowniczej & Właściciel stacji (twórca) ma możliwość edycji wpisu w bazie danych \\
+    4 & Edycja stacji ładowania & Właściciel stacji (twórca) ma możliwość edycji wpisu w bazie danych \\
     \hline
-    5 & Przeglądanie informacji dotyczącej stacji ładowniczej & Pozwala na wczytanie danych wybranej stacji ładowniczej z bazy danych oraz wyświetlenie ich użytkownikowi \\
+    5 & Przeglądanie informacji dotyczącej stacji ładowania & Pozwala na wczytanie danych wybranej stacji ładowania z bazy danych oraz wyświetlenie ich użytkownikowi \\
     \hline
     6 & Określenie swojej pozycji & Pozwala użytkownikowi pobrać współrzędne swojej pozycji na mapie Ziemi dla wykorzystania podczas wyszukiwania oraz możliwość wyświetlania tej pozycji na mapie \\
     \hline
-    7 & Wyszukiwanie stacji ładowniczej & Pozwala użytkownikowi na przeglądanie listy stacji ładowniczych (pobranej z bazy danych) znalezionych według parametrów wyszukiwania \\
+    7 & Wyszukiwanie stacji ładowania & Pozwala użytkownikowi na przeglądanie listy stacji ładowniczych (pobranej z bazy danych) znalezionych według parametrów wyszukiwania \\
     \hline
     8 & Komentarze i oceny: tworzenie  & Pozwala na dodanie komentarza i oceny dotyczącej pewnej stacji do bazy danych \\
     \hline
     9 & Komentarze i oceny: przeglądanie  & Pozwala na wczytanie danych komentarzy o stacji z bazy danych oraz wyświetlenie ich użytkowników \\
     \hline
     % Użytkownik Wyszukiwanie stacji w sposób bardziej intuicyjny dla użytkownika  \\
-    % Ułatwienie wyszukiwania najwygodniejszej stacji ładowniczej \\
+    % Ułatwienie wyszukiwania najwygodniejszej stacji ładowania \\
     % Użytkownik wyszykuje stacje ładowania obok wybranego miejsca Umożliwienie wyboru stacji dogodnej dla użytkownika \\
     % Aktualizacja informacji o dostępnych stacjach \\
     % Określenie jakości stacji. Pozwala na aktualizację danuch dotyczących stacji ladowniczej \\
@@ -113,33 +114,34 @@ Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powią
 
 
 \subsection{Wymagania niefunkcjonalne}
-W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonalne: krótki opis wymagania, typ (jakiej dziedziny to dotyczy) oraz uwagi do tego wymagania.
+W tabeli \ref{tab:wymaganianiefunkcjonalne} przedstawiono wymagania niefunkcjonalne: krótki opis wymagania, typ (jakiej dziedziny to dotyczy) oraz uwagi do tego wymagania.
 \begin{table}[htb] \small
+\centering
     \caption{Wymagania niefunkcjonalne}
     \label{tab:wymaganianiefunkcjonalne}
-    \begin{tabular}{| m{0.5cm} | m{3cm} | m{5.75cm} | m{5.75cm} |} 
+    \begin{tabularx}{\linewidth}{| l| l |X | X |} 
     \hline
     № & typ & Opis & Uwagi \\
     \hline
-    1 & Bezpieczeństwo & Hasła muszą być przechowywane w biezpicznej formie & Hasła nie przchowyją się w pierwotnej formie, tylko w formie zaszyfrowanej \\ 
+    1 & Bezpieczeństwo & Hasła muszą być przechowywane w bezpieczniej formie & Hasła nie przechowają się w pierwotnej formie, tylko w formie zaszyfrowanej \\ 
     \hline
     2 & Bezpieczeństwo & Małe ryzyka przechwytywania hasła przez trzecich osób podczas komunikacji interfejsu użytkownika i części serwerowej & Autentykacja użytkownika na serwerze powinna zachodzić za pomocą tokenów \\ 
     \hline
-    3 & Przenoszlność & wdrożenie systemu powinno być szybkie i łatwe & \\ 
+    3 & Przenoszalność & wdrożenie systemu powinno być szybkie i łatwe & \\ 
     \hline
-    4 & Konfigurowalność & Zmiana ustaleń bez konieczosści rekompilacji części serwerowej & Zarządzaniem portu na którym działa część serwerowa, wymiana adresu oraz nazwy kolekcji bazy danuch, musi być możliwa za pomocą pliku konfiguracyjnego \\ 
+    4 & Konfigurowalność & Zmiana ustaleń bez konieczności rekompilacji części serwerowej & Zarządzaniem portu na którym działa część serwerowa, wymiana adresu oraz nazwy kolekcji bazy danych, musi być możliwa za pomocą pliku konfiguracyjnego \\ 
     \hline
-    5 & Estetyczne & Przyjazny interfajs użytkownika & Intuicyjny i zrozumiały interfejs \\ 
+    5 & Estetyczne & Przyjazny interfejs użytkownika & Intuicyjny i zrozumiały interfejs \\ 
     \hline
-    6 & Ergonomia & Interfejs w języku angielskim & Możliwość kożystania z aplikacji przez dużą libzi \\
+    6 & Ergonomia & Interfejs w języku angielskim & Internacjonalizacja aplikacji \\
     \hline
-    7 & Przenoszlność & Aplikacja mobilna musi działać na 90\% lub więcej telefonów pracujących na systemie Android & Możliwość kożystania z aplikacji przez dużą ilość ludzi \\
+    7 & Przenoszalność & Aplikacja mobilna musi działać na 90\% lub więcej telefonów pracujących na systemie Android & Możliwość korzystania z aplikacji przez dużą ilość ludzi \\
     \hline
-    8 & Estetyczne & kolory muszą być odpowiednio dopasowane & Wykorzystanie małej dopasowanych do sobie ilośći kolorów  \\
+    8 & Estetyczne & Kolory muszą być odpowiednio dopasowane & Wykorzystanie palety z małą liczbą odpowiednich kolorów  \\
     \hline
-    9 & Wydajność & Srzybka reakcja systemu & System musi szybko reagować na działania użytkownika \\
+    9 & Wydajność & Szybka reakcja systemu & System musi szybko reagować na działania użytkownika \\ % TO DO: ile ms?
     \hline
-    10 & Informatywność & System powinien powiadomiać o błędach i sukcesach  & Podczas rażądzania systemem użytkownik powinin zawze wiedzieć jaki wynik jego działania \\
+    10 & Informatywność & System powinien powiadomiać o błędach i sukcesach  & Podczas zarządzania systemem użytkownik powinien zawsze wiedzieć jaki wynik jego działania \\
     \hline
     11 & Ergonomia & Wykorzystanie z aplikacji mobilnej za pomocą jednej ręki & Przyciski muszą znajdować się w dolnej części ekranu lub znajdować się w dostępnym miejscu \\
     \hline
@@ -153,7 +155,7 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przdstawione wymagania niefunkcjonal
     \hline
     16 & Ergonomia & Dla realizacji mapy wykorzystuję się Google Maps[index] & Ułatwia rozumienie interfejsu dla użytkowników \\
     \hline
-\end{tabular}
+\end{tabularx}
 \end{table}
 \newpage
 \subsection{Narzędzia i technologie}
@@ -220,23 +222,21 @@ Usługa ta jest odpłatna, a wysokość opłat zależy od wybranego planu biznes
 % Dla realizacji Google Maps w aplikacji mobilnej wykorzystuję się serwis Google Cloud \cite{google_cloud} Maps SDK for Android (ang.~\emph{Maps Software development kit for Android}) \cite{maps_sdk}.
 % 
 \subsection{Makiety interfejsu użytkownika}
-Po analizie wymagań zostały stworzone możliwe makiety aplikacji, która ma powstać.
+Po analizie wymagań zaprojektowano makiety interfejsu użytkownika aplikacji. 
+Aplikacja będzie posiadać na dole ekranu główne menu zawierające 4 pozycje: mapę, wyszukiwanie stacji, tworzenie stacji i parametry. Wybierając jedną z tych pozycji będzie można przełączać się między różnymi widokami.
 
-Na dole ekranu aplikacji znajduje się główne menu zawierające 4 pozycje: mapę, wyszukiwanie stacji, tworzenie stacji i parametry.
-Na rysunku \ref{fig:search_makiet}a przedstawiono pierwszy etap wyszukiwania stacji ładowania.
-Pod polem wyszukiwania znajduje się rozwijane menu, które pozwala wybierać typ wyszukiwania, w tym wyszukiwanie na podstawie pozycji użytkownika oraz nazwy i opisu stacji.
-Poniżej znajduje się możliwość do zmiany dystansu wyszukiwania oraz przycisk wyszukiwania.
+Na rysunku \ref{fig:search_makiet}a przedstawiono widok wyszukiwania stacji ładowania. Pod polem wyszukiwania znajduje się rozwijane menu, które pozwala wybierać typ wyszukiwania, w tym wyszukiwanie na podstawie pozycji użytkownika oraz nazwy i opisu stacji. Poniżej znajduje się możliwość do zmiany dystansu wyszukiwania oraz przycisk wyszukiwania.
 \begin{figure}[ht]
 	\centering
   \begin{tabular}{@{}rl@{\hspace{10mm}}rl@{}}
-  a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.30\linewidth]{rys02/search_makiet.jpg}}} &
-	b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.45\linewidth]{rys02/main_makiet.jpg}}} 
+  a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.255\linewidth]{rys02/search_makiet.jpg}}} &
+	b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.38\linewidth]{rys02/main_makiet.jpg}}} 
 		\end{tabular}
-        \caption{Makiety interfejsów aplikacji mobilnej: a) strona wyszukiwania stacji ładowania, b) strona główna.}
+        \caption{Makiety interfejsów użytkownika: a) strona wyszukiwania stacji ładowania, b) strona główna.}
     \label{fig:search_makiet}
 \end{figure}
 
-Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokonać wyboru stacji ładowania. Stacje poznaczone znacznikami na mapie. Dla otrzymania informacji o wybranej stacji (wybierany jest markier na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
+Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokonać wyboru stacji ładowania. Położeniom stacji odpowiada odpowiedni znacznik  na mapie. W celu otrzymania informacji o wybranej stacji (dla danego markera na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
 
 Podczas tworzenia stacji ładowania  dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk (rys.~\ref{fig:create_makiet}a).
 % TO DO: proszę ułożyć dwie makiety obok siebie, jak w przykładzie powyżej
@@ -244,23 +244,22 @@ Podczas tworzenia stacji ładowania  dla wygody użytkowania można wybrać miej
 \begin{figure}[ht]
 	\centering
     \begin{tabular}{@{}rl@{\hspace{10mm}}rl@{}}
-        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.30\linewidth]{rys02/create_makiet.jpg}}} &
-        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.30\linewidth]{rys02/station_makiet.jpg}}} 
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.22\linewidth]{rys02/create_makiet.jpg}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.22\linewidth]{rys02/station_makiet.jpg}}} 
     \end{tabular}
-    \caption{Makiety interfejsów aplikacji mobilnej: a) strona tworzenia stacji ładowania, b) strona informacji o stacji ładowania.}
+    \caption{Makiety interfejsów użytkownika: a) strona tworzenia stacji ładowania, b) strona informacji o stacji ładowania.}
     \label{fig:create_makiet}
 \end{figure}
-
 Na stronie informacji o stacji oprócz nazwy stacji, opisu oraz oceny, wyliczonej na podstawie komentarzy oceny, znajdują się komentarzy użytkowników uporządkowane od najnowszego (rys.\ref{fig:create_makiet}b) .
 
 Do rejestracji i logowania wykorzystują się dwa różne ekrany pokazane, odpowiednio, na rysunku~\ref{fig:login_makiet}a oraz rysunku~\ref{fig:login_makiet}b)
 \begin{figure}[ht]
 	\centering
   \begin{tabular}{@{}rl@{\hspace{10mm}}rl@{}}
-  a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.30\linewidth]{rys02/login_makiet.jpg}}} &
-	b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.30\linewidth]{rys02/register_makiet.jpg}}} 
+  a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.22\linewidth]{rys02/login_makiet.jpg}}} &
+	b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.22\linewidth]{rys02/register_makiet.jpg}}} 
 		\end{tabular}
-        \caption{Makiety interfejsów aplikacji mobilnej: a) strona logowania, b) strona rejestracji.}
+        \caption{Makiety interfejsów użytkownika: a) strona logowania, b) strona rejestracji.}
     \label{fig:login_makiet}
 \end{figure}
 
