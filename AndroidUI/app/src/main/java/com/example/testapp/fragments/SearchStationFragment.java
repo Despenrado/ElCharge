@@ -113,8 +113,6 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
 //            }
 //        });
         if (id == 2) {
-            MapsSelectFragment mapsSelectFragment = new MapsSelectFragment();
-            LocationManager locationManager = (LocationManager) app.getAppSystemService(Context.LOCATION_SERVICE);
             if (ContextCompat.checkSelfPermission(App.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                     ContextCompat.checkSelfPermission(app.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
