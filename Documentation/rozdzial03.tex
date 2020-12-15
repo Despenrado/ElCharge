@@ -922,6 +922,7 @@ Router przekieruje do metody \texttt{Read()} (listing \ref{list:controller_find_
 Przy wprowadzaniu dwóch parametrów, na przykład \texttt{name} razem z \texttt{desc} będzie zrobione wyszukiwanie tylko według jednego parametru, w tym przypadku \texttt{name}. Jeśli wyszukiwanie zachodzi według nazwy lub opisu, zostaną wykorzystane wyrażenia regularne, co pozwala wyszukiwać, wiedząc tylko część nazwy lub opisu.
 Dla selekcji wyników na poziomie bazy danych wykorzystana agregacja (metoda \texttt{Aggregare}), która po kolej prowadzi różne przekształcenia danych według sekwencji przenośnika (metoda \texttt{Pipeline}).
 
+% TO DO: po usunięciu listingów trzeba usunąć referencje
 Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie te metody znajdują się w pliku \texttt{services/api/v1/stationservice.go}):
 \begin{itemize}
     \item \texttt{name} -- wykonuje się metoda \texttt{FindByName()} (listing \ref{list:service_read_station_FindByName}), która wywołuje metodę współpracy z bazą danych \texttt{FinDByName()} (listing \ref{list:repo_read_station_FindByName});
@@ -999,6 +1000,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie
         })
     }
 \end{lstlisting}
+% TO DO: W pracy jest za dużo listingów. Wystarczy pokazać jeden serwis, a potem powiedzieć, że pozostałe serwisy zaiplmentnowanio podobnie.
 \begin{lstlisting}[label=list:service_read_station_FindByName,caption=Serwis wyszukiwania stacji ładowania według nazwy,basicstyle=\tiny\ttfamily]
     func (s *StationService) FindByName(name string) ([]models.Station, error) {
         st, err := s.storage.Station().FindByName(name)
@@ -1008,65 +1010,65 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie
         return st, nil
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:repo_read_station_FindByName,caption=Wyszukiwanie stacji ładowania w bazie danych według nazwy,basicstyle=\tiny\ttfamily]
-    func (r *StationRepository) FindByName(name string) ([]models.Station, error) {
-        filter := bson.D{{"station_name", primitive.Regex{Pattern: name, Options: "i"}}}
-        cursor, err := r.col.Aggregate(
-            context.TODO(),
-            mongo.Pipeline{
-                bson.D{{"$match",
-                    filter}},
-            })
-        if err != nil {
-            return nil, err
-        }
-        s := []models.Station{}
-        err = cursor.All(context.TODO(), &s)
-        if err != nil {
-            return nil, err
-        }
-        return s, nil
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:service_read_station_FindByDescription,caption=Serwis wyszukiwania stacji ładowania według opisu,basicstyle=\tiny\ttfamily]
-    func (s *StationService) FindByDescription(text string) ([]models.Station, error) {
-        st, err := s.storage.Station().FindByName(text)
-        if err != nil {
-            return nil, err
-        }
-        return st, nil
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:repo_read_station_FindByDescription,caption=Wyszukiwanie stacji ładowania w bazie danych według opisu,basicstyle=\tiny\ttfamily]
-    func (r *StationRepository) FindByDescription(text string) ([]models.Station, error) {
-        filter := bson.D{{"description", primitive.Regex{Pattern: text, Options: "i"}}}
-        log.Println(filter)
-        cursor, err := r.col.Aggregate(
-            context.TODO(),
-            mongo.Pipeline{
-                bson.D{{"$match",
-                    filter}},
-            })
-        if err != nil {
-            return nil, err
-        }
-        s := []models.Station{}
-        err = cursor.All(context.TODO(), &s)
-        if err != nil {
-            return nil, err
-        }
-        return s, nil
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:service_read_station_FindInRadius,caption=Serwis wyszukiwania stacji ładowania w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
-    func (s *StationService) FindInRadius(latitude float64, longitude float64, radius int, skip int, limit int) ([]models.Station, error) {
-        st, err := s.storage.Station().FindInRadius(getLatitude(latitude), getLongitude(longitude), getRadius(radius), skip, limit)
-        if err != nil {
-            return nil, err
-        }
-        return st, nil
-    }
-\end{lstlisting}
+%%%\begin{lstlisting}[label=list:repo_read_station_FindByName,caption=Wyszukiwanie stacji ładowania w bazie danych według nazwy,basicstyle=\tiny\ttfamily]
+    %%%func (r *StationRepository) FindByName(name string) ([]models.Station, error) {
+        %%%filter := bson.D{{"station_name", primitive.Regex{Pattern: name, Options: "i"}}}
+        %%%cursor, err := r.col.Aggregate(
+            %%%context.TODO(),
+            %%%mongo.Pipeline{
+                %%%bson.D{{"$match",
+                    %%%filter}},
+            %%%})
+        %%%if err != nil {
+            %%%return nil, err
+        %%%}
+        %%%s := []models.Station{}
+        %%%err = cursor.All(context.TODO(), &s)
+        %%%if err != nil {
+            %%%return nil, err
+        %%%}
+        %%%return s, nil
+    %%%}
+%%%\end{lstlisting}
+%%%\begin{lstlisting}[label=list:service_read_station_FindByDescription,caption=Serwis wyszukiwania stacji ładowania według opisu,basicstyle=\tiny\ttfamily]
+    %%%func (s *StationService) FindByDescription(text string) ([]models.Station, error) {
+        %%%st, err := s.storage.Station().FindByName(text)
+        %%%if err != nil {
+            %%%return nil, err
+        %%%}
+        %%%return st, nil
+    %%%}
+%%%\end{lstlisting}
+%%%\begin{lstlisting}[label=list:repo_read_station_FindByDescription,caption=Wyszukiwanie stacji ładowania w bazie danych według opisu,basicstyle=\tiny\ttfamily]
+    %%%func (r *StationRepository) FindByDescription(text string) ([]models.Station, error) {
+        %%%filter := bson.D{{"description", primitive.Regex{Pattern: text, Options: "i"}}}
+        %%%log.Println(filter)
+        %%%cursor, err := r.col.Aggregate(
+            %%%context.TODO(),
+            %%%mongo.Pipeline{
+                %%%bson.D{{"$match",
+                    %%%filter}},
+            %%%})
+        %%%if err != nil {
+            %%%return nil, err
+        %%%}
+        %%%s := []models.Station{}
+        %%%err = cursor.All(context.TODO(), &s)
+        %%%if err != nil {
+            %%%return nil, err
+        %%%}
+        %%%return s, nil
+    %%%}
+%%%\end{lstlisting}
+%%%\begin{lstlisting}[label=list:service_read_station_FindInRadius,caption=Serwis wyszukiwania stacji ładowania w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    %%%func (s *StationService) FindInRadius(latitude float64, longitude float64, radius int, skip int, limit int) ([]models.Station, error) {
+        %%%st, err := s.storage.Station().FindInRadius(getLatitude(latitude), getLongitude(longitude), getRadius(radius), skip, limit)
+        %%%if err != nil {
+            %%%return nil, err
+        %%%}
+        %%%return st, nil
+    %%%}
+%%%\end{lstlisting}
 % TO DO: po polsku są "stacje ładowania", a nie "stacje ładownicze" Proszę poprawić
 % DONE
 \begin{lstlisting}[label=list:repo_read_station_FindInRadius,caption=Wyszukiwanie stacji ładowania w bazie danych w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
@@ -1101,55 +1103,55 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (Wszystkie
         return stations, nil
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:service_read_station_FindByLocation,caption=Serwis wyszukiwania stacji ładowania według współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
-    func (s *StationService) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
-        st, err := s.storage.Station().FindByLocation(getLatitude(latitude), getLongitude(longitude))
-        if err != nil {
-            return nil, err
-        }
-        return st, nil
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:repo_read_station_FindByLocation,caption=Wyszukiwanie stacji ładowania w bazie danych współrzędnych pozycji na mapie Ziemi,basicstyle=\tiny\ttfamily]
-    func (r *StationRepository) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
-        filter := bson.M{"latitude": latitude, "longitude": longitude}
-        res := r.col.FindOne(context.TODO(), filter)
-        s := &models.Station{}
-        err := res.Decode(s)
-        if err != nil {
-            return nil, utils.ErrRecordNotFound
-        }
-        return s, nil
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:service_read_station_Read,caption=Serwis wczytania listy kolejnych stacji ładowania,basicstyle=\tiny\ttfamily]
-    func (s *StationService) Read(skip int, limit int) ([]models.Station, error) {
-        st, err := s.storage.Station().Read(skip, limit)
-        if err != nil {
-            return nil, err
-        }
-        return st, nil
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:repo_read_station_Read,caption=Wczytanie listy kolejnych stacji ładowania z bazy danych,basicstyle=\tiny\ttfamily]
-    func (r *StationRepository) Read(skip int, limit int) ([]models.Station, error) {
-        cursor, err := r.col.Aggregate(
-            context.TODO(),
-            mongo.Pipeline{
-                bson.D{{"$skip", skip}},
-                bson.D{{"$limit", limit}},
-            })
-        if err != nil {
-            return nil, err
-        }
-        stations := []models.Station{}
-        err = cursor.All(context.TODO(), &stations)
-        if err != nil {
-            return nil, err
-        }
-        return stations, nil
-    }
-\end{lstlisting}
+%%\begin{lstlisting}[label=list:service_read_station_FindByLocation,caption=Serwis wyszukiwania stacji ładowania według współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    %%func (s *StationService) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
+        %%st, err := s.storage.Station().FindByLocation(getLatitude(latitude), getLongitude(longitude))
+        %%if err != nil {
+            %%return nil, err
+        %%}
+        %%return st, nil
+    %%}
+%%\end{lstlisting}
+%%\begin{lstlisting}[label=list:repo_read_station_FindByLocation,caption=Wyszukiwanie stacji ładowania w bazie danych współrzędnych pozycji na mapie Ziemi,basicstyle=\tiny\ttfamily]
+    %%func (r *StationRepository) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
+        %%filter := bson.M{"latitude": latitude, "longitude": longitude}
+        %%res := r.col.FindOne(context.TODO(), filter)
+        %%s := &models.Station{}
+        %%err := res.Decode(s)
+        %%if err != nil {
+            %%return nil, utils.ErrRecordNotFound
+        %%}
+        %%return s, nil
+    %%}
+%%\end{lstlisting}
+%%\begin{lstlisting}[label=list:service_read_station_Read,caption=Serwis wczytania listy kolejnych stacji ładowania,basicstyle=\tiny\ttfamily]
+    %%func (s *StationService) Read(skip int, limit int) ([]models.Station, error) {
+        %%st, err := s.storage.Station().Read(skip, limit)
+        %%if err != nil {
+            %%return nil, err
+        %%}
+        %%return st, nil
+    %%}
+%%\end{lstlisting}
+%%\begin{lstlisting}[label=list:repo_read_station_Read,caption=Wczytanie listy kolejnych stacji ładowania z bazy danych,basicstyle=\tiny\ttfamily]
+    %%func (r *StationRepository) Read(skip int, limit int) ([]models.Station, error) {
+        %%cursor, err := r.col.Aggregate(
+            %%context.TODO(),
+            %%mongo.Pipeline{
+                %%bson.D{{"$skip", skip}},
+                %%bson.D{{"$limit", limit}},
+            %%})
+        %%if err != nil {
+            %%return nil, err
+        %%}
+        %%stations := []models.Station{}
+        %%err = cursor.All(context.TODO(), &stations)
+        %%if err != nil {
+            %%return nil, err
+        %%}
+        %%return stations, nil
+    %%}
+%%\end{lstlisting}
 
 Dla wyszukiwania listy stacji ładowania w pobliżu podanych współrzędnych na mapie Ziemi należy wykorzystać wzór obliczający długość łuku (${L = \alpha R}$, gdzie L - długość łuku w kilometrach, ${\alpha}$ - kąt, R - promień Ziemi (6378 km.)) do przekształcenia kilometrów w stopni kąta (${\alpha = L/R*180/\pi}$). To przekształcenie zachodzi w metodzie \texttt{getRadius()} (listing \ref{list:get_radius}).
 \begin{lstlisting}[label=list:get_radius,caption=Obliczenie dystansu przeszukiwania,basicstyle=\tiny\ttfamily]
@@ -1220,6 +1222,8 @@ Przykład ciała zapytania:
 Router przekieruje zapytanie, po przechodzeniu autentykacji, do metody kontrolera \texttt{CreateComment()} (plik \texttt{controllers/api/v1/commentcontroller.go}), w której zachodzi otrzymanie niezbędnych danych z adresu URL oraz zaczyna się część biznesowa w metodzie \texttt{CreateComment()} (listing \ref{list:service_comment_create}) (plik \texttt{services/api/v1/commentservice.go}).
 W tym serwisie zachodzi walidacja (\texttt{Validation()} (listing \ref{list:validate_comment})), dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create} (listing \ref{list:repo_comment_create})) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
 Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszystkich komentarzy, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametru \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb)) żeby zmniejszyć czas oczekiwania użytkownika.
+
+
 \begin{lstlisting}[label=list:service_comment_create,caption=Serwis tworzenia komentarza,basicstyle=\tiny\ttfamily]
     func (s *CommentService) CreateComment(sid string, c *models.Comment) (*models.Comment, error) {
         if err := c.Validate(); err != nil {
@@ -1274,49 +1278,53 @@ Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą par
         return c.ID, nil
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:update_rating,caption=Aktualizacja oceny stacji,basicstyle=\tiny\ttfamily]
-    func (r *StationRepository) UpdateRaitingByID(id string) error {
-        idi, err := primitive.ObjectIDFromHex(id)
-        filter := bson.M{"_id": idi}
-        avg := bson.D{{
-            "$set", bson.M{
-                "rating": bson.M{
-                    "$divide": []interface{}{
-                        bson.M{
-                            "$reduce": bson.M{
-                                "input":        "$comments",
-                                "initialValue": 0,
-                                "in":           bson.M{"$add": []interface{}{"$$value", "$$this.rating"}},
-                            },
-                        },
-                        bson.M{
-                            "$cond": []interface{}{
-                                bson.M{"$ne": []interface{}{bson.M{"$size": "$comments"}, 0}},
-                                bson.M{"$size": "$comments"},
-                                1,
-                            },
-                        },
-                    },
-                },
-            },
-        }}
-        _, err = r.col.UpdateOne(
-            context.TODO(),
-            filter,
-            mongo.Pipeline{avg})
-        return err
-    }
-\end{lstlisting}
-\begin{lstlisting}[label=list:validate_comment,caption=Walidacja danych komentarza przed tworzeniam,basicstyle=\tiny\ttfamily]
-    func (c *Comment) Validate() error {
-        return validation.ValidateStruct(
-            c,
-            validation.Field(&c.UserName, validation.Required, validation.Length(2, 100)),
-            validation.Field(&c.UserID, validation.Required, validation.Length(20, 30)),
-            validation.Field(&c.Text, validation.Required, validation.Length(8, 256)),
-        )
-    }
-\end{lstlisting}
+
+% TO DO: Proszę napisać, że podobnie zaimplementowano inne metody: UpdateRaitingByID, .....
+% TO DO: listingów proszę już nie pokazywać
+
+%%%\begin{lstlisting}[label=list:update_rating,caption=Aktualizacja oceny stacji,basicstyle=\tiny\ttfamily]
+    %%%func (r *StationRepository) UpdateRaitingByID(id string) error {
+        %%%idi, err := primitive.ObjectIDFromHex(id)
+        %%%filter := bson.M{"_id": idi}
+        %%%avg := bson.D{{
+            %%%"$set", bson.M{
+                %%%"rating": bson.M{
+                    %%%"$divide": []interface{}{
+                        %%%bson.M{
+                            %%%"$reduce": bson.M{
+                                %%%"input":        "$comments",
+                                %%%"initialValue": 0,
+                                %%%"in":           bson.M{"$add": []interface{}{"$$value", "$$this.rating"}},
+                            %%%},
+                        %%%},
+                        %%%bson.M{
+                            %%%"$cond": []interface{}{
+                                %%%bson.M{"$ne": []interface{}{bson.M{"$size": "$comments"}, 0}},
+                                %%%bson.M{"$size": "$comments"},
+                                %%%1,
+                            %%%},
+                        %%%},
+                    %%%},
+                %%%},
+            %%%},
+        %%%}}
+        %%%_, err = r.col.UpdateOne(
+            %%%context.TODO(),
+            %%%filter,
+            %%%mongo.Pipeline{avg})
+        %%%return err
+    %%%}
+%%%\end{lstlisting}
+%%%\begin{lstlisting}[label=list:validate_comment,caption=Walidacja danych komentarza przed tworzeniam,basicstyle=\tiny\ttfamily]
+    %%%func (c *Comment) Validate() error {
+        %%%return validation.ValidateStruct(
+            %%%c,
+            %%%validation.Field(&c.UserName, validation.Required, validation.Length(2, 100)),
+            %%%validation.Field(&c.UserID, validation.Required, validation.Length(20, 30)),
+            %%%validation.Field(&c.Text, validation.Required, validation.Length(8, 256)),
+        %%%)
+    %%%}
+%%%\end{lstlisting}
 
 \paragraph{Wczytywanie\newline}
 Do wczytywania danych konkretnego komentarza został zaimplementowany endpoint \url{api/v1/stations/{sid}/comments/{id}}. Jako \texttt{sid} używa się \texttt{id} stacji, do której należy komentarz, jako \texttt{id} używa się \texttt{id} komentarza.
@@ -1423,10 +1431,13 @@ Zawartość znaczących katalogów i plików:
     </manifest>
 \end{lstlisting}
 
-\paragraph{Modeli danych:} \texttt{User} (listing \ref{list:user_class}), \texttt{Station} (listing \ref{list:station_class}), \texttt{Comment} (listing \ref{list:comment_class}). W listingach komentarz \texttt{// GETTERS and SETTERS} pokazuje, że w kodzie programu tym miejscu znajdują się proste metody do zapisu i wczytania pól klasy.
+ 
+\paragraph{Modele danych:} \texttt{User} (listing \ref{list:user_class}), \texttt{Station} (listing \ref{list:station_class}), \texttt{Comment} (listing \ref{list:comment_class}). W listingach komentarz \texttt{// GETTERS and SETTERS} pokazuje, że w kodzie programu tym miejscu znajdują się proste metody do zapisu i wczytania pól klasy.
 Adnotacja \texttt{@SerializedName} ustala nazwę do dekodowania do formatu JSON i na odwrót.
 
 % TO DO: za dużo listingów !!!!! Wystarczy pokazać przykład mapowania na jednym modelu, a potem powiedzieć, że dla pozostałych jest podobnie.
+% TO DO: UWAGA POWYŻEJ NIE ZOSTAŁA UWZGLĘNIONA
+% TO DO: Powtarzam: w pracy jest za dużo listingów. Nie można przcież kopiować całego kodu!!!!! Wystarczy napisać, że zamodelowano takie a takie klasy, że na listingu pokazano klasę przyładową (np. User). Można też pokazać diagram klas UML z wszystkimi klasami. !!!!!
 
 \begin{lstlisting}[label=list:user_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java},basicstyle=\tiny\ttfamily]
     public class User {
@@ -1455,81 +1466,86 @@ Adnotacja \texttt{@SerializedName} ustala nazwę do dekodowania do formatu JSON 
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:station_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/StationApi.java},basicstyle=\tiny\ttfamily]
-    public class Station {
-        @SerializedName("_id")
-        private String id;
-        @SerializedName("owner_id")
-        private String ownerID;
-        @SerializedName("description")
-        private String description;
-        @SerializedName("station_name")
-        private String stationName;
-        @SerializedName("latitude")
-        private double latitude;
-        @SerializedName("longitude")
-        private double longitude;
-        @SerializedName("update_at")
-        private String updateAt;
-        @SerializedName("rating")
-        private float rating;
-        @SerializedName("comments")
-        private ArrayList<Comment> comments;
-    
-        public Station() {
-        }
-    
-        public Station(String id, String ownerID, String description, String stationName, double latitude, double longitude, String updateAt, float rating, ArrayList<Comment> comments) {
-            this.id = id;
-            this.ownerID = ownerID;
-            this.description = description;
-            this.stationName = stationName;
-            this.latitude = latitude;
-            this.longitude = longitude;
-            this.updateAt = updateAt;
-            this.rating = rating;
-            this.comments = comments;
-        }
-        // GETTERS and SETTERS
-    }
-\end{lstlisting}
+%%%\begin{lstlisting}[label=list:station_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/StationApi.java},basicstyle=\tiny\ttfamily]
+    %%%public class Station {
+        %%%@SerializedName("_id")
+        %%%private String id;
+        %%%@SerializedName("owner_id")
+        %%%private String ownerID;
+        %%%@SerializedName("description")
+        %%%private String description;
+        %%%@SerializedName("station_name")
+        %%%private String stationName;
+        %%%@SerializedName("latitude")
+        %%%private double latitude;
+        %%%@SerializedName("longitude")
+        %%%private double longitude;
+        %%%@SerializedName("update_at")
+        %%%private String updateAt;
+        %%%@SerializedName("rating")
+        %%%private float rating;
+        %%%@SerializedName("comments")
+        %%%private ArrayList<Comment> comments;
+    %%%
+        %%%public Station() {
+        %%%}
+    %%%
+        %%%public Station(String id, String ownerID, String description, String stationName, double latitude, double longitude, String updateAt, float rating, ArrayList<Comment> comments) {
+            %%%this.id = id;
+            %%%this.ownerID = ownerID;
+            %%%this.description = description;
+            %%%this.stationName = stationName;
+            %%%this.latitude = latitude;
+            %%%this.longitude = longitude;
+            %%%this.updateAt = updateAt;
+            %%%this.rating = rating;
+            %%%this.comments = comments;
+        %%%}
+        %%%// GETTERS and SETTERS
+    %%%}
+%%%\end{lstlisting}
+%%%
+%%%\begin{lstlisting}[label=list:comment_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/CommentApi.java},basicstyle=\tiny\ttfamily]
+    %%%public class Comment {
+        %%%@SerializedName("_id")
+        %%%private String id;
+        %%%@SerializedName("user_id")
+        %%%private String userID;
+        %%%@SerializedName("user_name")
+        %%%private String userName;
+        %%%@SerializedName("text")
+        %%%private String text;
+        %%%@SerializedName("rating")
+        %%%private float rating;
+        %%%@SerializedName("create_at")
+        %%%private String createAt;
+        %%%@SerializedName("update_at")
+        %%%private String updateAt;
+    %%%
+        %%%public Comment() {
+        %%%}
+    %%%
+        %%%public Comment(String id, String userID, String userName, String text, float raiting, String createAt, String updateAt) {
+            %%%this.id = id;
+            %%%this.userID = userID;
+            %%%this.userName = userName;
+            %%%this.text = text;
+            %%%this.rating = raiting;
+            %%%this.createAt = createAt;
+            %%%this.updateAt = updateAt;
+        %%%}
+        %%%// GETTERS and SETTERS
+    %%%}
+%%%\end{lstlisting}
 
-\begin{lstlisting}[label=list:comment_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/CommentApi.java},basicstyle=\tiny\ttfamily]
-    public class Comment {
-        @SerializedName("_id")
-        private String id;
-        @SerializedName("user_id")
-        private String userID;
-        @SerializedName("user_name")
-        private String userName;
-        @SerializedName("text")
-        private String text;
-        @SerializedName("rating")
-        private float rating;
-        @SerializedName("create_at")
-        private String createAt;
-        @SerializedName("update_at")
-        private String updateAt;
-    
-        public Comment() {
-        }
-    
-        public Comment(String id, String userID, String userName, String text, float raiting, String createAt, String updateAt) {
-            this.id = id;
-            this.userID = userID;
-            this.userName = userName;
-            this.text = text;
-            this.rating = raiting;
-            this.createAt = createAt;
-            this.updateAt = updateAt;
-        }
-        // GETTERS and SETTERS
-    }
-\end{lstlisting}
+\paragraph{API:} 
+Zaimplementowane API podzielono na trzy części: \texttt{UserApi}, % (listing \ref{list:android_api_user}), 
+\texttt{StationApi}, % (listing \ref{list:android_api_station}), 
+\texttt{CommentApi}. %(listing \ref{list:android_api_comment}) 
+Metody API służą do komunikacji z częścią serwerową.
 
-\paragraph{API:} \texttt{UserApi} (listing \ref{list:android_api_user}), \texttt{StationApi} (listing \ref{list:android_api_station}), \texttt{CommentApi} (listing \ref{list:android_api_comment}) są interfejsami do komunikacji przez interfejsy programistyczne z częścią serwerową.
-Adnotacje \texttt{POST}, \texttt{PUT}, \texttt{GET}, \texttt{DELETE} wskazują na to, którą metodą należy wysłać zapytania odpowiedni url do części serwerowej.
-Adnotacja \texttt{Body} umieszcza dane do ciała zapytania. Adnotacja \texttt{Path} umieszcza dane jako część adresu URL. Adnotacja \texttt{Query} umieszcza dane jako odpowiednie parametry w adresie URL.
+Zastosowany framework pozwala na zadeklarowanie metod protokołu HTTP  \texttt{POST}, \texttt{PUT}, \texttt{GET}, \texttt{DELETE} obsługiwanych w danej metodzie interfejsu na danym adresie URL poprzez zastosowanie adnotacji. Adnotacja \texttt{Body} pozwala na zadeklarowanie zamieszczenia danych w ciele zapytania. Adnotacja \texttt{Path} mówi, że dane ukryte są w adresie URL. Adnotacja \texttt{Query} mówi, że dane przekazane są jako parametry w adresie URL. Na listingu~\ref{list:android_api_user} pokazano przykład implementacji \texttt{UserAPI}.
+
 \begin{lstlisting}[label=list:android_api_user,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java},basicstyle=\tiny\ttfamily]
     public interface UserApi {
         @POST("users")
@@ -1543,56 +1559,58 @@ Adnotacja \texttt{Body} umieszcza dane do ciała zapytania. Adnotacja \texttt{Pa
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:android_api_station,caption=Plik \texttt{main/java/com/example/testapp/api/api/StationApi.java},basicstyle=\tiny\ttfamily]
-    public interface StationApi {
+% TO DO: proszę stworzyć tabelkę z opisem api: metoda http, endpoint(url), opis
 
-        @POST("stations")
-        public Single<Response<Station>> createStation(@Body Station station);
-    
-        @GET("stations/read")
-        public Single<Response<List<Station>>> readStationsByLatAndLngAndDist(@Query("skip") int skip, @Query("limit") int limit, @Query("lat") double lat, @Query("lng") double lng, @Query("dist") int dist);
-    
-        @GET("stations/read")
-        public Single<Response<Station>> readStationsByLatAndLng(@Query("skip") int skip, @Query("limit") int limit, @Query("lat") double lat, @Query("lng") double lng);
-    
-        @GET("stations/read")
-        public Single<Response<List<Station>>> readStationsByDescription(@Query("skip") int skip, @Query("limit") int limit, @Query("descr") String descr);
-    
-        @GET("stations/read")
-        public Single<Response<List<Station>>> readStationsByName(@Query("skip") int skip, @Query("limit") int limit, @Query("name") String name);
-    
-        @GET("stations/read")
-        public Single<Response<List<Station>>> readStations(@Query("skip") int skip, @Query("limit") int limit);
-    
-        @GET("stations/{id}")
-        public Single<Response<Station>> findById(@Path("id") String id);
-    
-        @PUT("stations/{id}")
-        public Single<Response<Station>> updateById(@Path("id") String id, @Query("ownid") String ownid, @Body Station station);
-    
-        @DELETE("stations/{id}")
-        public Single<ResponseBody> deleteById(@Path("id") String id);
-    }
-\end{lstlisting}
-
-\begin{lstlisting}[label=list:android_api_comment,caption=Plik \texttt{main/java/com/example/testapp/api/api/CommentApi.java},basicstyle=\tiny\ttfamily]
-    public interface CommentApi {
-        @POST("stations/\{sid\}/comments")
-        public Single<Response<Comment>> createComment(@Path("sid") String sid, @Body Comment comment);
-    
-        @GET("stations/\{sid\}/comments/read")
-        public Single<Response<List<Comment>>> readComments(@Path("sid") String sid, @Query("skip") int skip, @Query("limit") int limit);
-    
-        @GET("stations/\{sid\}/comments/{id}")
-        public Single<Response<Comment>> findById(@Path("sid") String sid, @Path("id") String id);
-    
-        @PUT("stations/\{sid\}/comments/{id}")
-        public Single<Response<Comment>> updateById(@Path("sid") String sid, @Path("id") String id, @Body Comment comment);
-    
-        @DELETE("stations/\{sid\}/comments/{id}")
-        public Single<ResponseBody> deleteById(@Path("sid") String sid, @Path("id") String id);
-    }
-\end{lstlisting}
+%%%\begin{lstlisting}[label=list:android_api_station,caption=Plik \texttt{main/java/com/example/testapp/api/api/StationApi.java},basicstyle=\tiny\ttfamily]
+    %%%public interface StationApi {
+%%%
+        %%%@POST("stations")
+        %%%public Single<Response<Station>> createStation(@Body Station station);
+    %%%
+        %%%@GET("stations/read")
+        %%%public Single<Response<List<Station>>> readStationsByLatAndLngAndDist(@Query("skip") int skip, @Query("limit") int limit, @Query("lat") double lat, @Query("lng") double lng, @Query("dist") int dist);
+    %%%
+        %%%@GET("stations/read")
+        %%%public Single<Response<Station>> readStationsByLatAndLng(@Query("skip") int skip, @Query("limit") int limit, @Query("lat") double lat, @Query("lng") double lng);
+    %%%
+        %%%@GET("stations/read")
+        %%%public Single<Response<List<Station>>> readStationsByDescription(@Query("skip") int skip, @Query("limit") int limit, @Query("descr") String descr);
+    %%%
+        %%%@GET("stations/read")
+        %%%public Single<Response<List<Station>>> readStationsByName(@Query("skip") int skip, @Query("limit") int limit, @Query("name") String name);
+    %%%
+        %%%@GET("stations/read")
+        %%%public Single<Response<List<Station>>> readStations(@Query("skip") int skip, @Query("limit") int limit);
+    %%%
+        %%%@GET("stations/{id}")
+        %%%public Single<Response<Station>> findById(@Path("id") String id);
+    %%%
+        %%%@PUT("stations/{id}")
+        %%%public Single<Response<Station>> updateById(@Path("id") String id, @Query("ownid") String ownid, @Body Station station);
+    %%%
+        %%%@DELETE("stations/{id}")
+        %%%public Single<ResponseBody> deleteById(@Path("id") String id);
+    %%%}
+%%%\end{lstlisting}
+%%%
+%%%\begin{lstlisting}[label=list:android_api_comment,caption=Plik \texttt{main/java/com/example/testapp/api/api/CommentApi.java},basicstyle=\tiny\ttfamily]
+    %%%public interface CommentApi {
+        %%%@POST("stations/\{sid\}/comments")
+        %%%public Single<Response<Comment>> createComment(@Path("sid") String sid, @Body Comment comment);
+    %%%
+        %%%@GET("stations/\{sid\}/comments/read")
+        %%%public Single<Response<List<Comment>>> readComments(@Path("sid") String sid, @Query("skip") int skip, @Query("limit") int limit);
+    %%%
+        %%%@GET("stations/\{sid\}/comments/{id}")
+        %%%public Single<Response<Comment>> findById(@Path("sid") String sid, @Path("id") String id);
+    %%%
+        %%%@PUT("stations/\{sid\}/comments/{id}")
+        %%%public Single<Response<Comment>> updateById(@Path("sid") String sid, @Path("id") String id, @Body Comment comment);
+    %%%
+        %%%@DELETE("stations/\{sid\}/comments/{id}")
+        %%%public Single<ResponseBody> deleteById(@Path("sid") String sid, @Path("id") String id);
+    %%%}
+%%%\end{lstlisting}
 
 \subsubsection{Komunikacja z częścią serwerową}
 Sposób komunikacji z częścią serwerową oraz etapy pośrednicze (zostały zdefiniowane w metodzie \texttt{createOkHttpClient()}), w których zachodzi dodawanie nagłówka oraz pisanie logów zapytań i odpowiedzi, został opisany w klasie \texttt{ElchargeService} (listing \ref{list:android_elchargeservice}). Został użyty HTTP klient \texttt{OkHttp3} oraz jego opakowanie \texttt{Retrofit2}.
