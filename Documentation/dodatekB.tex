@@ -1,4 +1,5 @@
 \chapter{Wdrożenie aplikacji}
+\section{Wdrożenie części serwerowej}
 \paragraph{RestAPI}
 % Для развертывая серверной части вместе с базами данных MongoDB и Redis достаточно двух комманд.
 % Должны быть установлены docker и docker-compose.
@@ -69,3 +70,8 @@ Plik Dockerfile \ref{list:dockerfile} jest używany do etapów instalacji zależ
 \end{lstlisting}
 
 Plikiem konfiguracyjnym aplikacji, w przypadku używania dockera jest plik \texttt{RestAPI/deploy/apiserver.yaml}.
+
+
+\section{Instalacja i uruchomienie aplikacji mobilnej}
+Najpierw trzeba skopiować plik \texttt{elCharge.apk} do urządzenia z systemem Android, znaleźć ten plik, otworzyć (kliknąć na niego) oraz zgodzić się na instalację.
+Uruchomić aplikację \texttt{TestApp}.
