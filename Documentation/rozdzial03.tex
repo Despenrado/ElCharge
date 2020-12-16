@@ -225,7 +225,7 @@ Plik musi być typu \texttt{yaml}. Za pomocą biblioteki \texttt{yaml.v2} ten pl
     jwtKey: 21d5680b6a
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:config_restapi,caption=Klasa konfiguracyjna części serwerowej,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:config_restapi,caption=Klasa konfiguracyjna części serwerowej.,basicstyle=\tiny\ttfamily]
     type Config struct {
         BindAddr            string `yaml:"bind_addr"`
         DatabaseURL         string `yaml:"database_url"`
@@ -237,7 +237,7 @@ Plik musi być typu \texttt{yaml}. Za pomocą biblioteki \texttt{yaml.v2} ten pl
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:config_restapi_new,caption=Wczytanie pliku konfiguracyjnego części serwerowej,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:config_restapi_new,caption=Wczytanie pliku konfiguracyjnego części serwerowej.,basicstyle=\tiny\ttfamily]
     func NewConfig(path string) (*Config, error) {
         configFile, err := ioutil.ReadFile(path)
         if err != nil {
@@ -316,7 +316,7 @@ W tabeli \ref{tab:endpoints} przedstawiony spis endpointów razem z metodą ich 
 Kodem \ref{list:routers} została przedstawiona implementacja endpointów.
 Dla rejestracji połączeń wchodzących zostały użyte metody medialne: \texttt{s.logger.SetRequestID}, do przeznaczenia id każdemu połączeniu ,oraz \texttt{s.logger.LogRequest}, do wypisywania tego do konsoli.
 Dla większości przypadków też jest sprawdzano czy jest użytkownik zalogowany do systemu \texttt{s.authController.CheckToken}. To będzie wyjaśnione później (sekcja \ref{sec:autentykacja}).
-\begin{lstlisting}[label=list:routers,caption=Implementacja punktów końcowych,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:routers,caption=Implementacja punktów końcowych.,basicstyle=\tiny\ttfamily]
     func (s *Server) SetupRouters() *mux.Router {
         v1 := "/api/v1"
         s.router.Schemes("http")
@@ -361,7 +361,7 @@ W tej sekcji są opisane implementacje endpointów części serwerowej.
 Użytkownik jest niezbędny w pierwszej kolejności do uwierzytelniania. Niektóre dane użytkownika też są używane do rozumienia do kogo należy stacja ładownicza lub komentarz.
 
 W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajduje się w pliku \texttt{models/user}.
-\begin{lstlisting}[label=list:user_model,caption=Model danych użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_model,caption=Model danych użytkownika.,basicstyle=\tiny\ttfamily]
     type User struct {
         ID       string `bson:"_id,omitempty" json:"_id,omitempty"`
         UserName string `bson:"user_name,omitempty" json:"user_name,omitempty"`
@@ -388,7 +388,7 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 
 % Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera \texttt{CreateUser()} (listing \ref{list:user_controller_create}), w którym zaczyna się obróbka biznesowa zapytania.
 % W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody serwisu \texttt{CreateUser()} (listing \ref{list:user_service_create}). Po otrzymaniu danych z serwisu jest wysyłana odpowiedź.
-% \begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+% \begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika.,basicstyle=\tiny\ttfamily]
 %     func (c *UserController) CreateUser() http.HandlerFunc {
 %         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 %             u := &models.User{}
@@ -416,7 +416,7 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 %     \item przygotowanie obiektu użytkownika do transmisji: usuwanie hasła i daty tworzenia dla bezpieczeństwa oraz szybkości transmisji danych.
 % \end{itemize}
 % Ta metoda znajduje się w pliku \texttt{services/v1/userservice.go}.
-% \begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+% \begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika.,basicstyle=\tiny\ttfamily]
 %     func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
 %         if err := u.Validate(); err != nil {
 %             return u, err
@@ -446,7 +446,7 @@ W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz
 
 % Metoda \texttt{Create()} (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
 % Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
-% \begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
+% \begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych.,basicstyle=\tiny\ttfamily]
 %     func (r *UserRepository) Create(u *models.User) (string, error) {
 %         res, err := r.col.InsertOne(context.TODO(), u)
 %         if err != nil {
@@ -467,7 +467,7 @@ Zwraca JSON obiekt znalezionego użytkownika.
 
 Za pomocą routera jest realizowane przekierowanie z URL do wywołania metody kontrolera użytkownika \texttt{FindByID()} (listing \ref{list:user_controller_findbyid}), która zaczyna obróbkę biznesową zapytania.
 W tej metodzie jest wywoływana metoda serwisu \texttt{FindByID()} (listing \ref{list:user_service_findbyid}). Później jest wysyłana odpowiedź.
-\begin{lstlisting}[label=list:user_controller_findbyid,caption=Kontroler wczytywania użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_controller_findbyid,caption=Kontroler wczytywania użytkownika.,basicstyle=\tiny\ttfamily]
     func (c *UserController) FindByID() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             params := mux.Vars(r)
@@ -487,7 +487,7 @@ W tej metodzie jest wywoływana metoda serwisu \texttt{FindByID()} (listing \ref
 \end{lstlisting}
 % 
 Metoda \texttt{FindByID()} (listing \ref{list:user_service_findbyid}) z pliku \texttt{services/v1/userservice.go}:
-\begin{lstlisting}[label=list:user_service_findbyid,caption=Serwis wczytywania użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_service_findbyid,caption=Serwis wczytywania użytkownika.,basicstyle=\tiny\ttfamily]
     func (s *UserService) FindByID(id string) (*models.User, error) {
         u, err := s.storage.User().FindByID(id)
         if err != nil {
@@ -500,7 +500,7 @@ Metoda \texttt{FindByID()} (listing \ref{list:user_service_findbyid}) z pliku \t
 % 
 Metoda \texttt{FindByID()} (listing \ref{list:user_repository_findbyid}) wyszukuje użytkownika z pewnym ID w bazie danych.
 Ona znajduję się w pliku \texttt{storage/mongostore/userrepository.go}.
-\begin{lstlisting}[label=list:user_repository_findbyid,caption=Wczytywanie uzytkownika z bazy danych,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_repository_findbyid,caption=Wczytywanie uzytkownika z bazy danych.,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) FindByID(id string) (*models.User, error) {
         idi, err := primitive.ObjectIDFromHex(id)
         if err != nil {
@@ -564,7 +564,7 @@ Dla zalogowania należy wysłać metodą POST zapytanie na endpoint \url{api/v1/
 
 Mapowanie routera przekieruje to zapytanie do metody \texttt{Login()}, która znajduje się w~\texttt{controllers/api/authcontroller.go} (listing \ref{list:authcontroller_login}).
 W tej metodzie, po znalezieniu użytkownika o takim adresie mailowym i haśle, jest generowany token JWT (listing \ref{list:get_jwt_token}) i wysyła się odpowiedź zawierająca nagłówek z tokenem oraz ciało z danymi użytkownika.
-\begin{lstlisting}[label=list:authcontroller_login,caption=Kontroller logowania użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:authcontroller_login,caption=Kontroller logowania użytkownika.,basicstyle=\tiny\ttfamily]
     func (c *AuthController) Login() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             u := &models.User{}
@@ -589,7 +589,7 @@ W tej metodzie, po znalezieniu użytkownika o takim adresie mailowym i haśle, j
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:get_jwt_token,caption=Generacja JWT tokena,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:get_jwt_token,caption=Generacja JWT tokena.,basicstyle=\tiny\ttfamily]
     func (c *AuthController) createTokenString(uid string) (string, error) {
         expirationTime := time.Now().Add(168 * time.Hour)
         claims := &Claims{
@@ -609,7 +609,7 @@ W tej metodzie, po znalezieniu użytkownika o takim adresie mailowym i haśle, j
 
 Dla wyszukiwania użytkownika o podanym adresie mailowym i haśle jest używana metoda \texttt{Login} (listing \ref{list:userservice_login}), znajdująca się w \texttt{serwices/api/v1/userservice.go},
 która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe są unikalne) za pomocą metody \texttt{FindByEmal()} (listing \ref{list:userrepository_findbyemail}) z pliku \texttt{storage/mongostore/userrepository.go} i porównuje hashowane hasło, pobrane z bazy danych, z nie haszowanym, z zapytania (listing \ref{list:validate_password}).
-\begin{lstlisting}[label=list:userservice_login,caption=Serwis logowania użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:userservice_login,caption=Serwis logowania użytkownika.,basicstyle=\tiny\ttfamily]
     func (s *UserService) Login(u *models.User) (*models.User, error) {
         if err := u.Validate(); err != nil {
             return nil, err
@@ -626,7 +626,7 @@ która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe s
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:userrepository_findbyemail,caption=Wysukiwanie użytkownika w bazie po adresie mailowym,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:userrepository_findbyemail,caption=Wysukiwanie użytkownika w bazie po adresie mailowym.,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) FindByEmail(email string) (*models.User, error) {
         filter := bson.M{"email": email}
         res := r.col.FindOne(context.TODO(), filter)
@@ -639,7 +639,7 @@ która wyszukuje w bazie danych użytkownika o podanym adresie (adresy mailowe s
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:validate_password,caption=Porównywanie hasła,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:validate_password,caption=Porównywanie hasła.,basicstyle=\tiny\ttfamily]
     func (u *User) VerifyPassword(p string) bool {
         return bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(p)) == nil
     }
@@ -657,7 +657,7 @@ Aby zarejestrować nowego użytkownika, należy wysłać zapytanie POST na adres
 
 Dalej zostanie wykonana metoda \texttt{CreateUser()} z pliku \texttt{controllers/api/v1/authcontroller.go} (listing \ref{list:user_controller_create}).
 W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSON, i przekazane do metody \texttt{CreateUser()} (listing \ref{list:user_service_create}), która znajduje się w pliku \texttt{services/api/v1/userservice.go}. Po otrzymaniu danych z tego serwisu tworzy się token oraz wysyłana odpowiedź, która zawiera wygenerowany token i dane utworzonego użytkownika.
-\begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_controller_create,caption=Kontroler tworzenia użytkownika.,basicstyle=\tiny\ttfamily]
     func (c *UserController) CreateUser() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             u := &models.User{}
@@ -687,7 +687,7 @@ W metodzie \texttt{CreateUser()} warstwy serwisów (listing \ref{list:user_servi
 Ta metoda znajduje się w pliku \texttt{services/api/v1/userservice.go}.
 
 
-\begin{lstlisting}[label=list:user_validate,caption=Walidacja danych użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_validate,caption=Walidacja danych użytkownika.,basicstyle=\tiny\ttfamily]
     func (u *User) Validate() error {
         return validation.ValidateStruct(
             u,
@@ -697,7 +697,7 @@ Ta metoda znajduje się w pliku \texttt{services/api/v1/userservice.go}.
         )
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_service_create,caption=Serwis tworzenia użytkownika.,basicstyle=\tiny\ttfamily]
     func (s *UserService) CreateUser(u *models.User) (*models.User, error) {
         if err := u.Validate(); err != nil {
             return u, err
@@ -724,7 +724,7 @@ Ta metoda znajduje się w pliku \texttt{services/api/v1/userservice.go}.
         return u, nil
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:hash_pass,caption=Haszowanie hasła,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:hash_pass,caption=Haszowanie hasła.,basicstyle=\tiny\ttfamily]
     func EncryptString(str string) (string, error) {
         b, err := bcrypt.GenerateFromPassword([]byte(str), bcrypt.MinCost)
         if err != nil {
@@ -736,7 +736,7 @@ Ta metoda znajduje się w pliku \texttt{services/api/v1/userservice.go}.
 
 Metoda \texttt{Create()} (listing \ref{list:user_repository_create}) tworzy zapis nowego użytkownika w bazie danych i zwraca jego ID.
 Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
-\begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_repository_create,caption=Zachowanie użytkownika do bazy danych.,basicstyle=\tiny\ttfamily]
     func (r *UserRepository) Create(u *models.User) (string, error) {
         res, err := r.col.InsertOne(context.TODO(), u)
         if err != nil {
@@ -751,7 +751,7 @@ Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 Większość, jak juz zostało powiedziano, endpointów pracują tylko z uwierzytelnionymi użytkownikami. Dla realizacji tej funkcji należy sprawdzić token, który zawiera się w nagłówku zapytania.
 Token musi nie tylko nie stracić ważności, ale i nie znajdować się w czarnej liście tokenów, która znajduje się Redis, bazie danych wykonującej rolę pamięci podręcznej.
 Metoda \texttt{CheckToken()} sprawdza te rzeczy (listing \ref{list:CheckToken}). Ta metoda jest metodą medialną, więc jest wywołana przed przekierowaniem poprzez router do warstwy kontrolerów. Dla komunikacji z bazą danych Redis została wykorzystana metoda \texttt{redis.Client.Get(sting)}, która pobiera dane.
-\begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokena,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokena.,basicstyle=\tiny\ttfamily]
     func (c *AuthController) CheckToken(next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             tokenString := r.Header.Get("Authorization")
@@ -788,7 +788,7 @@ Metoda \texttt{CheckToken()} sprawdza te rzeczy (listing \ref{list:CheckToken}).
 
 \paragraph{Wylogowanie\newline}
 Po wysłaniu zapytania GET na adres \url{api/v1/logout} zostanie wywoływana metoda \texttt{Logout()} (listing \ref{list:logout}) podczas działania której zostanie sprawdzony token (listing \ref{list:CheckToken}), za tym dodany do bazy danych Redis (pamięci podręcznej) oraz usunięty z nagłówka odpowiedzi.
-\begin{lstlisting}[label=list:logout,caption=Wylogowanie,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:logout,caption=Wylogowanie.,basicstyle=\tiny\ttfamily]
     func (c *AuthController) Logout() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             tokenString := r.Header.Get("Authorization")
@@ -838,7 +838,7 @@ Po wysłaniu zapytania GET na adres \url{api/v1/logout} zostanie wywoływana met
 Głównym modelem w aplikacji jest stacja ładująca pojazdy elektryczne. Aplikacja została stworzona, aby uzyskiwać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może też modyfikować.
 
 W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowania, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user.go}.
-\begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowania,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowania.,basicstyle=\tiny\ttfamily]
     type Station struct {
         ID          string    `bson:"_id,omitempty" json:"_id,omitempty"`
         StationName string    `bson:"station_name,omitempty" json:"station_name,omitempty"`
@@ -869,7 +869,7 @@ Router przekieruje, po przechodzeniu przez funkcje medialne (w tym sprawdzenie J
 Ta metoda wywołuje serwis \texttt{CreateStation()}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create()} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z bazy danych ten dokument i wysyła się jako ciało odpowiedź.
 Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych (listing \ref{list:validation_station}) oraz uzupełnienie niektórych niezbędnych pól (listing \ref{list:before_create_station}), na przykład czasu tworzenia i ostatniej modyfikacji.
 
-\begin{lstlisting}[label=list:validation_station,caption=Walidacja danych stacji ładowania,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:validation_station,caption=Walidacja danych stacji ładowania.,basicstyle=\tiny\ttfamily]
     func (s *Station) Validate() error {
         return validation.ValidateStruct(
             s,
@@ -884,7 +884,7 @@ Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych (listing \ref{li
     }
 \end{lstlisting}
 
-\begin{lstlisting}[label=list:before_create_station,caption=Uzupełnienie danych systemowych dotyczących,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:before_create_station,caption=Uzupełnienie danych systemowych dotyczących.,basicstyle=\tiny\ttfamily]
     func (s *Station) BeforeCreate() error {
         s.Model.BeforeCreate()
         s.Rating = 0
@@ -934,7 +934,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
     \item \texttt{skip} razem z \texttt{limit} -- bedzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()}, która wywołuje metodę współpracy z bazą danych \texttt{Read()}.
 \end{itemize}
 
-\begin{lstlisting}[label=list:controller_find_station,caption=Kontroler wyszukiwania stacji ładowania,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:controller_find_station,caption=Kontroler wyszukiwania stacji ładowania.,basicstyle=\tiny\ttfamily]
     func (c *StationController) Read() http.HandlerFunc {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             params := r.URL.Query()
@@ -1004,7 +1004,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
 \end{lstlisting}
 % TO DO: W pracy jest za dużo listingów. Wystarczy pokazać jeden serwis, a potem powiedzieć, że pozostałe serwisy zaiplmentnowanio podobnie.
 % To VERIFY
-\begin{lstlisting}[label=list:service_read_station_FindByName,caption=Serwis wyszukiwania stacji ładowania według nazwy,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:service_read_station_FindByName,caption=Serwis wyszukiwania stacji ładowania według nazwy.,basicstyle=\tiny\ttfamily]
     func (s *StationService) FindByName(name string) ([]models.Station, error) {
         st, err := s.storage.Station().FindByName(name)
         if err != nil {
@@ -1013,7 +1013,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         return st, nil
     }
 \end{lstlisting}
-%%%\begin{lstlisting}[label=list:repo_read_station_FindByName,caption=Wyszukiwanie stacji ładowania w bazie danych według nazwy,basicstyle=\tiny\ttfamily]
+%%%\begin{lstlisting}[label=list:repo_read_station_FindByName,caption=Wyszukiwanie stacji ładowania w bazie danych według nazwy.,basicstyle=\tiny\ttfamily]
     %%%func (r *StationRepository) FindByName(name string) ([]models.Station, error) {
         %%%filter := bson.D{{"station_name", primitive.Regex{Pattern: name, Options: "i"}}}
         %%%cursor, err := r.col.Aggregate(
@@ -1033,7 +1033,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         %%%return s, nil
     %%%}
 %%%\end{lstlisting}
-%%%\begin{lstlisting}[label=list:service_read_station_FindByDescription,caption=Serwis wyszukiwania stacji ładowania według opisu,basicstyle=\tiny\ttfamily]
+%%%\begin{lstlisting}[label=list:service_read_station_FindByDescription,caption=Serwis wyszukiwania stacji ładowania według opisu.,basicstyle=\tiny\ttfamily]
     %%%func (s *StationService) FindByDescription(text string) ([]models.Station, error) {
         %%%st, err := s.storage.Station().FindByName(text)
         %%%if err != nil {
@@ -1042,7 +1042,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         %%%return st, nil
     %%%}
 %%%\end{lstlisting}
-%%%\begin{lstlisting}[label=list:repo_read_station_FindByDescription,caption=Wyszukiwanie stacji ładowania w bazie danych według opisu,basicstyle=\tiny\ttfamily]
+%%%\begin{lstlisting}[label=list:repo_read_station_FindByDescription,caption=Wyszukiwanie stacji ładowania w bazie danych według opisu.,basicstyle=\tiny\ttfamily]
     %%%func (r *StationRepository) FindByDescription(text string) ([]models.Station, error) {
         %%%filter := bson.D{{"description", primitive.Regex{Pattern: text, Options: "i"}}}
         %%%log.Println(filter)
@@ -1063,7 +1063,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         %%%return s, nil
     %%%}
 %%%\end{lstlisting}
-%%%\begin{lstlisting}[label=list:service_read_station_FindInRadius,caption=Serwis wyszukiwania stacji ładowania w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+%%%\begin{lstlisting}[label=list:service_read_station_FindInRadius,caption=Serwis wyszukiwania stacji ładowania w pobliżu podanych współrzędnych na mapie Ziemi.,basicstyle=\tiny\ttfamily]
     %%%func (s *StationService) FindInRadius(latitude float64, longitude float64, radius int, skip int, limit int) ([]models.Station, error) {
         %%%st, err := s.storage.Station().FindInRadius(getLatitude(latitude), getLongitude(longitude), getRadius(radius), skip, limit)
         %%%if err != nil {
@@ -1074,7 +1074,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
 %%%\end{lstlisting}
 % TO DO: po polsku są "stacje ładowania", a nie "stacje ładownicze" Proszę poprawić
 % DONE
-\begin{lstlisting}[label=list:repo_read_station_FindInRadius,caption=Wyszukiwanie stacji ładowania w bazie danych w pobliżu podanych współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:repo_read_station_FindInRadius,caption=Wyszukiwanie stacji ładowania w bazie danych w pobliżu podanych współrzędnych na mapie Ziemi.,basicstyle=\tiny\ttfamily]
     func (r *StationRepository) FindInRadius(latitude float64, longitude float64, radius float64, skip int, limit int) ([]models.Station, error) {
         matchInRadius := bson.D{{"$match", bson.M{
             "$and": []interface{}{
@@ -1106,7 +1106,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         return stations, nil
     }
 \end{lstlisting}
-%%\begin{lstlisting}[label=list:service_read_station_FindByLocation,caption=Serwis wyszukiwania stacji ładowania według współrzędnych na mapie Ziemi,basicstyle=\tiny\ttfamily]
+%%\begin{lstlisting}[label=list:service_read_station_FindByLocation,caption=Serwis wyszukiwania stacji ładowania według współrzędnych na mapie Ziemi.,basicstyle=\tiny\ttfamily]
     %%func (s *StationService) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
         %%st, err := s.storage.Station().FindByLocation(getLatitude(latitude), getLongitude(longitude))
         %%if err != nil {
@@ -1115,7 +1115,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         %%return st, nil
     %%}
 %%\end{lstlisting}
-%%\begin{lstlisting}[label=list:repo_read_station_FindByLocation,caption=Wyszukiwanie stacji ładowania w bazie danych współrzędnych pozycji na mapie Ziemi,basicstyle=\tiny\ttfamily]
+%%\begin{lstlisting}[label=list:repo_read_station_FindByLocation,caption=Wyszukiwanie stacji ładowania w bazie danych współrzędnych pozycji na mapie Ziemi.,basicstyle=\tiny\ttfamily]
     %%func (r *StationRepository) FindByLocation(latitude float64, longitude float64) (*models.Station, error) {
         %%filter := bson.M{"latitude": latitude, "longitude": longitude}
         %%res := r.col.FindOne(context.TODO(), filter)
@@ -1127,7 +1127,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         %%return s, nil
     %%}
 %%\end{lstlisting}
-%%\begin{lstlisting}[label=list:service_read_station_Read,caption=Serwis wczytania listy kolejnych stacji ładowania,basicstyle=\tiny\ttfamily]
+%%\begin{lstlisting}[label=list:service_read_station_Read,caption=Serwis wczytania listy kolejnych stacji ładowania.,basicstyle=\tiny\ttfamily]
     %%func (s *StationService) Read(skip int, limit int) ([]models.Station, error) {
         %%st, err := s.storage.Station().Read(skip, limit)
         %%if err != nil {
@@ -1136,7 +1136,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
         %%return st, nil
     %%}
 %%\end{lstlisting}
-%%\begin{lstlisting}[label=list:repo_read_station_Read,caption=Wczytanie listy kolejnych stacji ładowania z bazy danych,basicstyle=\tiny\ttfamily]
+%%\begin{lstlisting}[label=list:repo_read_station_Read,caption=Wczytanie listy kolejnych stacji ładowania z bazy danych.,basicstyle=\tiny\ttfamily]
     %%func (r *StationRepository) Read(skip int, limit int) ([]models.Station, error) {
         %%cursor, err := r.col.Aggregate(
             %%context.TODO(),
@@ -1157,7 +1157,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
 %%\end{lstlisting}
 
 Dla wyszukiwania listy stacji ładowania w pobliżu podanych współrzędnych na mapie Ziemi należy wykorzystać wzór obliczający długość łuku (${L = \alpha R}$, gdzie L - długość łuku w kilometrach, ${\alpha}$ - kąt, R - promień Ziemi (6378 km.)) do przekształcenia kilometrów w stopni kąta (${\alpha = L/R*180/\pi}$). To przekształcenie zachodzi w metodzie \texttt{getRadius()} (listing \ref{list:get_radius}).
-\begin{lstlisting}[label=list:get_radius,caption=Obliczenie dystansu przeszukiwania,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:get_radius,caption=Obliczenie dystansu przeszukiwania.,basicstyle=\tiny\ttfamily]
     func getRadius(rad int) float64 {
         if rad > 40074 {
             rad = 40074
@@ -1174,7 +1174,7 @@ W adresie URL musi być podany id użytkownika oraz, jako parametr, id użytkown
 Dostęp mają tylko zalogowani użytkownicy.
 Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Do edycji dozwolone następujące pola: \texttt{description}, \texttt{station\_name}.
 Przykład ciała zapytania:
-\begin{lstlisting}[,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
 		"description": "testText",
 		"station_name": "station name"
@@ -1197,7 +1197,7 @@ W serwisie jest wywołana metoda współpracy z bazą danych \texttt(DeleteByID)
 \subsubsection{Komentarz}
 Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst, id, imę użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja.
 Strukturę komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON pokazano na listingu (listing \ref{list:comment_struct}).
-\begin{lstlisting}[label=list:comment_struct,caption=Struktura komentarza,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:comment_struct,caption=Model danych komentarza.,basicstyle=\tiny\ttfamily]
     type Comment struct {
         ID       string  `bson:"_id,omitempty" json:"_id,omitempty"`
         UserID   string  `bson:"user_id,omitempty" json:"user_id,omitempty"`
@@ -1227,7 +1227,7 @@ W tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas
 Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszystkich komentarzy, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametru \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb) żeby zmniejszyć czas oczekiwania użytkownika.
 
 
-\begin{lstlisting}[label=list:service_comment_create,caption=Serwis tworzenia komentarza,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:service_comment_create,caption=Serwis tworzenia komentarza.,basicstyle=\tiny\ttfamily]
     func (s *CommentService) CreateComment(sid string, c *models.Comment) (*models.Comment, error) {
         if err := c.Validate(); err != nil {
             return c, err
@@ -1252,7 +1252,7 @@ Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą par
         return c, nil
     }
 \end{lstlisting}
-% \begin{lstlisting}[label=list:repo_comment_create,caption=Tworzenie komentarza w bazie danych,basicstyle=\tiny\ttfamily]
+% \begin{lstlisting}[label=list:repo_comment_create,caption=Tworzenie komentarza w bazie danych.,basicstyle=\tiny\ttfamily]
 %     func (r *CommentRepository) Create(sid string, c *models.Comment) (string, error) {
 %         sidi, err := primitive.ObjectIDFromHex(sid)
 %         if err != nil {
@@ -1286,7 +1286,7 @@ Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą par
 % TO DO: listingów proszę już nie pokazywać
 % TO VERIFY: Chciałem pokazać mą metodę, ponieważ tu jest zrealizowana trochę ciekawsze rzeczy niż w innych.
 
-\begin{lstlisting}[label=list:update_rating,caption=Aktualizacja oceny stacji,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:update_rating,caption=Aktualizacja oceny stacji.,basicstyle=\tiny\ttfamily]
     func (r *StationRepository) UpdateRaitingByID(id string) error {
         idi, err := primitive.ObjectIDFromHex(id)
         filter := bson.M{"_id": idi}
@@ -1319,7 +1319,7 @@ Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą par
         return err
     }
 \end{lstlisting}
-% \begin{lstlisting}[label=list:validate_comment,caption=Walidacja danych komentarza przed tworzeniam,basicstyle=\tiny\ttfamily]
+% \begin{lstlisting}[label=list:validate_comment,caption=Walidacja danych komentarza przed tworzeniam.,basicstyle=\tiny\ttfamily]
 %     func (c *Comment) Validate() error {
 %         return validation.ValidateStruct(
 %             c,
@@ -1398,7 +1398,7 @@ Zawartość znaczących katalogów i plików:
     \caption{Struktura plików: a) API do połączenia z serwerem, b) klasy fragmentów, c) opis fragmentów.}
     \label{fig:frontend_file_structure_1}
 \end{figure}
-\begin{lstlisting}[label=list:androidManifest,caption=androidManifest.xml,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:androidManifest,caption=androidManifest.xml.,basicstyle=\tiny\ttfamily]
     <?xml version="1.0" encoding="utf-8"?>
     <manifest xmlns:android="http://schemas.android.com/apk/res/android"
         package="com.example.testapp">
@@ -1445,7 +1445,7 @@ Adnotacja \texttt{@SerializedName} ustala nazwę do dekodowania do formatu JSON 
 % TO DO: Powtarzam: w pracy jest za dużo listingów. Nie można przcież kopiować całego kodu!!!!! Wystarczy napisać, że zamodelowano takie a takie klasy, że na listingu pokazano klasę przyładową (np. User). Można też pokazać diagram klas UML z wszystkimi klasami. !!!!!
 % DONE
 
-\begin{lstlisting}[label=list:user_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java},basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:user_class,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java}.,basicstyle=\tiny\ttfamily]
     public class User {
         @SerializedName("_id")
         private String id;
@@ -1480,7 +1480,7 @@ Metody API służą do komunikacji z częścią serwerową.
 
 Zastosowany framework pozwala na zadeklarowanie metod protokołu HTTP  \texttt{POST}, \texttt{PUT}, \texttt{GET}, \texttt{DELETE} obsługiwanych w danej metodzie interfejsu na danym adresie URL poprzez zastosowanie adnotacji. Adnotacja \texttt{Body} pozwala na zadeklarowanie zamieszczenia danych w ciele zapytania. Adnotacja \texttt{Path} mówi, że dane ukryte są w adresie URL. Adnotacja \texttt{Query} mówi, że dane przekazane są jako parametry w adresie URL. Na listingu~\ref{list:android_api_user} pokazano przykład implementacji \texttt{UserAPI}.
 
-\begin{lstlisting}[label=list:android_api_user,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java},basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:android_api_user,caption=Plik \texttt{main/java/com/example/testapp/api/api/UserApi.java}.,basicstyle=\tiny\ttfamily]
     public interface UserApi {
         @POST("users")
         public Single<Response<User>> createUser(@Body User body);
@@ -1497,7 +1497,7 @@ Zastosowany framework pozwala na zadeklarowanie metod protokołu HTTP  \texttt{P
 % TO VERIFY
 W tabeli \ref{tab:endpoints_front} przedstawione API do połączenia z częścią serwerową (niektóre endpointy zaimplementowane z perspektywą na przyszłość)
 \begin{table}[htb] \small
-    \caption{Lista Enpointów części serwerowej}
+    \caption{API do połączenia z częścią serwerową }
     \label{tab:endpoints_front}
     \begin{tabularx}{\linewidth}{| m{0.45cm} | m{1.5cm} | m{6cm} | X |}
     \hline
@@ -1542,7 +1542,7 @@ W tabeli \ref{tab:endpoints_front} przedstawione API do połączenia z części�
 
 \subsubsection{Komunikacja z częścią serwerową}
 Sposób komunikacji z częścią serwerową oraz etapy pośrednicze (zostały zdefiniowane w metodzie \texttt{createOkHttpClient()}), w których zachodzi dodawanie nagłówka oraz pisanie logów zapytań i odpowiedzi, został opisany w klasie \texttt{ElchargeService} (listing \ref{list:android_elchargeservice}). Został użyty HTTP klient \texttt{OkHttp3} oraz jego opakowanie \texttt{Retrofit2}.
-\begin{lstlisting}[label=list:android_elchargeservice,caption=obsługa komunikacji z częścią serwerową,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:android_elchargeservice,caption=obsługa komunikacji z częścią serwerową.,basicstyle=\tiny\ttfamily]
     public class ElchargeService {
     String apiAddr;
     String token;
@@ -1611,7 +1611,7 @@ Dla umieszczania oraz definiowania elementów na ekranie wykorzystane opisy w po
 Jest to opis fragmentu tworzenia nowego komentarza (rys. \ref{fig:front_comment_create}). Aplikacja korzysta z jednego ekranu \texttt{Activity} na którym na dole znajduje się menu. Natomiast pozostałą, większą, przestrzeń ekranu zajmuje kontener do fragmentu, na fragmentach umieszczają się różne elementy aplikacji (przyciski, teksty i inne).
 Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia usunięcia już wprowadzonej informacji przez użytkownika, oraz usuwać już niepotrzebne. Opisy zachowania elementów ekranu znajdują się w odpowiednich klasach opisujących zachowanie całego ekranu i elementów na nim. Te klasy napisane w języku Java (pliki w katalogu \texttt{main/java/com/example/testapp/fragments}) (przykład w listingu \ref{list:CreateCommentFragment}).
 % Przepraszam za te wielkie listigi, ale to najmniejsze. musiałem pokazać jak wyglądają te pliki
-\begin{lstlisting}[label=list:android_xml_create_comment,caption=Opis fragmentu tworzenia komentarza,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:android_xml_create_comment,caption=Opis fragmentu tworzenia komentarza.,basicstyle=\tiny\ttfamily]
     <?xml version="1.0" encoding="utf-8"?>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -1673,7 +1673,7 @@ Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia 
             app:layout_constraintTop_toBottomOf="@+id/editTextText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 \end{lstlisting}
-\begin{lstlisting}[label=list:CreateCommentFragment,caption=Klasa opisująca zachowanie elementów na fragemencie tworzenia komentarza,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:CreateCommentFragment,caption=Klasa opisująca zachowanie elementów na fragemencie tworzenia komentarza.,basicstyle=\tiny\ttfamily]
     public class CreateCommentFragment extends Fragment {
 
         private CompositeDisposable disposable = new CompositeDisposable();
@@ -1742,7 +1742,7 @@ Jeśli logowanie zostało proponowane automatycznie, dane poprzedniego ekranu ni
 Po \label{text:login} wprowadzeniu danych i wciśnięciu przycisku \texttt{Log in} przez użytkownika na stronie logowania, wszystkie pola muszą być niepuste, wysyła się zapytanie do serwera (opis API połączenia z serwerem \ref{text:android_api_service}) z danymi do logowania (listing \ref{list:android_login_async}). Obsługa przycisku zachodzi w metodzie \texttt{onButtonLoginClick} (listing \ref{list:android_login_check}).
 Przy pomyślnym zalogowaniu JTW token zachowuje się w pliku konfiguracyjnym, w celu automatycznego logowania przy następnym wykorzystaniu aplikacji, oraz zamyka się fragment logowania, za pomocą klasy sterującej fragmentami (\texttt{FragmenManager}). Przy otwarciu fragmentu logowania lub rejestracji wcześniejszy fragment pozostaje pracować na dolnej warstwie fragmentów, co pozwala zachowywać wprowadzone dane.
 Cała klasa obsługująca znajduje się w pliku \texttt{main/java/com/example/testapp/fragments/LoginFragment.java}.
-\begin{lstlisting}[label=list:android_login_check,caption=Obsługa przycisku login,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:android_login_check,caption=Obsługa przycisku login.,basicstyle=\tiny\ttfamily]
     public void onButtonLoginClick(View v) {
         EditText email = (EditText) getView().findViewById(R.id.editTextEmail);
         EditText pass2 = (EditText) getView().findViewById(R.id.editTextPassword);
@@ -1756,7 +1756,7 @@ Cała klasa obsługująca znajduje się w pliku \texttt{main/java/com/example/te
         }
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:android_login_async,caption=Logowanie: wysłanie zapytania i obsługa odpowiedzi,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:android_login_async,caption=Logowanie: wysłanie zapytania i obsługa odpowiedzi.,basicstyle=\tiny\ttfamily]
     private void login(User user) {
         final LoginFragment tmpcls = this;
         disposable.add(app.getElchargeService().getUserApi().login(user)
@@ -1839,14 +1839,14 @@ Komentarze zawierają \texttt{user\_name}, tekst, ocenę oraz datę. Ten fragmen
         a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_info.png}}} &
         b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_station_edit.png}}}
     \end{tabular}
-    \caption{Interfejs użytkownika: a) wyszukiwanie stacji, b) lista znalezionych stacji.}
+    \caption{Interfejs użytkownika: a) informacja o stacji, b) edycja stacji.}
     \label{fig:frontend_station_info}
 \end{figure}
 
 Do otrzymania aktualnej informacji została zrealizowana metoda \texttt{updateInfo()} w której wysyła się zapytanie do części serwerowej.
 Klasa wewnętrzna \texttt{StationDisposableSingleObserver} (listing \ref{list:StationDisposableSingleObserver}), która dziedziczy po klasie abstrakcyjnej \texttt{DisposableSingleObserver}, służy do opracowania i wyświetlania informacji (metoda \texttt{updateInfoOnView()}) na ekranie (listing \ref{list:updateInfoOnView}).
 Oczekiwanie na odpowiedź z~serwera zachodzi asynchronicznie.
-\begin{lstlisting}[label=list:StationDisposableSingleObserver,caption=Wczytanie danych stacji z części serwerowej,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:StationDisposableSingleObserver,caption=Wczytanie danych stacji z części serwerowej.,basicstyle=\tiny\ttfamily]
     public void updateInfo(){
         disposable.add(app.getElchargeService().getStationApi().readStationsByLatAndLng(0, 0, currentStation.getLatitude(), currentStation.getLongitude())
                 .subscribeOn(Schedulers.io())
@@ -1891,7 +1891,7 @@ Oczekiwanie na odpowiedź z~serwera zachodzi asynchronicznie.
         }
     }
 \end{lstlisting}
-\begin{lstlisting}[label=list:updateInfoOnView,caption=Odnowienie informacji o stacji na ekranie,basicstyle=\tiny\ttfamily]
+\begin{lstlisting}[label=list:updateInfoOnView,caption=Odnowienie informacji o stacji na ekranie.,basicstyle=\tiny\ttfamily]
     private void updateInfoOnView(){
         if (app.getElchargeService().getUser().getId().equals(currentStation.getOwnerID())){
             buttonEditStation.show();
@@ -1923,7 +1923,7 @@ Dodać komentarz można na stronie informacyjnej stacji ładowania (rys. \ref{fi
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.25\linewidth]{rys03/front_comment_create.png}
-    \caption{Struktura plików}
+    \caption{Tworzenie komentarza}
     \label{fig:front_comment_create}
 \end{figure}
 Zasada działania jest prosta: walidacja wpisanej informacji, wysłanie zapytania do serwera, asynchroniczne oczekiwanie na odpowiedź, przy udanym tworzeniu — powrót do strony zawierającej informację o stacji ładowania pojazdów elektrycznych.
