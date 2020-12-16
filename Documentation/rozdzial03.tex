@@ -199,7 +199,7 @@ Na rysunku \ref{fig:backend_file_structure} została przedstawiona struktura pli
 
 Katalog \texttt{config} zawiera pliki konfiguracyjne.
 
-W katalogu \texttt{controllers} (rys.~\ref{fig:backend_file_structure_1}a) znajdują się kontrolery służące do kontrolowania zapytania, opracowania i zwrotu danych. Warstwa Kontrolerów komunikuje z warstwą serwisów.
+W katalogu \texttt{controllers} (rys.~\ref{fig:backend_file_structure_1}a) znajdują się kontrolery służące do kontrolowania zapytania, opracowania i zwrotu danych. Warstwa kontrolerów komunikuje z warstwą serwisów.
 
 Do katalogu \texttt{deploy} jest kompilowana aplikacja przy uruchomieniu \texttt{Makefile}.
 
@@ -358,9 +358,9 @@ Dla większości przypadków też jest sprawdzano czy jest użytkownik zalogowan
 W tej sekcji są opisane implementacje endpointów części serwerowej.
 % 
 \subsubsection{Użytkownik}
-Użytkownik jest niezbędny w pierwszej kolejności do uwierzytelniania. Niektóre dane użytkownika też są używane do rozumienia do kogo należy stacja ładowania lub komentarz.
+Użytkownik jest niezbędny w pierwszej kolejności do uwierzytelniania. Niektóre dane użytkownika też są używane do rozumienia do kogo należy stacja ładownicza lub komentarz.
 
-W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user}.
+W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajduje się w pliku \texttt{models/user}.
 \begin{lstlisting}[label=list:user_model,caption=Model danych użytkownika,basicstyle=\tiny\ttfamily]
     type User struct {
         ID       string `bson:"_id,omitempty" json:"_id,omitempty"`
@@ -551,7 +551,7 @@ Jej kod zawarty jest w~\texttt{/storage/mongostore/userrepository.go}.
 \label{sec:autentykacja}
 Dla autentykacji został wykorzystany JWT token, który jest generowany na serwerze, przy znalezieniu użytkownika o podanym adresie mailowym i haśle w bazie danych, i za tym jest wysłany w nagłówku odpowiedzi razem z danymi tego użytkownika.
 Ten token jest ważny jeden tydzień, za tym traci ważność i należy zalogować się ponownie. Wewnątrz tokena znajduje się nagłówek, sygnatura, czas ważności oraz id użytkownika.
-Większość endpointów dostępny tylko dla uwierzytelnionych użytkowników. W nagłówku zapytania musi znajdować się ważny token oraz ten token nie znajduje się w czarnej liście tokenów przechowywanych w bazie danych Redis.
+Większość endpointów dostępne tylko dla uwierzytelnionych użytkowników. W nagłówku zapytania musi znajdować się ważny token oraz ten token nie znajduje się w czarnej liście tokenów przechowywanych w bazie danych Redis.
 
 \paragraph{Logowanie\newline}
 Dla zalogowania należy wysłać metodą POST zapytanie na endpoint \url{api/v1/login} z ciałem zawierającym \texttt{email} i \texttt{password} w formacie JSON:
@@ -676,7 +676,7 @@ W tej metodzie są dekodowane dane z ciała zapytania, które są w formacie JSO
     }
 \end{lstlisting}
 
-W metodzie \texttt{CreateUser()} (listing \ref{list:user_service_create}) zachodzi:
+W metodzie \texttt{CreateUser()} warstwy serwisów (listing \ref{list:user_service_create}) zachodzi:
 \begin{itemize}
 \item walidacja danych (listing \ref{list:user_validate});
 \item sprawdzanie, czy istnieje użytkownik z takim adresem mailowym;
@@ -750,7 +750,7 @@ Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 \paragraph{Sprawdzenie tokenu\newline}
 Większość, jak juz zostało powiedziano, endpointów pracują tylko z uwierzytelnionymi użytkownikami. Dla realizacji tej funkcji należy sprawdzić token, który zawiera się w nagłówku zapytania.
 Token musi nie tylko nie stracić ważności, ale i nie znajdować się w czarnej liście tokenów, która znajduje się Redis, bazie danych wykonującej rolę pamięci podręcznej.
-Metoda \texttt{CheckToken()} sprawdza te rzeczy (listing \ref{list:CheckToken}). Ta metoda jest metodą medialną, więc jest wywołana przed przekierowaniem poprzez router. Dla komunikacji z bazą danych Redis została wykorzystana metoda \texttt{redis.Client.Get(sting)}, która pobiera dane.
+Metoda \texttt{CheckToken()} sprawdza te rzeczy (listing \ref{list:CheckToken}). Ta metoda jest metodą medialną, więc jest wywołana przed przekierowaniem poprzez router do warstwy kontrolerów. Dla komunikacji z bazą danych Redis została wykorzystana metoda \texttt{redis.Client.Get(sting)}, która pobiera dane.
 \begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokena,basicstyle=\tiny\ttfamily]
     func (c *AuthController) CheckToken(next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -835,7 +835,7 @@ Po wysłaniu zapytania GET na adres \url{api/v1/logout} zostanie wywoływana met
 \end{lstlisting}
 
 \subsubsection{Stacja}
-Głównym modelem w aplikacji jest stacja ładowania pojazdów elektrycznych. Aplikacja została stworzona, aby uzyskiwać informacje o obiektach tego typu. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, modyfikować.
+Głównym modelem w aplikacji jest stacja ładująca pojazdy elektryczne. Aplikacja została stworzona, aby uzyskiwać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może też modyfikować.
 
 W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowania, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user.go}.
 \begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowania,basicstyle=\tiny\ttfamily]
@@ -853,7 +853,7 @@ W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ł
 \end{lstlisting}
 
 \paragraph{Dodawanie\newline}
-Żeby dodać nową stację do systemu, należy wysłać zapytanie \texttt{POST} do części serwerów na endpoint \url{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \texttt{description}, \texttt{station\_name}, \texttt{owner\_id}, \texttt{longitude}, \texttt{latitude}.
+Żeby dodać nową stację do systemu, należy wysłać zapytanie \texttt{POST} do części serwerówej na endpoint \url{api/v1/stations}. Zapytanie musi posiadać działający token JWT w nagłówku. Ciało zapytania musi posiadać następujące pola: \texttt{description}, \texttt{station\_name}, \texttt{owner\_id}, \texttt{longitude}, \texttt{latitude}.
 Przykład ciała zapytania:
 \begin{lstlisting}[basicstyle=\tiny\ttfamily]
     {
@@ -866,7 +866,7 @@ Przykład ciała zapytania:
 \end{lstlisting}
 
 Router przekieruje, po przechodzeniu przez funkcje medialne (w tym sprawdzenie JWT tokena), dane do kontrolera \texttt{CreateStation()} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wejściowy JSON w~obiekt struktury \texttt{Station}.
-Ta metoda wywołuje serwis \texttt{CreateStation}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z~bazy danych ten dokument i wysyła się jako ciało odpowiedź.
+Ta metoda wywołuje serwis \texttt{CreateStation()}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create()} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z bazy danych ten dokument i wysyła się jako ciało odpowiedź.
 Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych (listing \ref{list:validation_station}) oraz uzupełnienie niektórych niezbędnych pól (listing \ref{list:before_create_station}), na przykład czasu tworzenia i ostatniej modyfikacji.
 
 \begin{lstlisting}[label=list:validation_station,caption=Walidacja danych stacji ładowania,basicstyle=\tiny\ttfamily]
@@ -900,7 +900,7 @@ Po przekierowaniu przez router z URL do metody kontrolera \texttt{FindByID()} (p
 Ten serwis tylko wywołuje metodę (\texttt{FindByID}, która znajduje się w \texttt{/storage/mongostore/stationrepository.go}), która już bezpośrednio zwraca się do sterownika bazą danych MongoDB w języku Go.
 %
 \paragraph{Wyszukiwanie\newline}
-W zależności od parametrów w adresie URL przy wysłaniu zapytania metodą \texttt{GET} na adres \url{api/v1/stations/read} będzie zrobione wyszukiwanie według różnych parametrów.
+W zależności od parametrów w adresie URL, przy wysłaniu zapytania metodą \texttt{GET} na adres \url{api/v1/stations/read}, będzie zrobione wyszukiwanie według różnych parametrów.
 Dostęp mają tylko zalogowani użytkownicy.
 
 Lista parametrów w adresie URL (kolejność nie ma znaczenia):
@@ -909,8 +909,8 @@ Lista parametrów w adresie URL (kolejność nie ma znaczenia):
     \item \texttt{limit} -- ograniczenie liczby zwracanych elementów (niezbędny parametr);
     \item \texttt{name} -- wyszukiwanie według nazwy;
     \item \texttt{descr} (ang. ~\emph{description}) -- wyszukiwanie według opisu;
-    \item \texttt{lat} (ang. ~\emph{latitude}) -- szerokość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem z \texttt{lng};
-    \item \texttt{lng} (ang. ~\emph{longitude}) -- długość geograficzna. Wyszukiwania według dokładnych współrzędnych geograficznych. Należy używać razem z \texttt{lat};
+    \item \texttt{lat} (ang. ~\emph{latitude}) -- szerokość geograficzna. Wyszukiwanie według dokładnych współrzędnych geograficznych. Należy używać razem z \texttt{lng};
+    \item \texttt{lng} (ang. ~\emph{longitude}) -- długość geograficzna. Wyszukiwanie według dokładnych współrzędnych geograficznych. Należy używać razem z \texttt{lat};
     \item \texttt{dist} (ang. ~\emph{distance}) -- promień wyszukiwania wokół współrzędnych geograficznych ustalonych za pomocą \texttt{lat}, \texttt{lng}. Wyszukiwanie zachodzi nie w promieniu od współrzędnych, lecz w kwadracie (dystans obliczany na wschód, na zachód, na północ oraz na południe).Jest opcjonalny przy użyciu \texttt{lat} oraz \texttt{lng}. Nie używa się osobno.
 \end{itemize}
 
@@ -918,7 +918,7 @@ Lista parametrów w adresie URL (kolejność nie ma znaczenia):
 % DONE
 Przykład użycia: wyszukiwanie dwustu stacji ładowania w promieniu 100 kilometrów wokół pewnych współrzędnych geograficznych \url{http://127.0.0.1:8081/api/v1/stations/read?lat=57&lng=15&skip=0&limit=200&dist=100}.
 
-Router przekieruje do metody \texttt{Read()} (listing \ref{list:controller_find_station}) (plik \texttt{controllers/api/v1/stationcontroller.go}) dalej w zależności od wprowadzonych parametrów będzie wywołana ta czy inna metoda serwisu, które są podobne i najczęściej tylko przekazuja dane do następnej warstwy. warstwy bazy danych.
+Router przekieruje do metody \texttt{Read()} (listing \ref{list:controller_find_station}) (plik \texttt{controllers/api/v1/stationcontroller.go}) dalej w zależności od wprowadzonych parametrów będzie wywołana ta czy inna metoda serwisu, które są podobne i najczęściej tylko przekazuja dane do następnej warstwy (warstwy bazy danych).
 Przy wprowadzaniu dwóch parametrów, na przykład \texttt{name} razem z \texttt{desc} będzie zrobione wyszukiwanie tylko według jednego parametru, w tym przypadku \texttt{name}.
 Jeśli wyszukiwanie zachodzi według nazwy lub opisu, zostaną wykorzystane wyrażenia regularne, co pozwala wyszukiwać, wiedząc tylko część nazwy lub opisu.
 Dla selekcji wyników na poziomie bazy danych często wykorzystuje się agregacja (metoda \texttt{Aggregare}), która po kolej prowadzi różne przekształcenia danych według sekwencji przenośnika (metoda \texttt{Pipeline}). Przykładami pracy z bazą danych są listingi \ref{list:repo_read_station_FindInRadius} oraz \ref{list:user_repository_findbyid}.
@@ -931,7 +931,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
     \item \texttt{descr} -- wykonuje się metoda \texttt{FindByDescription()}, która wywołuje metodę współpracy z bazą danych \texttt{FindByDescription()};
     \item \texttt{dist} razem z \texttt{lat} oraz \texttt{lng} -- wykonuje się metoda \texttt{FindInRadius()}, która wywołuje metodę współpracy z bazą danych \texttt{FindInRadius()} (listing \ref{list:repo_read_station_FindInRadius});
     \item \texttt{lat} oraz \texttt{lng} -- wykonuje się metoda \texttt{FindByLocation()}, która wywołuje metodę współpracy z bazą danych \texttt{FindByLocation()};
-    \item \texttt{skip} razem z \texttt{limit} -- będzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()} kontrolera wywołuje metodę \texttt{Read()} pobierającą dane z bazy danych).
+    \item \texttt{skip} razem z \texttt{limit} -- bedzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()}, która wywołuje metodę współpracy z bazą danych \texttt{Read()}.
 \end{itemize}
 
 \begin{lstlisting}[label=list:controller_find_station,caption=Kontroler wyszukiwania stacji ładowania,basicstyle=\tiny\ttfamily]
@@ -1170,7 +1170,7 @@ Dla wyszukiwania listy stacji ładowania w pobliżu podanych współrzędnych na
 \paragraph{Edycja\newline}
 Do edycji stacji ładowania został zaimplementowany endpoint \texttt{/api/v1/stations/{id}?ownid=""}.
 Metoda zapytania \texttt{PUT}.
-W adresie URL musi być podany id użytkownika oraz, jako parametr, id użytkownika, który probuje edytować. Edytować może tylko właściciel stacji oraz dla zapobiegania jednoczesnej edycji z kilku urządzeń musi zgadzać się pole \texttt{update\_at}, które przechowuje datę ostatniej modyfikacji.
+W adresie URL musi być podany id użytkownika oraz, jako parametr, id użytkownika, który probuje edytować. Edytować może tylko właściciel stacji oraz, dla zapobiegania jednoczesnej edycji z kilku urządzeń, musi zgadzać się pole \texttt{update\_at} z wartością w bazie danych, które przechowuje datę ostatniej modyfikacji.
 Dostęp mają tylko zalogowani użytkownicy.
 Jako ciało zapytania należy wysyłać obiekt w formacie JSON. Do edycji dozwolone następujące pola: \texttt{description}, \texttt{station\_name}.
 Przykład ciała zapytania:
@@ -1194,8 +1194,9 @@ W celu usunięcia stacji ładowania z systemu został stworzony endpoint \url{ap
 
 Router przekieruje dane do metody \texttt{DeleteByID()} kontrolera z pliku \texttt{controllers/api/v1/stationcontroller.go}, gdzie są wczytywane dane z adresu URL oraz dekodowane ciało zapytania. Dalej dane przekierowane do metody serwisu (\texttt{DeleteByID()} znajdującej się w pliku \texttt{services/api/v1/stationservice.go}).
 W serwisie jest wywołana metoda współpracy z bazą danych \texttt(DeleteByID) z pliku \texttt{stoarage/mongostore/tationrepository.go}, gdzie zachodzi sterowanie bazą danych do usunięcia wpisu.
-\subsubsection{Komentarz} % TO DO: prosiłem "stacja ładowania"
-Stacja ładowania przechowuje listę komentarzy. Komentarz zawiera tekst, id, imię użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja. Wykorzystaną strukturę, przekazaną do obiektu JSON oraz BSON, pokazano na listingu~\ref{list:comment_struct}.
+\subsubsection{Komentarz}
+Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst, id, imę użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja.
+Strukturę komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON pokazano na listingu (listing \ref{list:comment_struct}).
 \begin{lstlisting}[label=list:comment_struct,caption=Struktura komentarza,basicstyle=\tiny\ttfamily]
     type Comment struct {
         ID       string  `bson:"_id,omitempty" json:"_id,omitempty"`
@@ -1222,8 +1223,8 @@ Przykład ciała zapytania:
 \end{lstlisting}
 
 Router przekieruje zapytanie, po przechodzeniu autentykacji, do metody kontrolera \texttt{CreateComment()} (plik \texttt{controllers/api/v1/commentcontroller.go}), w której zachodzi otrzymanie niezbędnych danych z adresu URL oraz zaczyna się część biznesowa w~metodzie \texttt{CreateComment()} (listing \ref{list:service_comment_create}) (plik \texttt{services/api/v1/commentservice.go}).
-W~tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create}) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
-Do aktualizacji oceny wykorzystano agregację postępów: za pomocą parametru \texttt{\$reduce} obliczono sumę ocen wszystkich komentarzy, podzieloną (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i wynik zapisano w polu \texttt{rating} za pomocą \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb) żeby zmniejszyć czas oczekiwania użytkownika.
+W tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create}) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
+Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszystkich komentarzy, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametru \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb) żeby zmniejszyć czas oczekiwania użytkownika.
 
 
 \begin{lstlisting}[label=list:service_comment_create,caption=Serwis tworzenia komentarza,basicstyle=\tiny\ttfamily]
@@ -1354,16 +1355,16 @@ Interfejsem użytkownika jest aplikacją mobilną dla telefonów z systemem oper
 \subsubsection{Narzędzia, technologie, biblioteki}
 Do stworzenia aplikacji mobilnej użyto następujących technologii:
 \begin{itemize}
-    \item Android Studio - środowisko programistyczne;
-    \item Java SDK 8 - Narzędzia programistyczne języka Java wersji 8;
+    \item Android Studio - srodowisko programistyczne;
+    \item Java SDK 8 - narzędzia programistyczne języka Java wersji 8;
     \item Grable - system zarządzania zależnościami oraz budowaniem projektu;
     \item OkHttp3 - HTTP klient;
-    \item Retrofit - Służąca do komunikacji przez interfejsy API opakowanie dla OkHttp3;
-    \item RxJava2 - Biblioteka umożliwiająca programowanie reaktywne w języku Java;
-    \item gms:play-services-maps - Narzędzia programistyczne do pracy z mapą Google. Jest częścią Google Maps Android API;
-    \item gms:play-services-location - Narzędzia programistyczne do pracy z położeniem urządzenia użytkownika. Jest częścią Google Maps Android API;
-    \item android-maps-utils - Narzędzia programistyczne do pracy z elementami dodatkowymi mapy (na przykład markery). Jest częścią Google Maps Android API;
-    \item gson - Służy do konwersji obiektów do Formaty JSON;
+    \item Retrofit - służące do komunikacji przez interfejsy API opakowanie dla OkHttp3;
+    \item RxJava2 - biblioteka umożliwiająca programowanie reaktywne w języku Java;
+    \item gms:play-services-maps - narzędzia programistyczne do pracy z mapą Google. Jest częścią Google Maps Android API;
+    \item gms:play-services-location - narzędzia programistyczne do pracy z położeniem urządzenia użytkownika. Jest częścią Google Maps Android API;
+    \item android-maps-utils - narzędzia programistyczne do pracy z elementami dodatkowymi mapy (na przykład markery). Jest częścią Google Maps Android API;
+    \item gson - służy do konwersji obiektów do Formaty JSON;
     \item yaml.v2 - implementuje obsługę YAML (ang. \textit{Yet Another Markup Language});
 \end{itemize}
 
@@ -1607,6 +1608,9 @@ Ekran aplikacji składa się z kilku warstw:
 \end{itemize}
 
 Dla umieszczania oraz definiowania elementów na ekranie wykorzystane opisy w postaci plików \texttt{xml} (ang. \textit{eXtensible Markup Language}), które przechowywane w katalogu \texttt{main/res}. Na listingu \ref{list:android_xml_create_comment} przedstawiony plik \texttt{main/res/layout/fragment\_create\_comment.xml}.
+Jest to opis fragmentu tworzenia nowego komentarza (rys. \ref{fig:front_comment_create}). Aplikacja korzysta z jednego ekranu \texttt{Activity} na którym na dole znajduje się menu. Natomiast pozostałą, większą, przestrzeń ekranu zajmuje kontener do fragmentu, na fragmentach umieszczają się różne elementy aplikacji (przyciski, teksty i inne).
+Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia usunięcia już wprowadzonej informacji przez użytkownika, oraz usuwać już niepotrzebne. Opisy zachowania elementów ekranu znajdują się w odpowiednich klasach opisujących zachowanie całego ekranu i elementów na nim. Te klasy napisane w języku Java (pliki w katalogu \texttt{main/java/com/example/testapp/fragments}) (przykład w listingu \ref{list:CreateCommentFragment}).
+% Przepraszam za te wielkie listigi, ale to najmniejsze. musiałem pokazać jak wyglądają te pliki
 \begin{lstlisting}[label=list:android_xml_create_comment,caption=Opis fragmentu tworzenia komentarza,basicstyle=\tiny\ttfamily]
     <?xml version="1.0" encoding="utf-8"?>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -1669,10 +1673,6 @@ Dla umieszczania oraz definiowania elementów na ekranie wykorzystane opisy w po
             app:layout_constraintTop_toBottomOf="@+id/editTextText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 \end{lstlisting}
-Jest to opis fragmentu tworzenia nowego komentarza (rys.~\ref{fig:front_comment_create}). Aplikacja korzysta z jednego ekranu \texttt{Activity} na którym na dole znajduje się menu. Natomiast pozostałą, większą, przestrzeń ekranu zajmuje kontener do fragmentu, na fragmentach umieszczają się różne elementy aplikacji (przyciski, teksty i inne).
-Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia usunięcia już wprowadzonej informacji przez użytkownika, oraz usuwać już niepotrzebne. Opisy zachowania elementów ekranu znajdują się w odpowiednich klasach opisujących zachowanie całego ekranu i elementów na nim. Te klasy napisane w języku Java (pliki w katalogu \texttt{main/java/com/example/testapp/fragments}) (przykład w listingu \ref{list:CreateCommentFragment}).
-% Przepraszam za te wielkie listigi, ale to najmniejsze. musiałem pokazać jak wyglądają te pliki
-
 \begin{lstlisting}[label=list:CreateCommentFragment,caption=Klasa opisująca zachowanie elementów na fragemencie tworzenia komentarza,basicstyle=\tiny\ttfamily]
     public class CreateCommentFragment extends Fragment {
 

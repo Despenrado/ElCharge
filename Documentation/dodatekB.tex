@@ -6,11 +6,12 @@
 
 % Первая команда создает 3 образа: образ базы даннх MongoDB, образ базы данных Redis и образ серверной части приложения написаной на Go:
 Do wdrożenia części serwerowej wraz z bazami danych MongoDB i Redis wystarczy wykonać dwa polecenia.
-Musi być zainstalowany docker i Docker-compose.
+Musi być zainstalowany Docker i Docker-compose.
 
-Pierwsze polecenie tworzy 3 obrazy: obraz bazy danych dunnh MongoDB, Obraz bazy danych Redis i obraz zaplecza aplikacji napisany w Go:
+Pierwsze polecenie tworzy 3 obrazy: obraz bazy danych dunnh MongoDB, obraz bazy danych Redis i obraz serwerowej części aplikacji napisanej w języku Go:
 
 \texttt{\$ docker-compose build}
+
 % Вторая команда запускает созданные ранее образы в оперделенной последовательности, а также создает каналы для взаимодействия приложений из контейнеров.
 Drugie polecenie uruchamia wcześniej utworzone obrazy w~określonej kolejności, a także tworzy kanały do interakcji części aplikacji między kontenerami oraz środowyskiem wewnętrznym.
 
@@ -77,4 +78,4 @@ Najpierw trzeba skopiować plik \texttt{elCharge.apk} do urządzenia z systemem 
 Uruchomić aplikację \texttt{TestApp}.
 
 W przypadku uruchomiania za pomocą emulatora, wbudowanego w Android Studio, należy mieć zainstalowany Android Studio oraz Java SDK 8.
-Należy otworzyć katalog \texttt{AndroidUI} za pomocą Android Studio, wybrać emulator s systemem Android powyżej wersji 4.1 i uruchomić za pomocą odpowiedniego przycisku.
+Należy otworzyć katalog \texttt{AndroidUI} za pomocą Android Studio, wybrać emulator z systemem Android powyżej wersji 4.1 i uruchomić za pomocą odpowiedniego przycisku.
