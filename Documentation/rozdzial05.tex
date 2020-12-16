@@ -1,77 +1,47 @@
-\chapter{Wdrożenie aplikacji}
-\section{Wdrożenie części serwerowej}
-\paragraph{RestAPI}
-% Для развертывая серверной части вместе с базами данных MongoDB и Redis достаточно двух комманд.
-% Должны быть установлены docker и docker-compose.
+\chapter{Podsumowanie}
+W tym rozdziale znajdują się wnioski i plany na rozwój aplikacji.
 
-% Первая команда создает 3 образа: образ базы даннх MongoDB, образ базы данных Redis и образ серверной части приложения написаной на Go:
-Do wdrożenia części serwerowej wraz z bazami danych MongoDB i Redis wystarczy wykonać dwa polecenia.
-Musi być zainstalowany docker i Docker-compose.
+\section{Wnioski}
+% В этом проекте планировалось решить проблему с поиском зарядных станций для автомобилей. Должно было быть создано мобильное приложение, в которм пользователь может не только быстро и удобно искать походящую ему станцию, но и добавлять новые, еще не отмеченные на карте.
+% Это позволило бы создать самодостаточное приложение, для которого не требовалось бы больших вложений для поддержания инфраструктуры. Приложение должно было позволить создавать коментарии и выставлять оценку зарядным станциям. Для удобства поиска должна была использоваться карта.
+% На карте, кроме зарядных станций должна была отмечаться в том числе позиция пользователя.
 
-Pierwsze polecenie tworzy 3 obrazy: obraz bazy danych dunnh MongoDB, Obraz bazy danych Redis i obraz zaplecza aplikacji napisany w Go:
+% В приложени были реализованы все представленные выше функции, однако в процессе разработки были выявлены некоторые недостатки, о которых будет оговорено в планах на будущее. 
 
-\texttt{\$ docker-compose build}
-% Вторая команда запускает созданные ранее образы в оперделенной последовательности, а также создает каналы для взаимодействия приложений из контейнеров.
-Drugie polecenie uruchamia wcześniej utworzone obrazy w określonej kolejności, a także tworzy kanały do interakcji części aplikacji między kontenerami oraz środowyskiem wewnętrznym.
+% Благодаря выбранныой базе данных MongoDB приложение можно легко расширять. Также все выбранные технологии оказались очень гибкими и прспособленными для этой задачи.
+% Самым полезным источником информации стала официальная документация доступная на страницах \cite{android_doc,godoc,golang2,mongoDB_doc}. Книга по языку Go \cite{LearninGo}. Книга по языку Java \cite{javabook}
+% % 
+W tym projekcie planowano rozwiązać problem ze znalezieniem stacji ładowania pojazdów elektrycznych. Miała zostać stworzona aplikacja mobilna, w której użytkownik może nie tylko szybko i wygodnie wyszukiwać stację ładownicze, które mu odpowiadają, ale także dodawać nowe, których jeszcze nie ma w systemie.
+Umożliwiłoby to stworzenie samowystarczalnej aplikacji, która nie wymagałaby dużych inwestycji w celu utrzymania infrastruktury. Aplikacja miała umożliwić tworzenie komentarzy i ocenianie stacji ładowania pojazdów elektrycznych. Dla ułatwienia wyszukiwania miała być użyta mapa.
+Na mapie oprócz stacji ładowania miała być zaznaczona m.in. pozycja użytkownika.
 
-\texttt{\$ docker-compose up}
+W aplikacji zostały zaimplementowane wszystkie powyższe funkcje, ale w procesie rozwoju zidentyfikowano pewne niezbędne funkcjonalności, które zostaną określone w planach \ref{sec:plany} na przyszłość.
 
-% Для управления контейнерами ипользуется файл docker-compose:
-Do zarządzania kontenerami służy plik \texttt{docker-compose.yml} \ref{list:docker-compose.yml}:
-\begin{lstlisting}[label=list:docker-compose.yml,caption=docker-compose.yml,basicstyle=\tiny\ttfamily]
-    version: "3.5" # Use version 3.5 syntax
-    services: # Here we define our service(s)
-        db:
-            container_name: mongoDB-elcharge # Container name
-            image: mongo # image name to start/build
-            ports: # Port mapping
-                - "2717:27017"
-            volumes: # Volume binding
-                - "~/example:/data/db"
-        cache-db:
-            container_name: redis-elcharge # Container name
-            image: redis
-            ports:
-                - "63799:6379"
-            volumes: # Volume binding
-                - "/opt/redis/data:/data"
-        golang-restapi: # The name of the service
-            build:
-                context: .
-                dockerfile: Dockerfile # Location of our Dockerfile
-            image: despenrado/golang-restapi-elcharge:prod.0.1
-            container_name: restapi-elcharge # Container name
-            depends_on: # start after
-                - cache-db
-                - db
-            ports:
-                - "8081:8081"
-            links: # list mapping: service_name:name_how_will_see_your_program
-                - "db:mymongo"
-                - "cache-db:myredis"
-    
-\end{lstlisting}
+Dzięki wybranej bazie danych MongoDB aplikacja może być łatwo rozbudowywana o nowe kolekcje i zmienione już istniejące. Wszystkie wybrane technologie okazały się bardzo elastyczne i odpowiednie przystosowane do tego zadania.
+Najbardziej użytecznym źródłem informacji była oficjalna dokumentacja wybranych narzędzi \cite{android_doc,godoc,golang2,mongoDB_doc}. Też była użyteczna książka o języku Go \cite{LearninGo} oraz książka o języku Java \cite{javabook}
+%
+\section{Plany}
+\label{sec:plany}
+% % 
+% Безопасность: 
+% \begin{itemize}
+%     \item Создание панели администратора для модерации комментариев;
+%     \item Закрытие доступа любого авторезированого пользователя к данным, которые не разрешены через мобильное приложение.
+% \end{itemize}
 
-% Для этапов устновки зависимостей, компиляции и самого создания образа серверной части приложения использется Dockerfile:
-Plik Dockerfile \ref{list:dockerfile} jest używany do etapów instalacji zależności, kompilacji i samego tworzenia obrazu zaplecza aplikacji:
-\begin{lstlisting}[label=list:dockerfile,caption=Dockerfile,basicstyle=\tiny\ttfamily]
-    FROM golang:1.15 AS builder
-    WORKDIR /go/src/github.com/Ddespenrado/ElCharge/RestAPI/
-    COPY . .
-    RUN go mod tidy
-    RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags '-w' -o restapi .
-    
-    FROM scratch
-    EXPOSE 8081
-    WORKDIR /root/
-    COPY deploy/apiserver.yaml .
-    COPY --from=builder /go/src/github.com/Ddespenrado/ElCharge/RestAPI/restapi .
-    ENTRYPOINT ["./restapi","-config=apiserver.yaml"]
-\end{lstlisting}
-
-Plikiem konfiguracyjnym aplikacji, w przypadku używania dockera jest plik \texttt{RestAPI/deploy/apiserver.yaml}.
-
-
-\section{Instalacja i uruchomienie aplikacji mobilnej}
-Najpierw trzeba skopiować plik \texttt{elCharge.apk} do urządzenia z systemem Android, znaleźć ten plik, otworzyć (kliknąć na niego) oraz zgodzić się na instalację.
-Uruchomić aplikację \texttt{TestApp}.
+% Удобство пользования: 
+% \begin{itemize}
+%     \item Добавление возможности удаления комментариев через мобильное приложение;
+%     \item Расширение возможностей работы с картой с помощью сервисов google cloud. Например прокладывание маршрута;
+% \end{itemize}
+Bezpieczeństwo:
+\begin{itemize}
+    \item Tworzenie panelu admina do moderacji komentarzy;
+    \item Zamknięcie dostępu dowolnego użytkownika do danych, które nie są dozwolone za pośrednictwem aplikacji mobilnej, to znaczy zamknięcie API;
+    \item Ulepszenie niektórych endpointów, na przykład sposobu wyszukiwania wedłóg parametrów w endpoincie \texttt{/api/v1/stations/read?skip=""\&limit=""\&lat=""\&lng=""\&dist=""\&descr=""\&nam=""}.
+\end{itemize}
+Wygoda użytkowania aplikacją:
+\begin{itemize}
+    \item Dodawanie możliwości usuwania komentarzy za pośrednictwem aplikacji mobilnej;
+    \item Rozszerzenie możliwości pracy z mapą za pomocą usług google cloud. Na przykład wyznaczanie trasy;
+\end{itemize}

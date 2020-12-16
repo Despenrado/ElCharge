@@ -617,8 +617,8 @@ SPECJALNOŚĆ: & \@specjalnosc\\
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%  Metadane dokumentu 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\title{Aplikacja mobilna ułatwiająca podróżowanie samochodami elektrycznymi}
-\titleEN{Mobile application that facilitates traveling by electric cars}
+\title{Aplikacja mobilna ulepszająca jakość podróży w samochodach elektrycznych123}
+\titleEN{Mobile app to improve travel quality in electric cars}
 \author{Nikita Stepanenko}
 \uczelnia{POLITECHNIKA WROCŁAWSKA}
 \wydzial{WYDZIAŁ ELEKTRONIKI}
@@ -692,8 +692,8 @@ SPECJALNOŚĆ: & \@specjalnosc\\
 \include{rozdzial02}
 \include{rozdzial03}
 \include{rozdzial04}
-% \include{rozdzial05_depricated}
-\include{rozdzial05}
+% \include{rozdzial05}
+\include{rozdzial06}
 
 %\bibliographystyle{plalpha}
 \bibliographystyle{plabbrv}
