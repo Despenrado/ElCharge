@@ -154,15 +154,15 @@ Do stworzenia serwerowej części aplikacji użyto następujących technologii:
 \item Visual Studio Code - środowisko programistyczne;
 \item Go - język programowania;
 \item Go Modules - system zarządzania zależnościami;
-\item gorilla/mux - Router mapuje przychodzące żądania na listę zarejestrowanych tras i wywołuje moduł obsługi tego żądania, który odpowiada URL (ang.~\textit{Uniform Resource Locator}) adresowi;
+\item gorilla/mux - Router mapuje przychodzące żądania na listę zarejestrowanych tras i wywołuje moduł obsługi tego żądania, który odpowiada URL (ang. \textit{Uniform Resource Locator}) adresowi;
 \item sirupsen/logrus - rejestrator strukturalny;
 \item mongo-driver - sterowanie MongoDB z języka Go;
 \item go-redis/redis - sterowanie Redis z języka Go;
 \item dgrijalva/jwt-go - realizacja JWT w języku Go;
 \item crypto/bcrypt - realizuje algorytm haszowania bcrypt;
 \item go-ozzo/ozzo-validation - pakiet wspomagający na walidację danych;
-\item yaml.v2 - implementuje obsługę YAML (ang.~\textit{Yet Another Markup Language});
-\item google/uuid - sprawdza i generuje UUID (ang.~\textit{universally unique identifier});
+\item yaml.v2 - implementuje obsługę YAML (ang. \textit{Yet Another Markup Language});
+\item google/uuid - sprawdza i generuje UUID (ang. \textit{universally unique identifier});
 \end{itemize}
 
 % 
@@ -172,7 +172,7 @@ Na rysunku \ref{fig:backend_file_structure} została przedstawiona struktura pli
 % TO VERIFY:
 \begin{figure}[ht]
 \centering
-\includegraphics[width=0.5\linewidth]{rys03/backend_file_structure.png}
+\includegraphics[width=0.25\linewidth]{rys03/backend_file_structure.png}
 \caption{Struktura plików}
 \label{fig:backend_file_structure}
 \end{figure}
@@ -750,8 +750,8 @@ Ona znajduję się w \texttt{/storage/mongostore/userrepository.go}.
 \paragraph{Sprawdzenie tokenu\newline}
 Większość, jak juz zostało powiedziano, endpointów pracują tylko z uwierzytelnionymi użytkownikami. Dla realizacji tej funkcji należy sprawdzić token, który zawiera się w nagłówku zapytania.
 Token musi nie tylko nie stracić ważności, ale i nie znajdować się w czarnej liście tokenów, która znajduje się Redis, bazie danych wykonującej rolę pamięci podręcznej.
-Metoda \texttt{CheckToken()} sprawdza te rzeczy (listing \ref{list:CheckToken}). Ta metoda jest metodą medialną, więc jest wywołana przed przekierowaniem poprzez router do warstwy kontrolerów. Do komunikacji z bazą danych Redis wykorzystano metodę \texttt{redis.Client.Get(sting)}, która pobiera dane.
-\begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokena,basicstyle=\tiny\ttfamily]
+Metoda \texttt{CheckToken()} sprawdza te rzeczy (listing \ref{list:CheckToken}). Ta metoda jest metodą medialną, więc jest wywołana przed przekierowaniem poprzez router do warstwy kontrolerów. Dla komunikacji z bazą danych Redis została wykorzystana metoda \texttt{redis.Client.Get(sting)}, która pobiera dane.
+\begin{lstlisting}[label=list:CheckToken,caption=Walidacja JWT tokena.,basicstyle=\tiny\ttfamily]
     func (c *AuthController) CheckToken(next http.Handler) http.Handler {
         return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
             tokenString := r.Header.Get("Authorization")
@@ -835,7 +835,7 @@ Po wysłaniu zapytania GET na adres \url{api/v1/logout} zostanie wywoływana met
 \end{lstlisting}
 
 \subsubsection{Stacja}
-Głównym modelem w aplikacji jest stacja ładowania pojazdów elektrycznych. Aplikacja stworzona, aby gromadzić informacje o obiektach tego typu. Stacje można tworzyć, przeglądać, a~także, jeśli użytkownik jest właścicielem, modyfikować.
+Głównym modelem w aplikacji jest stacja ładująca pojazdy elektryczne. Aplikacja została stworzona, aby uzyskiwać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może też modyfikować.
 
 W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowania, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user.go}.
 \begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowania.,basicstyle=\tiny\ttfamily]
@@ -866,7 +866,7 @@ Przykład ciała zapytania:
 \end{lstlisting}
 
 Router przekieruje, po przechodzeniu przez funkcje medialne (w tym sprawdzenie JWT tokena), dane do kontrolera \texttt{CreateStation()} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wejściowy JSON w~obiekt struktury \texttt{Station}.
-Ta metoda wywołuje serwis \texttt{CreateStation()}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create()} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z~bazy danych ten dokument i wysyła się jako ciało odpowiedź.
+Ta metoda wywołuje serwis \texttt{CreateStation()}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create()} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z bazy danych ten dokument i wysyła się jako ciało odpowiedź.
 Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych (listing \ref{list:validation_station}) oraz uzupełnienie niektórych niezbędnych pól (listing \ref{list:before_create_station}), na przykład czasu tworzenia i ostatniej modyfikacji.
 
 \begin{lstlisting}[label=list:validation_station,caption=Walidacja danych stacji ładowania.,basicstyle=\tiny\ttfamily]
@@ -1195,7 +1195,7 @@ W celu usunięcia stacji ładowania z systemu został stworzony endpoint \url{ap
 Router przekieruje dane do metody \texttt{DeleteByID()} kontrolera z pliku \texttt{controllers/api/v1/stationcontroller.go}, gdzie są wczytywane dane z adresu URL oraz dekodowane ciało zapytania. Dalej dane przekierowane do metody serwisu (\texttt{DeleteByID()} znajdującej się w pliku \texttt{services/api/v1/stationservice.go}).
 W serwisie jest wywołana metoda współpracy z bazą danych \texttt(DeleteByID) z pliku \texttt{stoarage/mongostore/tationrepository.go}, gdzie zachodzi sterowanie bazą danych do usunięcia wpisu.
 \subsubsection{Komentarz}
-Stacja ładowania przechowuje listę komentarzy. Komentarz zawiera tekst, id, imę użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja.
+Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst, id, imę użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja.
 Strukturę komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON pokazano na listingu (listing \ref{list:comment_struct}).
 \begin{lstlisting}[label=list:comment_struct,caption=Model danych komentarza.,basicstyle=\tiny\ttfamily]
     type Comment struct {
@@ -1223,7 +1223,7 @@ Przykład ciała zapytania:
 \end{lstlisting}
 
 Router przekieruje zapytanie, po przechodzeniu autentykacji, do metody kontrolera \texttt{CreateComment()} (plik \texttt{controllers/api/v1/commentcontroller.go}), w której zachodzi otrzymanie niezbędnych danych z adresu URL oraz zaczyna się część biznesowa w~metodzie \texttt{CreateComment()} (listing \ref{list:service_comment_create}) (plik \texttt{services/api/v1/commentservice.go}).
-W tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas tworzenia i~ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create}) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
+W tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create}) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
 Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszystkich komentarzy, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametru \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb) żeby zmniejszyć czas oczekiwania użytkownika.
 
 
@@ -1800,8 +1800,8 @@ Za pomocą przycisku \texttt{MAP} można nie wprowadzać współrzędne ręcznie
 Za pracę ze stroną zawierającą interaktywną mapą odpowiada fragment \texttt{fragment\_maps\_create\_station.xml} oraz kalsa \texttt{MapsSelectFragment}.\begin{figure}[ht]
 	\centering
     \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{}}
-        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.25\linewidth]{rys03/front_station_create.png}}} &
-        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.25\linewidth]{rys03/front_map_fing.png}}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_station_create.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_map_fing.png}}}
     \end{tabular}
     \caption{Interfejs użytkownika: a) tworzenie stacji, b) ustalenie markera na mapie.}
     \label{fig:frontend_station_create}
@@ -1819,8 +1819,8 @@ Przy wyszukiwaniu według różnego rodzaju kordynat, istnieje możliwość usta
 Naciskając na przycisk \texttt{GO} zalogowany użytkownik trafi na stronę z mapą, gdzie będą oznaczone wyszukane stacje (rys. \ref{fig:frontend_station_find}b).\begin{figure}[ht]
 	\centering
     \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{}}
-        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.25\linewidth]{rys03/front_find.png}}} &
-        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.25\linewidth]{rys03/front_map_arkers.png}}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_find.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_map_arkers.png}}}
     \end{tabular}
     \caption{Interfejs użytkownika: a) wyszukiwanie stacji, b) lista znalezionych stacji.}
     \label{fig:frontend_station_find}
@@ -1836,14 +1836,12 @@ Komentarze zawierają \texttt{user\_name}, tekst, ocenę oraz datę. Ten fragmen
 \begin{figure}[ht]
 	\centering
     \begin{tabular}{@{}rl@{\hspace{3mm}}rl@{}}
-        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.25\linewidth]{rys03/front_info.png}}} &
-        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.25\linewidth]{rys03/front_station_edit.png}}}
+        a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_info.png}}} &
+        b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.3\linewidth]{rys03/front_station_edit.png}}}
     \end{tabular}
     \caption{Interfejs użytkownika: a) informacja o stacji, b) edycja stacji.}
-% TO DO: Podpis do rysunku chyba jest zły
-% DONE
+    \label{fig:frontend_station_info}
 \end{figure}
-
 
 Do otrzymania aktualnej informacji została zrealizowana metoda \texttt{updateInfo()} w której wysyła się zapytanie do części serwerowej.
 Klasa wewnętrzna \texttt{StationDisposableSingleObserver} (listing \ref{list:StationDisposableSingleObserver}), która dziedziczy po klasie abstrakcyjnej \texttt{DisposableSingleObserver}, służy do opracowania i wyświetlania informacji (metoda \texttt{updateInfoOnView()}) na ekranie (listing \ref{list:updateInfoOnView}).
@@ -1915,7 +1913,7 @@ Oczekiwanie na odpowiedź z~serwera zachodzi asynchronicznie.
 \end{lstlisting}
 
 \paragraph{Edycja\newline}
-Tylko użytkownik, który stworzył stację ładowania do pojazdów elektrycznych, ma możliwość modyfikacji stacji ładowania. Jeśli twórca przegląda swoją stację, obok opisu tej stacji istnieje przycisk (rys.~\ref{fig:frontend_station_info}a), za pomocą którego można wejść do strony modyfikacji (rys. \ref{fig:frontend_station_info}b).
+Tylko użytkownik, który stworzył stację ładowania do pojazdów elektrycznych, ma możliwość modyfikacji stacji ładowania. Jeśli twórca przegląda swoją stację, obok opisu tej stacji istnieje przycisk (rys. \ref{fig:frontend_station_info}a), za pomocą którego można wejść do strony modyfikacji (rys. \ref{fig:frontend_station_info}b).
 Modyfikacji podlegają tylko nazwa i opis. Przycisk \texttt{CANCEL} przewróci na stronę informacji o~stacji ładowania. Komunikacja z serwerem zachodzi na tej samej zasadzie, co już opisana wyżej, w części logowania i rejestracji.
 
 \subsubsection{Komentarz}
