@@ -358,7 +358,7 @@ Dla większości przypadków też jest sprawdzano czy jest użytkownik zalogowan
 W tej sekcji są opisane implementacje endpointów części serwerowej.
 % 
 \subsubsection{Użytkownik}
-Użytkownik jest niezbędny w pierwszej kolejności do uwierzytelniania. Niektóre dane użytkownika też są używane do rozumienia do kogo należy stacja ładownicza lub komentarz.
+Użytkownik jest niezbędny w pierwszej kolejności do uwierzytelniania. Niektóre dane użytkownika też są używane do rozumienia do kogo należy stacja ładowania lub komentarz.
 
 W listingu \ref{list:user_model} jest przedstawiona struktura użytkownika, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user}.
 \begin{lstlisting}[label=list:user_model,caption=Model danych użytkownika,basicstyle=\tiny\ttfamily]
@@ -835,7 +835,7 @@ Po wysłaniu zapytania GET na adres \url{api/v1/logout} zostanie wywoływana met
 \end{lstlisting}
 
 \subsubsection{Stacja}
-Głównym modelem w aplikacji jest stacja ładująca pojazdy elektryczne. Aplikacja została stworzona, aby uzyskiwać informacje o nich. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, może też modyfikować.
+Głównym modelem w aplikacji jest stacja ładowania pojazdów elektrycznych. Aplikacja została stworzona, aby uzyskiwać informacje o obiektach tego typu. Stacje można tworzyć, przeglądać, a także, jeśli użytkownik jest właścicielem, modyfikować.
 
 W listingu \ref{list:station_model} jest przedstawiona struktura encji stacji ładowania, wraz ze sposobem konwersji do JSON i BSON, która znajdująca się w pliku \texttt{models/user.go}.
 \begin{lstlisting}[label=list:station_model,caption=Model danych stacji ładowania,basicstyle=\tiny\ttfamily]
@@ -866,7 +866,7 @@ Przykład ciała zapytania:
 \end{lstlisting}
 
 Router przekieruje, po przechodzeniu przez funkcje medialne (w tym sprawdzenie JWT tokena), dane do kontrolera \texttt{CreateStation()} (plik \texttt{controllers/api/v1/stationcontoller.go}) który dekoduje wejściowy JSON w~obiekt struktury \texttt{Station}.
-Ta metoda wywołuje serwis \texttt{CreateStation}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z bazy danych ten dokument i wysyła się jako ciało odpowiedź.
+Ta metoda wywołuje serwis \texttt{CreateStation}, znajdujący się w pliku \texttt{services/api/v1/stationservice.go}, w którym sprawdza się, czy istnieje stacja w tej pozycji, tworzy stację w bazie danych (metoda \texttt{Create} z pliku \texttt{storage/mongostore/stationrepository.go}) oraz, przy udanym wpisie, pobiera się z~bazy danych ten dokument i wysyła się jako ciało odpowiedź.
 Przed tworzeniem wpisu w bazie danych zachodzi walidacja danych (listing \ref{list:validation_station}) oraz uzupełnienie niektórych niezbędnych pól (listing \ref{list:before_create_station}), na przykład czasu tworzenia i ostatniej modyfikacji.
 
 \begin{lstlisting}[label=list:validation_station,caption=Walidacja danych stacji ładowania,basicstyle=\tiny\ttfamily]
@@ -931,7 +931,7 @@ Lista przypadków wywołań metod serwisu w zależności od parametru (wszystkie
     \item \texttt{descr} -- wykonuje się metoda \texttt{FindByDescription()}, która wywołuje metodę współpracy z bazą danych \texttt{FindByDescription()};
     \item \texttt{dist} razem z \texttt{lat} oraz \texttt{lng} -- wykonuje się metoda \texttt{FindInRadius()}, która wywołuje metodę współpracy z bazą danych \texttt{FindInRadius()} (listing \ref{list:repo_read_station_FindInRadius});
     \item \texttt{lat} oraz \texttt{lng} -- wykonuje się metoda \texttt{FindByLocation()}, która wywołuje metodę współpracy z bazą danych \texttt{FindByLocation()};
-    \item \texttt{skip} razem z \texttt{limit} -- bedzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()}, która wywołuje metodę współpracy z bazą danych \texttt{Read()}.
+    \item \texttt{skip} razem z \texttt{limit} -- będzie pobrana lista kolejnych dokumentów z bazy danych, która będzie ograniczona przez te parametry (metoda \texttt{Read()} kontrolera wywołuje metodę \texttt{Read()} pobierającą dane z bazy danych).
 \end{itemize}
 
 \begin{lstlisting}[label=list:controller_find_station,caption=Kontroler wyszukiwania stacji ładowania,basicstyle=\tiny\ttfamily]
@@ -1194,9 +1194,8 @@ W celu usunięcia stacji ładowania z systemu został stworzony endpoint \url{ap
 
 Router przekieruje dane do metody \texttt{DeleteByID()} kontrolera z pliku \texttt{controllers/api/v1/stationcontroller.go}, gdzie są wczytywane dane z adresu URL oraz dekodowane ciało zapytania. Dalej dane przekierowane do metody serwisu (\texttt{DeleteByID()} znajdującej się w pliku \texttt{services/api/v1/stationservice.go}).
 W serwisie jest wywołana metoda współpracy z bazą danych \texttt(DeleteByID) z pliku \texttt{stoarage/mongostore/tationrepository.go}, gdzie zachodzi sterowanie bazą danych do usunięcia wpisu.
-\subsubsection{Komentarz}
-Stacja ładownicza przechowuje listę komentarzy. Komentarz zawiera tekst, id, imę użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja.
-Strukturę komentarza w języku Go, sposób przekazania do obiektu JSON oraz BSON pokazano na listingu (listing \ref{list:comment_struct}).
+\subsubsection{Komentarz} % TO DO: prosiłem "stacja ładowania"
+Stacja ładowania przechowuje listę komentarzy. Komentarz zawiera tekst, id, imię użytkownika, który go stworzył, jego id, oraz ocenę, na podstawie której jest oceniana cała stacja. Wykorzystaną strukturę, przekazaną do obiektu JSON oraz BSON, pokazano na listingu~\ref{list:comment_struct}.
 \begin{lstlisting}[label=list:comment_struct,caption=Struktura komentarza,basicstyle=\tiny\ttfamily]
     type Comment struct {
         ID       string  `bson:"_id,omitempty" json:"_id,omitempty"`
@@ -1223,8 +1222,8 @@ Przykład ciała zapytania:
 \end{lstlisting}
 
 Router przekieruje zapytanie, po przechodzeniu autentykacji, do metody kontrolera \texttt{CreateComment()} (plik \texttt{controllers/api/v1/commentcontroller.go}), w której zachodzi otrzymanie niezbędnych danych z adresu URL oraz zaczyna się część biznesowa w~metodzie \texttt{CreateComment()} (listing \ref{list:service_comment_create}) (plik \texttt{services/api/v1/commentservice.go}).
-W tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create}) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
-Do aktualizacji oceny została wykorzystana agregacja postępów: za pomocą parametru \texttt{\$reduce} została obliczona suma ocen wszystkich komentarzy, podzielona (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i zachowana w pole \texttt{rating} za pomocą parametru \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb)) żeby zmniejszyć czas oczekiwania użytkownika.
+W~tym serwisie zachodzi walidacja, dodawanie niektórych pól (na przykład czas tworzenia i ostatniej modyfikacji), dodanie nowego komentarza na początek listy komentarzy stacji ładowania (jest to edycja dokumentu stacji ładowania w bazie danych o podanym numerze \texttt{id}) (metoda \texttt{Create}) oraz obliczenie oceny wynikowej stacji ładowania z uwzględnieniem nowego komentarza za pomocą metody \texttt{UpdateRaitingByID} (listing \ref{list:update_rating}) z pliku \texttt{storage/mongostore/stationrepository.go}.
+Do aktualizacji oceny wykorzystano agregację postępów: za pomocą parametru \texttt{\$reduce} obliczono sumę ocen wszystkich komentarzy, podzieloną (\texttt{\$divide}) przez liczbę komentarzy (\texttt{\$cond}), i wynik zapisano w polu \texttt{rating} za pomocą \texttt{\$set} (listing \ref{list:update_rating}). Aktualizacja zachodzi w dodatkowej goroutinie (gorutiny są jak lekkie wątki, o rozmiarze 2Kb) żeby zmniejszyć czas oczekiwania użytkownika.
 
 
 \begin{lstlisting}[label=list:service_comment_create,caption=Serwis tworzenia komentarza,basicstyle=\tiny\ttfamily]
@@ -1608,9 +1607,6 @@ Ekran aplikacji składa się z kilku warstw:
 \end{itemize}
 
 Dla umieszczania oraz definiowania elementów na ekranie wykorzystane opisy w postaci plików \texttt{xml} (ang. \textit{eXtensible Markup Language}), które przechowywane w katalogu \texttt{main/res}. Na listingu \ref{list:android_xml_create_comment} przedstawiony plik \texttt{main/res/layout/fragment\_create\_comment.xml}.
-Jest to opis fragmentu tworzenia nowego komentarza (rys. \ref{fig:front_comment_create}). Aplikacja korzysta z jednego ekranu \texttt{Activity} na którym na dole znajduje się menu. Natomiast pozostałą, większą, przestrzeń ekranu zajmuje kontener do fragmentu, na fragmentach umieszczają się różne elementy aplikacji (przyciski, teksty i inne).
-Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia usunięcia już wprowadzonej informacji przez użytkownika, oraz usuwać już niepotrzebne. Opisy zachowania elementów ekranu znajdują się w odpowiednich klasach opisujących zachowanie całego ekranu i elementów na nim. Te klasy napisane w języku Java (pliki w katalogu \texttt{main/java/com/example/testapp/fragments}) (przykład w listingu \ref{list:CreateCommentFragment}).
-% Przepraszam za te wielkie listigi, ale to najmniejsze. musiałem pokazać jak wyglądają te pliki
 \begin{lstlisting}[label=list:android_xml_create_comment,caption=Opis fragmentu tworzenia komentarza,basicstyle=\tiny\ttfamily]
     <?xml version="1.0" encoding="utf-8"?>
     <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -1673,6 +1669,10 @@ Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia 
             app:layout_constraintTop_toBottomOf="@+id/editTextText" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 \end{lstlisting}
+Jest to opis fragmentu tworzenia nowego komentarza (rys.~\ref{fig:front_comment_create}). Aplikacja korzysta z jednego ekranu \texttt{Activity} na którym na dole znajduje się menu. Natomiast pozostałą, większą, przestrzeń ekranu zajmuje kontener do fragmentu, na fragmentach umieszczają się różne elementy aplikacji (przyciski, teksty i inne).
+Takie podejście pozwala nakładać fragmenty jeden na jednego, dla uniknięcia usunięcia już wprowadzonej informacji przez użytkownika, oraz usuwać już niepotrzebne. Opisy zachowania elementów ekranu znajdują się w odpowiednich klasach opisujących zachowanie całego ekranu i elementów na nim. Te klasy napisane w języku Java (pliki w katalogu \texttt{main/java/com/example/testapp/fragments}) (przykład w listingu \ref{list:CreateCommentFragment}).
+% Przepraszam za te wielkie listigi, ale to najmniejsze. musiałem pokazać jak wyglądają te pliki
+
 \begin{lstlisting}[label=list:CreateCommentFragment,caption=Klasa opisująca zachowanie elementów na fragemencie tworzenia komentarza,basicstyle=\tiny\ttfamily]
     public class CreateCommentFragment extends Fragment {
 
