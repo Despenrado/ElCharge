@@ -1,5 +1,5 @@
 \chapter{Założenia projektowe}
-W rozdziale opisano główny problem oraz potencjalne ścieżki prowadzące do jego rozwiązania. Zamieszczono w nim również wynik przeprowadzonej analizy wymagań funkcjonalnych i niefunkcjonalnych dla mającej powstać aplikacji. Zaproponowano ponadto makiety interfejsu użytkownika oraz przedstawiono narzędzia i technologie wybrane do realizacji celu pracy.
+W rozdziale opisano główny problem oraz potencjalne ścieżki prowadzące do jego rozwiązania. Zamieszczono w nim również wynik przeprowadzonej analizy wymagań funkcjonalnych i~niefunkcjonalnych dla mającej powstać aplikacji. Zaproponowano ponadto makiety interfejsu użytkownika oraz przedstawiono narzędzia i technologie wybrane do realizacji celu pracy.
 
 % Описание проблемы:
 % Существует проблема найти рабочую станцию зарядки, когда остается мало зарядки в автомобиле.
@@ -24,7 +24,7 @@ W rozdziale opisano główny problem oraz potencjalne ścieżki prowadzące do j
 \section{Analiza biznesowa}
 Podczas podróży pojazdami elektrycznymi sporym problemem jest znalezienie stacji ładowania, w której można byłoby doładować akumulatory. Znając nawet położenie takich stacji nie ma żadnej pewności, że stacje te aktualnie działają, że zapewniony jest do nich dostęp czy też posiadają odpowiednie oprzyrządowanie. Większość istniejących aplikacji mobilnych wspierających użytkowników w takich kwestiach najczęściej gromadzi dane dotyczące stacji konkretnych firm, bez żadnych wskazówek co do lokalizacji stacji ładowania konkurentów. Co więcej, nawet te dane, które są oferowane, bywają nieaktualne, nie mówiąc już o braku ocen wystawianych przez użytkowników. Problemy te można byłoby rozwiązać za pomocą aplikacji mobilnej. Wystarczyłoby, by aplikacja ta wyświetliła bieżącą pozycję użytkownika na mapie oraz pokazała stacje znajdujące się w pobliżu wraz z możliwością podglądu opinii na ich temat wystawionych przez innych użytkowników.
 
-Aplikacja ta w szczególności mogłaby wspierać kierowców pojazdów elektrycznych w odnajdowaniu najbliższych stacji ładowania, pomagając w łatwy i przyjazny sposób wybrać stację najlepszą. Właściciele mogliby dostarczać informacji o swoich stacjach, co może robili by z chęcią z uwagi na ich dodatkową reklamę.
+Aplikacja ta w szczególności mogłaby wspierać kierowców pojazdów elektrycznych w odnajdowaniu najbliższych stacji ładowania, pomagając w łatwy i przyjazny sposób wybrać stację najlepszą. Właściciele mogliby dostarczać informacji o swoich stacjach, co może robiliby z~chęcią z uwagi na ich dodatkową reklamę.
 
 Aby stworzyć jakiś ranking stacji czy też obiektywnie oceniać ich jakość należałoby wprowadzić możliwość tworzenia aktualnych komentarzy wraz z wystawianiem oceny przez zarejestrowanych użytkowników. Każdy zarejestrowany użytkownik musiałby wtedy posiadać konto w systemie, by można było autoryzować jego działania.
 
@@ -63,7 +63,7 @@ Przedstawioną koncepcję można zrealizować w architekturze składającej się
 
 \section{Analiza wymagań}
 \subsection{Wymagania funkcjonalne}
-Wymagania funkcjonale definiują oczekiwany zakres funkcji dostarczanych przez tworzony system oraz jego zachowania. Wymagania te można definiować w języku naturalnym bądź też w języku formalnym. W niniejszej pracy wymagania przedstawiono na diagramie przypadków użycia (patrz rysunek~\ref{fig:usecasediagram}) oraz opisano tabelarycznie cel ich wdrożenia (patrz tabela~\ref{tab:wymaganiafunkcjonalne}).
+Wymagania funkcjonale definiują oczekiwany zakres funkcji dostarczanych przez tworzony system oraz jego zachowania. Wymagania te można definiować w języku naturalnym bądź też w~języku formalnym. W niniejszej pracy wymagania przedstawiono na diagramie przypadków użycia (patrz rysunek~\ref{fig:usecasediagram}) oraz opisano tabelarycznie cel ich wdrożenia (patrz tabela~\ref{tab:wymaganiafunkcjonalne}).
 Na diagramie przypadków użycia zwykle przedstawia się użytkowników w powiązaniu z dostępnymi dla nich funkcjami. W budowanej aplikacji istnieje tylko jeden typ użytkownika. 
 % TO DO: Diagram do przerysowania (jest za wysoki - można przecież ułożyć przypadki logowania i rejestracji w poziomie, nie w pionie. Podobnie można poprzesuwać pozostałe przypadki. Owale są za duże w porównaniu do zawartego w nich tekstu. Niech nazwy przypadków będą pisane dużą literą
 % To VERIFY:
@@ -139,13 +139,13 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przedstawiono wymagania niefunkcjona
     \hline
     8 & Estetyczne & Kolory muszą być odpowiednio dopasowane & Wykorzystanie palety z małą liczbą odpowiednich kolorów  \\
     \hline
-    9 & Wydajność & Płaynna reakcja systemu & Użytkownik kontynuje współpracę z systemem podczas ładowania danych z serwera \\ % TO DO: ile ms?
+    9 & Wydajność & Płaynna reakcja systemu & Użytkownik kontynuuje współpracę z systemem podczas ładowania danych z serwera \\ % TO DO: ile ms?
     \hline
-    10 & Informatywność & System powinien powiadomiać o błędach i sukcesach  & Podczas zarządzania systemem użytkownik powinien zawsze wiedzieć jaki wynik jego działania \\
+    10 & Informatywność & System powinien powiadomiać o~błędach i sukcesach  & Podczas zarządzania systemem użytkownik powinien zawsze wiedzieć jaki wynik jego działania \\
     \hline
-    11 & Ergonomia & Wykorzystanie z aplikacji mobilnej za pomocą jednej ręki & Przyciski muszą znajdować się w dolnej części ekranu lub znajdować się w dostępnym miejscu \\
+    11 & Ergonomia & Wykorzystanie z aplikacji mobilnej za pomocą jednej ręki & Przyciski muszą znajdować się w~dolnej części ekranu lub znajdować się w~dostępnym miejscu \\
     \hline
-    12 & Estetyczne & Wszystkie elementy muszą być w jednym stylu & Niedopuszczalne jest użycie różnych czcionek oraz ciągłej zmiany kolorów \\
+    12 & Estetyczne & Wszystkie elementy muszą być w~jednym stylu & Niedopuszczalne jest użycie różnych czcionek oraz ciągłej zmiany kolorów \\
     \hline
     13 & Dostęp & Dane o stacjach ładowniczych oraz komentarzy przechowywane zdalnie & Różni użytkownicy miały do nich dostęp do tej samej bazy danych \\
     \hline
@@ -162,36 +162,36 @@ W tabeli \ref{tab:wymaganianiefunkcjonalne} przedstawiono wymagania niefunkcjona
 Do stworzenia aplikacji mobilnej, części serwerowej oraz bazy danych wybrano następujące narzędzia i technologie:
 \begin{multicols}{3}
 \begin{itemize}
-    \item Visual Studio Code;
-    \item Go;
-    \item REST API;
-    \item JWT;
-    \item MongoDB;
-    \item Redis;
-    \item Android Studio;
-    \item Gradle;
-    \item Android SDK;
-    \item Java JDK 8;
-    \item RxJava 2;
-    \item Google Cloud Platform;
-    \item GMS;
-    \item Docker;
+    \item Visual Studio Code,
+    \item Go,
+    \item REST API,
+    \item JWT,
+    \item MongoDB,
+    \item Redis,
+    \item Android Studio,
+    \item Gradle,
+    \item Android SDK,
+    \item Java JDK 8,
+    \item RxJava 2,
+    \item Google Cloud Platform,
+    \item GMS,
+    \item Docker.
 \end{itemize}
 \end{multicols}
 
 
-\noindent\textbf{Visual Studio Code} -- to darmowy edytor kodu źródłowego wyprodukowany przez firmę Microsoft. Działa na systemach Windows, Linux, macOS. Wspiera on różne języki programowania oraz posiada możliwość rozszerzeń dzięki mechanizmowi plug-inów. Wśród jego funkcji można wymienić: podświetlanie składni, IntelliSense, refaktoryzacja, debugowanie i inne.~\cite{vscode} \\
+\noindent\textbf{Visual Studio Code} -- to darmowy edytor kodu źródłowego wyprodukowany przez firmę Microsoft. Działa na systemach Windows, Linux, macOS. Wspiera on różne języki programowania oraz posiada możliwość rozszerzeń dzięki mechanizmowi plug-inów. Wśród jego funkcji można wymienić: podświetlanie składni, IntelliSense, refaktoryzacja, debugowanie i~inne.~\cite{vscode} \\
 
 \noindent\textbf{Go} (golang) -- jest językiem programowania stworzonym przez firmę Google. Pozwala tworzyć aplikacje wielowątkowe kompilowane dla systemów Linux, Windows, macOS, FreeBSD, Android i innych. Język jest przeznaczony do budowania serwisów działających efektywnie pod wysokim obciążeniem w środowisku rozproszonym i z wielowątkowymi procesorami.~\cite{golang1,golang2,golang3,godoc} \\
 
-\noindent\textbf{REST API} (ang.~\emph{Representational State Transfer Application Programming Interface}) -- jest podejściem stosowanym w tworzenia interfejsów programistycznych aplikacji webowych. Obowiązują w nim następujące zasady: komunikacja w architekturze klient-serwer (serwer nasłuchuje na żądania wysyłane przez klienta oraz udziela na nie odpowiedzi), brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z żądaniem), buforowanie (buforowanie danych jest dozwolone, jeśli w odpowiedzi jest na to zgoda), jednorodność interfejsu (ograniczenia stylu pisania), wielopoziomowość systemu (komponenty systemu mają bezpośredni dostęp tylko do sąsiednich warstw), łatwość rozszerzenia funkcjonalności (opcjonalnie).  \cite{rest_api,rest_api_best} \\
+\noindent\textbf{REST API} (ang.~\emph{Representational State Transfer Application Programming Interface}) -- jest podejściem stosowanym w tworzenia interfejsów programistycznych aplikacji webowych. Obowiązują w nim następujące zasady: komunikacja w architekturze klient-serwer (serwer nasłuchuje na żądania wysyłane przez klienta oraz udziela na nie odpowiedzi), brak stanu (serwer nie przechowuje stanu klienta, wszystkie potrzebne informacje są wysyłane wraz z~żądaniem), buforowanie (buforowanie danych jest dozwolone, jeśli w odpowiedzi jest na to zgoda), jednorodność interfejsu (ograniczenia stylu pisania), wielopoziomowość systemu (komponenty systemu mają bezpośredni dostęp tylko do sąsiednich warstw), łatwość rozszerzenia funkcjonalności (opcjonalnie).  \cite{rest_api,rest_api_best} \\
 
-\noindent\textbf{JWT} (ang.~\emph{JSON Web Token}) -- jest standardem wykorzystywanym do tworzenia tokenów dostępu. Za pomocą JWT sprawdza się, czy wchodzące dane zostały wysłane przez autoryzowane źródło. Wykorzystywany model informacyjny składa się z trzech części: nagłówka (informacja o tym, w jaki sposób odszyfrować token), danych (zaszyfrowane dane) oraz sygnatury. Każdy token ma określony okres ważności. Nie może być oznaczony jako nieważny, dopóki ten okres się nie zakończy.~\cite{jwt} \\
+\noindent\textbf{JWT} (ang.~\emph{JSON Web Token}) -- jest standardem wykorzystywanym do tworzenia tokenów dostępu. Za pomocą JWT sprawdza się, czy wchodzące dane zostały wysłane przez autoryzowane źródło. Wykorzystywany model informacyjny składa się z trzech części: nagłówka (informacja o~tym, w jaki sposób odszyfrować token), danych (zaszyfrowane dane) oraz sygnatury. Każdy token ma określony okres ważności. Nie może być oznaczony jako nieważny, dopóki ten okres się nie zakończy.~\cite{jwt} \\
 
 \noindent\textbf{MongoDB} -- jest dokumentową bazą danych zaliczaną do rozwiązań typu NoSQL (ang.~\emph{Not only Structured Query Language}). Formatem przechowywania danych jest BSON (ang.~\emph{Binary JavaScript Object Notation}). Działa na licencji SSPL (ang.~\emph{Server Side Public License}). Wykorzystuje technikę segmentacji obiektów bazy danych, co pozwala na bilansowanie obciążenia.~\cite{mongoDB,mongoDB_doc,mongodb_habr} \\
 
 \noindent\textbf{Redis} -- to system zarządzania bazami danych zaliczany do rozwiązań typu NoSQL, operujący na strukturach typu ,,klucz-wartość''. 
-Najczęściej używa się go do implementacji baz danych w pamięci podręcznej, głównie brokerów wiadomości.~\cite{redis} \\
+Najczęściej używa się go do implementacji baz danych w~pamięci podręcznej, głównie brokerów wiadomości.~\cite{redis} \\
 
 \noindent\textbf{Android Studio} -- to zintegrowane środowisko programistyczne stworzone przez firmę JetBrains na podstawie IntelliJ IDEA, służące do budowania aplikacji na platformie Android. Środowisko to jest dostępne do systemów Windows, Linux, macOS na bezpłatnej licencji Apache 2.0.~\cite{android_doc,android_studio} \\
 
@@ -236,7 +236,7 @@ Na rysunku \ref{fig:search_makiet}a przedstawiono widok wyszukiwania stacji ład
     \label{fig:search_makiet}
 \end{figure}
 
-Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokonać wyboru stacji ładowania. Położeniom stacji odpowiada odpowiedni znacznik  na mapie. W celu otrzymania informacji o wybranej stacji (dla danego markera na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
+Na rysunku~\ref{fig:search_makiet}b przedstawiono makietę pozwalającą dokonać wyboru stacji ładowania. Położeniom stacji odpowiada odpowiedni znacznik  na mapie. W celu otrzymania informacji o~wybranej stacji (dla danego markera na mapie) oraz wyświetlania pozycji użytkownika wykorzystują się okrągłe przyciski z lewej strony ekranu.
 
 Podczas tworzenia stacji ładowania  dla wygody użytkowania można wybrać miejsce na mapie poprzez odpowiedni przycisk (rys.~\ref{fig:create_makiet}a).
 % TO DO: proszę ułożyć dwie makiety obok siebie, jak w przykładzie powyżej
@@ -247,7 +247,7 @@ Podczas tworzenia stacji ładowania  dla wygody użytkowania można wybrać miej
         a) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.22\linewidth]{rys02/create_makiet.jpg}}} &
         b) & \vtop{\vskip-2ex\hbox{\includegraphics[width=0.22\linewidth]{rys02/station_makiet.jpg}}} 
     \end{tabular}
-    \caption{Makiety interfejsów użytkownika: a) strona tworzenia stacji ładowania, b) strona informacji o stacji ładowania.}
+    \caption{Makiety interfejsów użytkownika: a) strona tworzenia stacji ładowania, b) strona informacji o~stacji ładowania.}
     \label{fig:create_makiet}
 \end{figure}
 Na stronie informacji o stacji oprócz nazwy stacji, opisu oraz oceny, wyliczonej na podstawie komentarzy oceny, znajdują się komentarzy użytkowników uporządkowane od najnowszego (rys.\ref{fig:create_makiet}b) .
