@@ -2,7 +2,7 @@
 
 # Aplikacja mobilna ułatwiająca podróżowanie samochodami elektrycznymi (praca inżynerska)
 
-### Full documetation is avaible on: [./Documetation/W04_245816_2020_praca_inżynierska.pdf](https://github.com/Despenrado/ElCharge/W04_245816_2020_praca_inżynierska.pdf)
+### Full documetation is avaible on: [./Documetation/W04_245816_2020_praca_inżynierska.pdf](https://github.com/Despenrado/ElCharge/blob/master/Documentation/W04_245816_2020_praca_in%C5%BCynierska.pdf)
 
 ## Intro
 
