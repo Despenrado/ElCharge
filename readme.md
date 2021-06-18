@@ -12,6 +12,14 @@ This project will solve the problem of finding charging stations for electric ve
 
 ![Documentation/rys02/system_architecture_diagram4.png](Documentation/rys02/system_architecture_diagram4.png)
 
+Used technologies:
+
+- Go (golang): gorilla/mux, dgrijalva/jwt-go, mongo-driver, go-redis/redis
+- MongoDB
+- Redis
+- Android Studio: Java SDK 8, Gradle, RxJava2, OkHttp3 + Retrifit, gms
+- Docker (docker-compose)
+
 ## Installation and Running
 
 ### Build and run RestAPI
