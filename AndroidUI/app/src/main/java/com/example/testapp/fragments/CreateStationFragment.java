@@ -11,7 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.testapp.App;
-import com.example.testapp.Helper;
+import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
 import com.example.testapp.api.models.Station;
 
@@ -125,5 +125,11 @@ public class CreateStationFragment extends Fragment {
             mapsSelectFragment.addMarker(51.10613247628298, 17.086756893213984, "", true);
         }
         getFragmentManager().beginTransaction().add(R.id.container, mapsSelectFragment).commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        disposable.dispose();
+        super.onDestroy();
     }
 }

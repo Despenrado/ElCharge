@@ -14,11 +14,9 @@ import android.widget.EditText;
 import android.widget.RatingBar;
 
 import com.example.testapp.App;
-import com.example.testapp.Helper;
+import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
 import com.example.testapp.api.models.Comment;
-import com.example.testapp.api.models.User;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -109,4 +107,9 @@ public class CreateCommentFragment extends Fragment {
                 }));
     }
 
+    @Override
+    public void onDestroy() {
+        disposable.dispose();
+        super.onDestroy();
+    }
 }

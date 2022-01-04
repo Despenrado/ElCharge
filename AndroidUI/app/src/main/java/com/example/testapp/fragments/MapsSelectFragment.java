@@ -1,7 +1,5 @@
 package com.example.testapp.fragments;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +7,9 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 
-import com.example.testapp.App;
-import com.example.testapp.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Station;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -26,15 +20,14 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
-import java.util.List;
-
-import io.reactivex.observers.DisposableSingleObserver;
-import retrofit2.Response;
 
 public class MapsSelectFragment extends Fragment implements OnMapReadyCallback {
 
     private GoogleMap googleMap;
     private ArrayList<MarkerOptions> markers;
+    private final float DEFAULT_ZOOM = 14;
+    private final Double DEFAULT_LATITUDE = 51.10613247628298;
+    private final Double DEFAULT_LONGITUDE = 17.086756893213984;
 
     public MapsSelectFragment() {
         this.markers = new ArrayList<MarkerOptions>();
@@ -87,10 +80,9 @@ public class MapsSelectFragment extends Fragment implements OnMapReadyCallback {
                     }
                 });
             }
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(markers.get(0).getPosition()));
-        }else{
-            LatLng tmp = new LatLng(51.10613247628298, 17.086756893213984);
-            googleMap.moveCamera(CameraUpdateFactory.newLatLng(tmp));
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markers.get(0).getPosition(), DEFAULT_ZOOM));
+        } else {
+            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(DEFAULT_LATITUDE, DEFAULT_LONGITUDE),DEFAULT_ZOOM));
         }
         return googleMap;
     }

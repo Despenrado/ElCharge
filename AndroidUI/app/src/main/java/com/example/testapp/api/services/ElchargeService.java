@@ -1,11 +1,7 @@
 package com.example.testapp.api.services;
 
-import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
-
 import com.example.testapp.App;
-import com.example.testapp.Helper;
+import com.example.testapp.utils.Helper;
 import com.example.testapp.api.api.CommentApi;
 import com.example.testapp.api.api.StationApi;
 import com.example.testapp.api.api.UserApi;
@@ -31,7 +27,7 @@ public class ElchargeService {
 
     public ElchargeService(){
         apiAddr = Helper.getConfigValue(App.getAppContext(),"apiserver_addr");
-        token = Helper.getConfigValue(App.getAppContext(),"apiserver_token");
+        token = Helper.readFromSharedPreferences(App.getAppContext(),"jwt_token");
         Retrofit retrofit = createRetrofit();
         userApi = retrofit.create(UserApi.class);
         stationApi = retrofit.create(StationApi.class);
@@ -93,7 +89,7 @@ public class ElchargeService {
     }
 
     public void setToken(String token) {
-        Helper.setConfigValue(App.getAppContext(),"apiserver_token", token);
+        Helper.saveToSharedPreferences(App.getAppContext(),"jwt_token", token);
         this.token = token;
     }
 

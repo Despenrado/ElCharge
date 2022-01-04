@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testapp.App;
-import com.example.testapp.Helper;
+import com.example.testapp.adapters.CommentsAdapter;
+import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
 import com.example.testapp.api.models.Station;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -129,5 +130,11 @@ public class InfoFragment extends Fragment {
         public void onError(Throwable e) {
             Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        disposable.dispose();
+        super.onDestroy();
     }
 }

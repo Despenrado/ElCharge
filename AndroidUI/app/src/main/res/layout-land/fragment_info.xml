@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#ccc"
+    tools:context=".fragments.InfoFragment">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:cardElevation="8dp"
+        app:cardCornerRadius="8dp">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="255dp"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/stationId"
+                android:layout_width="131dp"
+                android:layout_height="11dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="4dp"
+                android:text="id"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.004" />
+
+            <TextView
+                android:id="@+id/stationName"
+                android:layout_width="136dp"
+                android:layout_height="28dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="4dp"
+                android:text="station Name"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/stationId"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="136dp"
+                android:layout_height="26dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginBottom="2dp"
+                android:text="date"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <TextView
+                android:id="@+id/rating"
+                android:layout_width="80dp"
+                android:layout_height="29dp"
+                android:layout_marginEnd="52dp"
+                android:layout_marginBottom="4dp"
+                android:text="Rating"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.076" />
+
+            <TextView
+                android:id="@+id/description"
+                android:layout_width="377dp"
+                android:layout_height="170dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:maxLength="512"
+                android:text="Description"
+                android:textColor="@android:color/black"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.441"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/stationName"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButtonEditStation"
+                android:layout_width="49dp"
+                android:layout_height="49dp"
+                android:layout_marginEnd="6dp"
+                android:layout_marginBottom="6dp"
+                android:clickable="true"
+                app:borderWidth="0dp"
+                android:backgroundTint="#2ED573"
+                android:alpha="0.9"
+                android:src="@drawable/ic_edit"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.cardview.widget.CardView>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewComments"
+        android:layout_width="match_parent"
+        android:layout_height="401dp"
+        android:layout_marginBottom="60dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButtonCreateComment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginBottom="76dp"
+        android:backgroundTint="#2ED573"
+        android:alpha="0.9"
+        app:borderWidth="0dp"
+        android:clickable="true"
+        android:src="@drawable/ic_add"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -11,13 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RatingBar;
 import android.widget.TextView;
 
 import com.example.testapp.App;
-import com.example.testapp.Helper;
+import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Comment;
 import com.example.testapp.api.models.Station;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -114,5 +112,11 @@ public class EditStationFragment extends Fragment {
                         Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "station", e.getMessage());
                     }
                 }));
+    }
+
+    @Override
+    public void onDestroy() {
+        disposable.dispose();
+        super.onDestroy();
     }
 }

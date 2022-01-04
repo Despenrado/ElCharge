@@ -20,7 +20,7 @@ func (c *Comment) Validate() error {
 		c,
 		validation.Field(&c.UserName, validation.Required, validation.Length(2, 100)),
 		validation.Field(&c.UserID, validation.Required, validation.Length(20, 30)),
-		validation.Field(&c.Text, validation.Required, validation.Length(8, 256)),
+		validation.Field(&c.Text, validation.Required, validation.Length(0, 256)),
 	)
 }
 

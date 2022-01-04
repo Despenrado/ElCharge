@@ -2,11 +2,11 @@ version: "3.5" # Use version 3.5 syntax
 services: # Here we define our service(s)
     db:
         container_name: mongodb-elcharge # Container name
-        image: mongo # image name to start/build
+        image: mongo:5.0 # image name to start/build
         ports: # Port mapping
             - "2717:27017"
         volumes: # Volume binding
-            - "~/example:/data/db"
+            - "~/database/mongo/elcharge/:/data/db"
     cache-db:
         container_name: redis-elcharge # Container name
         image: redis

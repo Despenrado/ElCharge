@@ -1,4 +1,4 @@
-package com.example.testapp.fragments;
+package com.example.testapp.adapters;
 
 
 import android.view.LayoutInflater;
@@ -9,15 +9,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.testapp.Helper;
+import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
 import com.example.testapp.api.models.Comment;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public class CommentsAdapter extends RecyclerView.Adapter<CommentsAdapter.CommentViewHolder> {
