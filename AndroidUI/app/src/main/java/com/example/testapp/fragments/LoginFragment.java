@@ -13,7 +13,7 @@ import android.widget.EditText;
 import com.example.testapp.App;
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.User;
+import com.example.testapp.models.User;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

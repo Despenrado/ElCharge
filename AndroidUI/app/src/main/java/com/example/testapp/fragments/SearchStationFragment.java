@@ -24,13 +24,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.example.testapp.App;
+import com.example.testapp.greendao.DaoSession;
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Station;
+import com.example.testapp.models.Station;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+
+import org.greenrobot.greendao.async.AsyncOperation;
+import org.greenrobot.greendao.async.AsyncOperationListener;
+import org.greenrobot.greendao.async.AsyncSession;
 
 import java.io.IOException;
 import java.util.List;
@@ -102,7 +107,7 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
         return view;
     }
 
-    public String getUserLatLng(){
+    public String getUserLatLng() {
         if (ContextCompat.checkSelfPermission(App.getAppContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(app.getApplicationContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -120,7 +125,7 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
                     }
                 }
             });
-            if (!latLng[0].equals("")){
+            if (!latLng[0].equals("")) {
                 return latLng[0];
             }
         }
@@ -130,8 +135,10 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         searchBy = id;
+        this.editTextSearch.setEnabled(true);
         if (id == 2) {
             editTextSearch.setText(getUserLatLng());
+            this.editTextSearch.setEnabled(false);
         }
         if (id == 3) {
             MapsSelectFragment mapsSelectFragment = new MapsSelectFragment();
@@ -147,6 +154,10 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
             getFragmentManager().beginTransaction().add(R.id.container, mapsSelectFragment).commit();
             return;
         }
+        if (id == 6) {
+            this.editTextSearch.setText("");
+            this.editTextSearch.setEnabled(false);
+        }
     }
 
     @Override
@@ -157,12 +168,11 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
     public void onButtonGoClick(View view) {
         if (searchBy == 1) {
             try {
-                Address location = geocoder.getFromLocationName(this.editTextSearch.getText().toString(),1).get(0);
+                Address location = geocoder.getFromLocationName(this.editTextSearch.getText().toString(), 1).get(0);
                 findByLatAndLngAndDist(location.getLatitude(), location.getLongitude(), radius);
             } catch (IOException e) {
                 Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "search", e.getMessage());
-            }
-            catch (NullPointerException | IndexOutOfBoundsException e){
+            } catch (NullPointerException | IndexOutOfBoundsException e) {
                 Helper.messageLogger(App.getAppContext(), Helper.LogType.NONE, "search", "Address NOT FOUND");
             }
         }
@@ -192,6 +202,10 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
             findByDescription(description);
             return;
         }
+        if (searchBy == 6) {
+            getAllStationsFromSQLite();
+            return;
+        }
     }
 
     private void findByLatAndLngAndDist(double lat, double lng, int dist) {
@@ -215,6 +229,22 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
                 .subscribeWith(new StationDisposableSingleObserver()));
     }
 
+    private void getAllStationsFromSQLite() {
+        AsyncSession asyncSession = app.getDaoSession().startAsyncSession();
+        asyncSession.setListener(new AsyncOperationListener() {
+            @Override
+            public void onAsyncOperationCompleted(AsyncOperation operation) {
+                List<Station> stationList = (List<Station>) operation.getResult();
+                MapsFragment mapsFragment = new MapsFragment();
+                for (Station station : stationList) {
+                    mapsFragment.addMarker(station.getLatitude(), station.getLongitude(), station.getStationName(), false);
+                }
+                getFragmentManager().beginTransaction().replace(R.id.container, mapsFragment, "main_maps").commit();
+            }
+        });
+        asyncSession.loadAll(Station.class);
+    }
+
     private class StationDisposableSingleObserver extends DisposableSingleObserver<Response<List<Station>>> {
         @Override
         public void onSuccess(Response<List<Station>> response) {
@@ -222,7 +252,9 @@ public class SearchStationFragment extends Fragment implements AdapterView.OnIte
                 if (response.code() == 200) {
                     List<Station> stationList = response.body();
                     MapsFragment mapsFragment = new MapsFragment();
+                    DaoSession daoSession = app.getDaoSession();
                     for (Station station : stationList) {
+                        daoSession.insertOrReplace(station);
                         mapsFragment.addMarker(station.getLatitude(), station.getLongitude(), station.getStationName(), false);
                     }
                     Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", response.message());

@@ -1,7 +1,6 @@
 package com.example.testapp.api.api;
 
-import com.example.testapp.api.models.Comment;
-import com.example.testapp.api.models.Station;
+import com.example.testapp.models.Comment;
 
 import java.util.List;
 

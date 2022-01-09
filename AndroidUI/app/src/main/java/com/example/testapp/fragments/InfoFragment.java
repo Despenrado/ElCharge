@@ -16,7 +16,7 @@ import com.example.testapp.App;
 import com.example.testapp.adapters.CommentsAdapter;
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Station;
+import com.example.testapp.models.Station;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -108,6 +108,7 @@ public class InfoFragment extends Fragment {
                 if (response.code() == 200) {
                     Station station = response.body();
                     Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", Integer.toString(response.code()));
+                    System.out.println(station.toString());
                     currentStation = station;
                     updateInfoOnView();
                 } else {

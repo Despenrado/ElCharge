@@ -16,7 +16,7 @@ import android.widget.RatingBar;
 import com.example.testapp.App;
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Comment;
+import com.example.testapp.models.Comment;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

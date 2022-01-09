@@ -7,5 +7,6 @@
         <item>select on map</item>
         <item>station name</item>
         <item>key word in description</item>
+        <item>local storage</item>
     </string-array>
 </resources>

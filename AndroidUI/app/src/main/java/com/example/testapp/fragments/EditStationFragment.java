@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.example.testapp.App;
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Station;
+import com.example.testapp.models.Station;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;

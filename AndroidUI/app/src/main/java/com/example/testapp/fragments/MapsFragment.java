@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polygon;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -58,7 +59,7 @@ import io.reactivex.functions.Action;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
 
-public class MapsFragment extends Fragment implements OnMapReadyCallback {
+public class MapsFragment extends Fragment implements OnMapReadyCallback{
 
     private CompositeDisposable disposable = new CompositeDisposable();
     private GoogleMap googleMap;
@@ -191,8 +192,7 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                 } catch (InterruptedException e) {
                 }
             }
-            if (clientPositionMarker != null) {
-                System.out.println("______WTF_____");
+            if (clientPositionMarker != null && selectedMarker != null) {
                 DirectionsApiRequest directionsApiRequest = new DirectionsApiRequest(app.getGeoApiContext());
                 directionsApiRequest.alternatives(true);
                 directionsApiRequest.origin(new com.google.maps.model.LatLng(clientPositionMarker.getPosition().latitude, clientPositionMarker.getPosition().longitude));
@@ -203,16 +203,24 @@ public class MapsFragment extends Fragment implements OnMapReadyCallback {
                         disposable.add(Completable.fromAction(new Action() {
                             @Override
                             public void run() throws Exception {
-                                System.out.println("______WTF_____");
                                 for (DirectionsRoute route : result.routes) {
                                     List<LatLng> newDecodedPath = new ArrayList<>();
                                     List<com.google.maps.model.LatLng> decodedPath = PolylineEncoding.decode(route.overviewPolyline.getEncodedPath());
                                     for (com.google.maps.model.LatLng latLng : decodedPath) {
                                         newDecodedPath.add(new LatLng(latLng.lat, latLng.lng));
                                     }
-                                    Polyline polyline = googleMap.addPolyline(new PolylineOptions().addAll(newDecodedPath));
-                                    polyline.setColor(ContextCompat.getColor(getActivity(), R.color.darkGrey));
-                                    polyline.setClickable(true);
+                                    System.out.println(newDecodedPath.toString());
+                                    getActivity().runOnUiThread(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Polyline polyline = googleMap.addPolyline(new PolylineOptions()
+                                                    .clickable(true)
+                                                    .addAll(newDecodedPath));
+                                            polyline.setColor(ContextCompat.getColor(getActivity(), R.color.lightGoogleBlue));
+//                                            googleMap.setOnPolylineClickListener(MapsFragment.this);
+//                                            googleMap.setOnPolygonClickListener(MapsFragment.this);
+                                        }
+                                    });
                                 }
                             }
                         }).subscribeOn(Schedulers.io())

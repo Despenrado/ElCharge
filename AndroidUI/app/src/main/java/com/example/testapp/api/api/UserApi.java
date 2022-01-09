@@ -1,6 +1,6 @@
 package com.example.testapp.api.api;
 
-import com.example.testapp.api.models.User;
+import com.example.testapp.models.User;
 
 import io.reactivex.Single;
 import okhttp3.ResponseBody;

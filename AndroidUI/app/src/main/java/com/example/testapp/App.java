@@ -6,18 +6,26 @@ import android.location.LocationManager;
 import android.widget.Toast;
 
 import com.example.testapp.api.services.ElchargeService;
+import com.example.testapp.greendao.DaoMaster;
+import com.example.testapp.greendao.DaoSession;
 import com.google.maps.GeoApiContext;
+
+import org.greenrobot.greendao.database.Database;
 
 public class App extends Application {
 
     private static Context context;
     private ElchargeService elchargeService; // retrofit + rx HTTP client for connection to backend
     private GeoApiContext geoApiContext;
+    private DaoSession daoSession;
 
     @Override
     public void onCreate() {
         super.onCreate();
         App.context = getApplicationContext();
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "elcharge-db");
+        Database db = helper.getWritableDb();
+        daoSession = new DaoMaster(db).newSession();
         elchargeService = new ElchargeService();
         geoApiContext = new GeoApiContext.Builder()
                 .apiKey(getString(R.string.google_maps_key))
@@ -44,6 +52,10 @@ public class App extends Application {
                     .build();
         }
         return geoApiContext;
+    }
+
+    public DaoSession getDaoSession() {
+        return daoSession;
     }
 
     public Object getAppSystemService(String serviceName){

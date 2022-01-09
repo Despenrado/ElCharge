@@ -52,7 +52,7 @@ func (c *StationController) FindByID() http.HandlerFunc {
 			utils.Error(w, r, http.StatusNoContent, err)
 			return
 		}
-		utils.Respond(w, r, http.StatusFound, s)
+		utils.Respond(w, r, http.StatusOK, s)
 	})
 }
 

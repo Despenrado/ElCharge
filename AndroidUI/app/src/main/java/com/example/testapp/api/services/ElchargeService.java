@@ -5,7 +5,7 @@ import com.example.testapp.utils.Helper;
 import com.example.testapp.api.api.CommentApi;
 import com.example.testapp.api.api.StationApi;
 import com.example.testapp.api.api.UserApi;
-import com.example.testapp.api.models.User;
+import com.example.testapp.models.User;
 
 import java.io.IOException;
 import okhttp3.Interceptor;

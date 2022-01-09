@@ -12,14 +12,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.testapp.App;
+import com.example.testapp.greendao.DaoSession;
+import com.example.testapp.models.Station;
+import com.example.testapp.models.User;
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.ResponseBody;
+import retrofit2.Response;
 
 public class SettingsFragment extends ListFragment {
 
@@ -32,7 +38,8 @@ public class SettingsFragment extends ListFragment {
 
     private String[] data = new String[]{
             "sign in",
-            "log out"
+            "log out",
+            "update offline data"
     };
 
     @Override
@@ -61,11 +68,13 @@ public class SettingsFragment extends ListFragment {
             case "log out":
                 logout();
                 break;
+            case "update offline data":
+                updateOfflineDatabase();
         }
     }
 
     // send request to backend: logout
-    private void logout(){
+    private void logout() {
         if (app.getElchargeService().getUser() != null) {
             disposable.add(app.getElchargeService().getUserApi().logout(app.getElchargeService().getUser().getId())
                     .subscribeOn(Schedulers.io())
@@ -87,6 +96,41 @@ public class SettingsFragment extends ListFragment {
                         @Override
                         public void onError(Throwable e) {
                             Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "logout", e.getMessage());
+                        }
+                    }));
+        }
+    }
+
+    private void updateOfflineDatabase() {
+        DaoSession daoSession = app.getDaoSession();
+        List<Station> stationOfflineList = daoSession.loadAll(Station.class);
+        for (Station station : stationOfflineList) {
+            disposable.add(app.getElchargeService().getStationApi().findById(station.getId())
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableSingleObserver<Response<Station>>() {
+                        @Override
+                        public void onSuccess(Response<Station> response) {
+                            if (response.code() == 302 || response.code() == 200) {
+                                Station updatedStation = response.body();
+                                daoSession.update(updatedStation);
+                                return;
+                            }
+                            if (response.code() == 204) {
+                                daoSession.delete(station);
+                                return;
+                            }
+                            if (response.code() == 401) {
+                                LoginFragment lf = new LoginFragment();
+                                getFragmentManager().beginTransaction().add(R.id.container, lf).commit();
+                                getFragmentManager().beginTransaction().show(lf).commit();
+                                return;
+                            }
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
                         }
                     }));
         }

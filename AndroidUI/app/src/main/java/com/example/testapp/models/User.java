@@ -1,10 +1,6 @@
-package com.example.testapp.api.models;
+package com.example.testapp.models;
 
 import com.google.gson.annotations.SerializedName;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 
 public class User {

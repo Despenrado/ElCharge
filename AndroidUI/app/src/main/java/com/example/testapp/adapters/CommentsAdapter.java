@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.testapp.utils.Helper;
 import com.example.testapp.R;
-import com.example.testapp.api.models.Comment;
+import com.example.testapp.models.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
