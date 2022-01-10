@@ -17,7 +17,7 @@ Used technologies:
 - Go (golang): gorilla/mux, dgrijalva/jwt-go, mongo-driver, go-redis/redis
 - MongoDB
 - Redis
-- Android Studio: Java SDK 8, Gradle, RxJava2, OkHttp3 + Retrifit, gms
+- Android Studio: Java SDK 8, Gradle, RxJava2, OkHttp3 + Retrofit, gms (Maps SDK for Android, Directions API), greenDao
 - Docker (docker-compose)
 
 ## Installation and Running

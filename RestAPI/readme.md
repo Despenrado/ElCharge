@@ -4,18 +4,15 @@
 
 - docker
 - docker-compose
-- go (golang) for build
 
 # Build
 
 ```
-$ go mod vendor
-$ ./Makefile
+$ docker-compose build
 ```
 
 # Run (in progress)
 
 ```
-$ cd ./deploy
 $ docker-compose up
 ```

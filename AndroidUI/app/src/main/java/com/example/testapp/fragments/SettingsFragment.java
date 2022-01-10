@@ -66,6 +66,7 @@ public class SettingsFragment extends ListFragment {
                 getFragmentManager().beginTransaction().add(R.id.container, new LoginFragment()).commit();
                 break;
             case "log out":
+                System.out.println("logout");
                 logout();
                 break;
             case "update offline data":
@@ -85,6 +86,9 @@ public class SettingsFragment extends ListFragment {
                             try {
                                 if (responseBody != null) {
                                     app.getElchargeService().setToken(""); //remove token
+                                    User tmpUser = new User();
+                                    tmpUser.setId("");
+                                    app.getElchargeService().setUser(tmpUser); //remove token
                                     getFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).commit();
                                 }
                                 Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "logout", responseBody.string());
