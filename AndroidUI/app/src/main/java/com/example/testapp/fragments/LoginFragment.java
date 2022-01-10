@@ -83,7 +83,6 @@ public class LoginFragment extends Fragment {
                             } else {
                                 Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "login", response.message());
                             }
-
 //                        } catch (Exception e) {
 //                            Helper.messageLogger(App.getAppContext(), Helper.LogType.ERR, "login", e.getMessage());
 //                        }
