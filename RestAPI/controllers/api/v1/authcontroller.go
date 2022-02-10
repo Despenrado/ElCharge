@@ -170,7 +170,7 @@ func (c *AuthController) CheckToken(next http.Handler) http.Handler {
 				utils.Error(w, r, http.StatusUnauthorized, err)
 				return
 			}
-			utils.Error(w, r, http.StatusBadRequest, err)
+			utils.Error(w, r, http.StatusUnauthorized, err)
 			return
 		}
 		if !tkn.Valid {

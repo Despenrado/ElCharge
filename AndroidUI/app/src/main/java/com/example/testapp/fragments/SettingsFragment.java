@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 
 import com.example.testapp.App;
@@ -89,7 +90,9 @@ public class SettingsFragment extends ListFragment {
                                     User tmpUser = new User();
                                     tmpUser.setId("");
                                     app.getElchargeService().setUser(tmpUser); //remove token
-                                    getFragmentManager().beginTransaction().replace(R.id.container, new LoginFragment()).commit();
+                                    LoginFragment lf = new LoginFragment();
+                                    getFragmentManager().beginTransaction().add(R.id.container, lf).commit();
+                                    getFragmentManager().beginTransaction().show(lf).commit();
                                 }
                                 Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "logout", responseBody.string());
                             } catch (Exception e) {

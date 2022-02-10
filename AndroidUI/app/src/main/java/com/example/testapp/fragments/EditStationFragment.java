@@ -86,7 +86,7 @@ public class EditStationFragment extends Fragment {
                     @Override
                     public void onSuccess(Response<Station> response) {
                         try {
-                            if (response.code() == 201) {
+                            if (response.code() == 200) {
                                 Helper.messageLogger(App.getAppContext(), Helper.LogType.INFO, "station", "Saved!");
                                 InfoFragment inf = (InfoFragment) getFragmentManager().findFragmentByTag("station_info");
                                 if (inf != null) {

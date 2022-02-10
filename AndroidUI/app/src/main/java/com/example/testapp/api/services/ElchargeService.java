@@ -30,6 +30,7 @@ public class ElchargeService {
         token = Helper.readFromSharedPreferences(App.getAppContext(),"jwt_token");
         user = new User();
         user.setId(Helper.readFromSharedPreferences(App.getAppContext(),"user_id"));
+        user.setUserName(Helper.readFromSharedPreferences(App.getAppContext(),"user_name"));
         Retrofit retrofit = createRetrofit();
         userApi = retrofit.create(UserApi.class);
         stationApi = retrofit.create(StationApi.class);
@@ -84,6 +85,7 @@ public class ElchargeService {
 
     public void setUser(User user) {
         Helper.saveToSharedPreferences(App.getAppContext(),"user_id", user.getId());
+        Helper.saveToSharedPreferences(App.getAppContext(),"user_name", user.getUserName());
         this.user = user;
     }
 
